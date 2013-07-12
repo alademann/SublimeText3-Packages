@@ -1,0 +1,17 @@
+<snippet>
+  <content><![CDATA[/*----------------------------------------------------
+
+    $TM_FILENAME
+    AUTHOR:   $TM_FULLNAME
+
+    REQUIRES: ${1:REQUIRES}
+    DEPENDENTS: ${2:DEPENDENTS}
+
+    ${3:COMMENTS}
+
+----------------------------------------------------*/
+
+]]>
+  </content>
+</snippet>
+

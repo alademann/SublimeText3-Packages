@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "-"
+    },
+	{
+        "caption": "Goto definition...",
+        "command": "goto_symbol",
+        "args": { "action": "list_carret_matches" }
+    }
+]

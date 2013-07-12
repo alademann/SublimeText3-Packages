@@ -1,0 +1,98 @@
+<snippet>
+  <content><![CDATA[
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <!-- |UI/UX| Use the .htaccess and remove these lines to avoid edge case issues. More info: h5bp.com/i/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Board Books Prototype</title>
+  <meta name="description" content="">
+  <!-- |UI/UX| Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;">
+  <!-- |UI/UX TODO:| Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+  <link rel="stylesheet" href="/books/app/css/app.css">
+  <!-- |UI/UX| Modernizr enables HTML5 elements & feature detects for optimal performance. -->
+  <script src="/books/app/lib/modernizr/modernizr-2.5.3.min.js"></script>
+  <!-- In Production, RequireJS would go here. -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+</head>
+<body>
+
+  <div id="wrapper" class="container-fluid">
+    <!-- row-fluid -->
+    <div class="row-fluid">
+      <!-- Navigation: _includes/chrome-nav.shtml -->
+      <header class="span2 left-nav abs stretchy">
+        <ul class="nav nav-list">
+          <li class="nav-header">
+              Books
+          </li>
+          <li class="active">
+            <a href="/books">
+              <i class="icon-home icon-white"></i>
+              Home
+            </a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#">
+              <i class="icon-question-sign icon-white"></i>
+              Help
+            </a>
+          </li>
+
+        </ul>
+      </header>
+      <!-- END: Navigation -->
+
+      <!-- Main -->
+      <div role="main" id="main" class="span10" ng-view>
+        <div class="wrapper">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </div>
+      </div>
+      <!-- END: Main -->
+
+    </div>
+    <!-- END: row-fluid -->
+    <!-- Footer -->
+    <footer class="row-fluid">
+
+    </footer>
+    <!-- END: Footer -->
+  </div>
+  <!-- END: wrapper -->
+
+  <!-- |UI/UX| Bootstrap JS Libraries to demonstrate basic interactions -->
+  <script src="/books/app/lib/bootstrap/google-code-prettify/prettify.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-transition.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-alert.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-modal.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-dropdown.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-scrollspy.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-tab.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-tooltip.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-popover.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-button.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-collapse.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-carousel.js"></script>
+  <script src="/books/app/lib/bootstrap/bootstrap-typeahead.js"></script>
+  <script src="/books/app/lib/bootstrap/application.js"></script> 
+
+</body>
+</html>
+]]></content>
+  <tabTrigger>html:5:wf</tabTrigger>
+  <description>HTML5 Boiler Plate for WebFilings</description>
+  <scope>text.html</scope>
+</snippet>

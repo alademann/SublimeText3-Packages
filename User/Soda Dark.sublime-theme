@@ -1,0 +1,8 @@
+[
+    {
+        "class": "tab_label",
+        "settings": ["highlight_modified_tabs"],
+        "parents": [{"class": "tab_control", "attributes": ["dirty"]}],
+        "fg": [120, 170, 250]
+    }
+]

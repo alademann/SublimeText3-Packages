@@ -1,0 +1,18 @@
+Goto Symbol 1.2.0 Changelog:
+
+Backwards Compatibility Breaks
+    * Rewamped the way settings are loaded (u'll need to update your user conf if any).
+
+New Features
+    * Added context menu.
+    * Added Goto menu entry.
+    * Added line numbol into symbols selecion panel.
+    * Added new option "trim_and_order".
+    * Added a command to find symbol under caret.
+    * Binded new shortcut, F2 now display symbols matches to the word under the caret.
+
+Bug Fixes
+    * Fixed issues on the way folders are loaded.
+    * Fixed issues on the way php's symbol prefixed by "&" are loaded.
+    * Fixed an issue with empty symbol appears after reloading some files.
+

@@ -1,0 +1,53 @@
+[
+  { "keys": ["super+alt+up"], "command": "sftp_vcs_changed_files" },
+  { "keys": ["super+shift+alt+down"], "command": "sftp_sync_down" },
+  { "keys": ["super+shift+alt+up"], "command": "sftp_sync_up" },
+  // end sftp keystrokes
+
+  // Sublime TODO
+  {
+    "keys": ["super+alt+t"],
+    "command": "todo",
+    "args": {"open_files_only": false}
+  },
+
+  // html wysiwyg shortcuts
+  { "keys": ["super+b"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_strong-tag.sublime-snippet"} },
+  { "keys": ["super+i"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_emphasis-tag.sublime-snippet"} },
+  { "keys": ["shift+alt+p"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_paragraph-tag.sublime-snippet"} },
+  { "keys": ["shift+alt+s"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_span-tag.sublime-snippet"} },
+  { "keys": ["shift+alt+d"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_div-tag.sublime-snippet"} },
+
+  // scss snippets
+  { "keys": ["alt+s"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-string-interpolation.sublime-snippet"} },  
+
+  // comment snippets
+  { "keys": ["super+/"], "command": "toggle_comment", "args": { "block": false } },
+  { "keys": ["shift+alt+/"], "command": "toggle_comment", "args": { "block": true } },
+
+  { "keys": ["super+shift+."], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-order-comments.sublime-snippet"} },
+
+  { "keys": ["alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-comment-block.sublime-snippet"} },
+
+  { "keys": ["super+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-comment-block.sublime-snippet"} },
+
+  { "keys": ["super+alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-comment-big-block.sublime-snippet"} },
+
+  { "keys": ["alt+space"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-comment-partial-name-block.sublime-snippet"} },
+
+  { "keys": ["super+alt+space"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-comment-filename-block.sublime-snippet"} },
+  // snippet shortcut
+  { "keys": ["super+alt+shift+s"], "command": "show_overlay", "args": {"overlay": "command_palette", "text": "Snippet: "} },
+  { "keys": ["ctrl+shift+r"], "command": "reindent" , "args": {"single_line": false} },
+  { "keys": ["alt+shift+w"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass_pctW.sublime-snippet"} },
+  { "keys": ["alt+shift+q"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass_pctH.sublime-snippet"} },
+  { "keys": ["alt+shift+a"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass_newW.sublime-snippet"} },
+
+  // tab switching override
+  { "keys": ["ctrl+pagedown"], "command": "next_view_in_stack" },
+  { "keys": ["ctrl+pageup"], "command": "prev_view_in_stack" },
+
+  { "keys": ["alt+tab"], "command": "next_view" },
+  { "keys": ["alt+shift+tab"], "command": "prev_view" }
+
+]

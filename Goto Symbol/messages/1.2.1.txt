@@ -1,0 +1,4 @@
+Goto Symbol 1.2.1 Changelog:
+
+New Features
+    * Added a reset command.

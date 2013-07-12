@@ -1,0 +1,4 @@
+<snippet>
+	<content><![CDATA[<em>${1:$SELECTION}</em>]]></content>
+	<description>HTML em tag</description>
+</snippet>

@@ -1,0 +1,4 @@
+<snippet>
+	<content><![CDATA[<div>${1:$SELECTION}</div>]]></content>
+	<description>HTML div tag</description>
+</snippet>

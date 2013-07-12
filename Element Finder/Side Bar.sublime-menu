@@ -1,0 +1,15 @@
+[
+	{
+		"caption": "-",
+		"id": "folder_commands"
+	},
+	{
+		"command": "element_finder",
+		"caption": "Find Elements in Folder…",
+		"args":
+		{
+			"dirs": [],
+			"type": "Side Bar"
+		}
+	}
+]
