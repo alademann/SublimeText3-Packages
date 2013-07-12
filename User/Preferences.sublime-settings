@@ -20,7 +20,7 @@
 		"*.eps"
 	],
 	"bold_folder_labels": true,
-	"caret_style": "phase",
+	"caret_style": "smooth",
 	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
 	"detect_slow_plugins": false,
 	"ensure_newline_at_eof_on_save": false,
@@ -64,12 +64,12 @@
 		"subpixel_antialias"
 	],
 	"font_size": 14.0,
-	"gpu_window_buffer": true,
+	"gpu_window_buffer": false,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Vintage",
 		"Git",
+		"Vintage",
 		"SyncedSideBar"
 	],
 	"match_brackets_angle": true,
