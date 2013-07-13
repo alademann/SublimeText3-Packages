@@ -1,4 +1,6 @@
 {
+	"auto_close_tags": true,
+	"auto_complete": true,
 	"auto_complete_commit_on_tab": true,
 	"auto_complete_delay": 100,
 	"binary_file_patterns":
@@ -64,13 +66,20 @@
 		"subpixel_antialias"
 	],
 	"font_size": 14.0,
-	"gpu_window_buffer": false,
+	"gpu_window_buffer": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
+		"SublimeGit",
+		"SyncedSideBar",
+		"SublimeCodeIntel",
+		"sublimelint",
 		"Git",
+		"CSSLint",
+		"Element Finder",
+		"HTML Snippets",
 		"Vintage",
-		"SyncedSideBar"
+		"Goto-CSS-Declaration"
 	],
 	"match_brackets_angle": true,
 	"preview_on_click": false,

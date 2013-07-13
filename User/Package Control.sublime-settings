@@ -5,7 +5,10 @@
 		"AAAPackageDev",
 		"Abacus",
 		"All Autocomplete",
+		"AutoFileName",
 		"ColorPicker",
+		"copy-file-name",
+		"CSS Auto Commenting",
 		"CSScomb",
 		"CSSLint",
 		"DetectSyntax",
@@ -22,6 +25,7 @@
 		"knockdown",
 		"LESS",
 		"Liquid",
+		"MoveTab",
 		"Open-Include",
 		"Package Control",
 		"PhpBeautifier",
@@ -32,10 +36,12 @@
 		"SideBarEnhancements",
 		"SideBarGit",
 		"SublimeCodeIntel",
+		"SublimeGit",
 		"sublimelint",
 		"SublimeTODO",
 		"SyncedSideBar",
 		"Theme - Soda",
-		"Twitter Bootstrap Snippets"
+		"Twitter Bootstrap Snippets",
+		"Vintage"
 	]
 }
