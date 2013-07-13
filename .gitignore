@@ -1,0 +1,6 @@
+*.cache
+*.info
+*.ca-list
+*.ca-bundle
+*.pyc
+*.scssc
