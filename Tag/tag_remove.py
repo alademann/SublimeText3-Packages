@@ -1,17 +1,18 @@
 import sublime, sublime_plugin
 import re
+from .Edit import Edit as Edit
 
 def TagRemoveAll(data, view):
-	return re.sub(r'<[^>]*>', '', data);
+	return re.sub(r'<[^\?][^>]*>', '', data);
 
 def TagRemoveSelected(data, tags, view):
 	tags = tags.replace(',', ' ').replace(';', ' ').replace('|', ' ')+' '
 	for tag in tags.split(' '):
 		if tag:
 			regexp = re.compile('<'+re.escape(tag)+'(| [^>]*)>', re.IGNORECASE)
-		 	data = regexp.sub('', data);
+			data = regexp.sub('', data);
 			regexp = re.compile('</'+re.escape(tag)+'>', re.IGNORECASE)
-		 	data = regexp.sub('', data);
+			data = regexp.sub('', data);
 	return data;
 
 class TagRemoveAllInSelectionCommand(sublime_plugin.TextCommand):
@@ -44,7 +45,8 @@ class TagRemovePickedInSelectionCommand(sublime_plugin.TextCommand):
 				continue
 			dataRegion = sublime.Region(region.begin(), region.end())
 			data = TagRemoveSelected(self.view.substr(dataRegion), tags, self.view)
-			self.view.replace(edit, dataRegion, data);
+			with Edit(self.view) as edit:
+				edit.replace(dataRegion, data);
 
 class TagRemovePickedInDocumentCommand(sublime_plugin.TextCommand):
 	def run(self, edit, tags = False):
@@ -58,4 +60,5 @@ class TagRemovePickedInDocumentCommand(sublime_plugin.TextCommand):
 	def on_done(self, edit, tags):
 		dataRegion = sublime.Region(0, self.view.size())
 		data = TagRemoveSelected(self.view.substr(dataRegion), tags, self.view)
-		self.view.replace(edit, dataRegion, data);
+		with Edit(self.view) as edit:
+			edit.replace(dataRegion, data);

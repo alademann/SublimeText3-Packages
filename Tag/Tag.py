@@ -28,9 +28,9 @@ class Tag():
 
 	def name(self, content, return_optional_tags = True, is_xml = False):
 		if content[:1] == '/':
-			tag_name = content.split('/')[1].split('>')[0];
+			tag_name = content.split('/')[1].split('>')[0].strip();
 		else:
-			tag_name = content.split(' ')[0].split('>')[0];
+			tag_name = content.split(' ')[0].split('>')[0].strip();
 		if self.is_valid(tag_name) and not self.is_self_closing(content, return_optional_tags, is_xml):
 			return tag_name
 		else:
@@ -75,54 +75,64 @@ class Tag():
 			content += "...".join(tmp)
 			i += 1
 
-		unparseable = content.split('/*')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('*/')
-			content += '..'
-			content += len(tmp.pop(0))*'.'
-			content += '..'
-			content += "..".join(tmp)
-			i += 1
+		# multiline line comments /* */
+		if content.count('/*') == content.count('*/'):
+			unparseable = content.split('/*')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('*/')
+				content += '..'
+				content += len(tmp.pop(0))*'.'
+				content += '..'
+				content += "..".join(tmp)
+				i += 1
 
+		# one line comments //
 		unparseable = re.split('(\s\/\/[^\n]+\n)', content)
-		
 		for comment in unparseable:
 			if comment[:3] == '\n//' or comment[:3] == ' //':
 				content = content.replace(comment, (len(comment))*'.')
 
+		# one line comments #
 		unparseable = re.split('(\s\#[^\n]+\n)', content)
-		
 		for comment in unparseable:
 			if comment[:3] == '\n#' or comment[:3] == ' #':
 				content = content.replace(comment, (len(comment))*'.')
 
 		# script
-		unparseable = content.split('<script')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</script>')
-			content += '.......'
-			content += len(tmp.pop(0))*'.'
-			content += '.........'
-			content += ".........".join(tmp)
-			i += 1
+		if content.count('<script') == content.count('</script'):
+			unparseable = content.split('<script')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('</script>')
+				content += '.......'
+				content += len(tmp.pop(0))*'.'
+				content += '.........'
+				content += ".........".join(tmp)
+				i += 1
 
 		# style
-		unparseable = content.split('<style')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</style>')
-			content += '......'
-			content += len(tmp.pop(0))*'.'
-			content += '........'
-			content += "........".join(tmp)
-			i += 1
+		if content.count('<style') == content.count('</style'):
+			unparseable = content.split('<style')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('</style>')
+				content += '......'
+				content += len(tmp.pop(0))*'.'
+				content += '........'
+				content += "........".join(tmp)
+				i += 1
+
+		# here-doc
+		while '<<<' in content:
+			content = content.replace('<<<', '...')
+		while '<<' in content:
+			content = content.replace('<<', '..')
 
 		return content
