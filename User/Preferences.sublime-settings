@@ -1,6 +1,5 @@
 {
 	"auto_close_tags": true,
-	"auto_complete": true,
 	"auto_complete_commit_on_tab": true,
 	"auto_complete_delay": 100,
 	"binary_file_patterns":
@@ -21,7 +20,6 @@
 		"*.zip",
 		"*.eps"
 	],
-	"index_files": false,
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
 	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
@@ -31,6 +29,8 @@
 	"fallback_encoding": "UTF-8",
 	"file_exclude_patterns":
 	[
+		"*.lock",
+		"*.git",
 		"*.scssc",
 		"*.pyc",
 		"*.pyo",
@@ -72,17 +72,18 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SublimeGit",
+		"CSSLint",
 		"SyncedSideBar",
-		"SublimeCodeIntel",
 		"sublimelint",
 		"Git",
-		"CSSLint",
+		"SublimeGit",
 		"Element Finder",
 		"HTML Snippets",
 		"Vintage",
-		"Goto-CSS-Declaration"
+		"Goto-CSS-Declaration",
+		"SublimeCodeIntel"
 	],
+	"index_files": false,
 	"match_brackets_angle": true,
 	"preview_on_click": false,
 	"shift_tab_unindent": true,
