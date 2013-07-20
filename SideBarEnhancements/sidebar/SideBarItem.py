@@ -4,25 +4,14 @@ import os
 import re
 import shutil
 
-from SideBarProject import SideBarProject
-
-try:
-	import desktop
-except:
-	pass
+from .SideBarProject import SideBarProject
 
 class Object():
 	pass
 
-def expand_vars(path):
-	for k, v in os.environ.iteritems():
-		try:
-			# dirty hack, this should be autofixed in python3
-			k = unicode(k.encode('utf8'))
-			v = unicode(v.encode('utf8'))
-			path = path.replace(u'%'+k+'%', v).replace(u'%'+k.lower()+'%', v)
-		except:
-			pass
+def expandVars(path):
+	for k, v in list(os.environ.items()):
+		path = path.replace('%'+k+'%', v).replace('%'+k.lower()+'%', v)
 	return path
 
 class SideBarItem:
@@ -39,10 +28,6 @@ class SideBarItem:
 			self._is_directory = os.path.isdir(path)
 			return path
 
-	def pathSystem(self):
-		import sys
-		return self.path().encode(sys.getfilesystemencoding())
-
 	def pathWithoutProject(self):
 		path = self.path()
 		for directory in SideBarProject().getDirectories():
@@ -57,39 +42,50 @@ class SideBarItem:
 				return directory
 		return False
 
-	def projectURL(self, type):
-		filename = os.path.normpath(os.path.join(sublime.packages_path(), '..', 'Settings', 'SideBarEnhancements.json'))
-		if os.path.lexists(filename):
-			#try:
-				import json
-				data = file(filename, 'r').read()
-				data = data.replace('\t', ' ').replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
-				data = json.loads(data, strict=False)
+	def url(self, type):
 
-				for path in data.keys():
-					path2 = expand_vars(path)
-					print '-------------------------------------------------------'
-					print 'searching:'
-					path2 = path2.replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/')
-					print path2
-					print 'in:'
-					path3 = self.path().replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/')
-					print path3
-					print '-------------------------------------------------------'
-					path4 = re.sub(re.compile("^"+re.escape(path2), re.IGNORECASE), '', path3);
-					print path4
-					if path4 != path3:
-						url = data[path][type]
+		filenames = []
+
+		# scans a la htaccess
+		item = SideBarItem(self.path(), self.isDirectory())
+		while not os.path.exists(item.join('.sublime/SideBarEnhancements.json')):
+			if item.dirname() == item.path():
+				break;
+			item.path(item.dirname())
+		item  = SideBarItem(item.join('.sublime/SideBarEnhancements.json'), False);
+		if item.exists():
+			filenames.append(item.path())
+
+		filenames.append(os.path.dirname(sublime.packages_path())+'/Settings/SideBarEnhancements.json')
+
+		import collections
+		for filename in filenames:
+			if os.path.lexists(filename):
+				import json
+				data = open(filename, 'r').read()
+				data = data.replace('\t', ' ').replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
+				data = json.loads(data, strict=False, object_pairs_hook=collections.OrderedDict)
+				for key in list(data.keys()):
+					#	print('-------------------------------------------------------')
+					#	print(key);
+					if filename == filenames[len(filenames)-1]:
+						base = expandVars(key)
+					else:
+						base = os.path.normpath(expandVars(os.path.dirname(os.path.dirname(filename))+'/'+key))
+					base = base.replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/')
+					#	print(base)
+					current = self.path().replace('\\', '/').replace('\\', '/').replace('//', '/').replace('//', '/')
+					#	print(current)
+					url_path = re.sub(re.compile("^"+re.escape(base), re.IGNORECASE), '', current);
+					#	print(url_path)
+					if url_path != current:
+						url = data[key][type]
 						if url:
 							if url[-1:] != '/':
 								url = url+'/'
-						import urllib
-						return url+(re.sub("^/", '', urllib.quote(path4.encode('utf-8'))));
-
-			#except:
-			#	return False
-		else:
-			return False
+						import urllib.request, urllib.parse, urllib.error
+						return url+(re.sub("^/", '', urllib.parse.quote(url_path)));
+		return False
 
 	def isUnderCurrentProject(self):
 		path = self.path()
@@ -102,26 +98,26 @@ class SideBarItem:
 		return re.sub('^/+', '', self.pathWithoutProject())
 
 	def pathRelativeFromProjectEncoded(self):
-		import urllib
-		return urllib.quote(self.pathRelativeFromProject().encode('utf-8'))
+		import urllib.request, urllib.parse, urllib.error
+		return urllib.parse.quote(self.pathRelativeFromProject())
 
 	def pathRelativeFromView(self):
 		return os.path.relpath(self.path(), os.path.dirname(sublime.active_window().active_view().file_name())).replace('\\', '/')
 
 	def pathRelativeFromViewEncoded(self):
-		import urllib
-		return urllib.quote(os.path.relpath(self.path(), os.path.dirname(sublime.active_window().active_view().file_name())).replace('\\', '/').encode('utf-8'))
+		import urllib.request, urllib.parse, urllib.error
+		return urllib.parse.quote(os.path.relpath(self.path(), os.path.dirname(sublime.active_window().active_view().file_name())).replace('\\', '/'))
 
 	def pathAbsoluteFromProject(self):
 		return self.pathWithoutProject()
 
 	def pathAbsoluteFromProjectEncoded(self):
-		import urllib
-		return urllib.quote(self.pathAbsoluteFromProject().encode('utf-8'))
+		import urllib.request, urllib.parse, urllib.error
+		return urllib.parse.quote(self.pathAbsoluteFromProject())
 
 	def uri(self):
-		import urllib
-		return 'file:'+urllib.pathname2url(self.path().encode('utf-8'));
+		import urllib.request, urllib.parse, urllib.error
+		return 'file:'+urllib.request.pathname2url(self.path());
 
 	def join(self, name):
 		return os.path.join(self.path(), name)
@@ -132,22 +128,22 @@ class SideBarItem:
 
 	def forCwdSystemPath(self):
 		if self.isDirectory():
-			return self.pathSystem()
+			return self.path()
 		else:
-			return self.dirnameSystem()
+			return self.dirname()
 
 	def forCwdSystemName(self):
 		if self.isDirectory():
 			return '.'
 		else:
-			path = self.pathSystem()
-			branch = self.dirnameSystem()
+			path = self.path()
+			branch = self.dirname()
 			leaf = path.replace(branch, '', 1).replace('\\', '').replace('/', '')
 			return leaf
 
 	def forCwdSystemPathRelativeFrom(self, relativeFrom):
 		relative = SideBarItem(relativeFrom, os.path.isdir(relativeFrom))
-		path = self.pathSystem().replace(relative.pathSystem(), '', 1).replace('\\', '/')
+		path = self.path().replace(relative.path(), '', 1).replace('\\', '/')
 		if path == '':
 			return '.'
 		else:
@@ -155,7 +151,7 @@ class SideBarItem:
 
 	def forCwdSystemPathRelativeFromRecursive(self, relativeFrom):
 		relative = SideBarItem(relativeFrom, os.path.isdir(relativeFrom))
-		path = self.pathSystem().replace(relative.pathSystem(), '', 1).replace('\\', '/')
+		path = self.path().replace(relative.path(), '', 1).replace('\\', '/')
 		if path == '':
 			return '.'
 		else:
@@ -163,10 +159,6 @@ class SideBarItem:
 				return re.sub('^/+', '', path)+'/'
 			else:
 				return re.sub('^/+', '', path)
-
-	def dirnameSystem(self):
-		import sys
-		return self.dirname().encode(sys.getfilesystemencoding())
 
 	def dirnameCreate(self):
 		try:
@@ -178,26 +170,35 @@ class SideBarItem:
 		branch, leaf = os.path.split(self.path())
 		return leaf;
 
-	def nameSystem(self):
-		import sys
-		return self.name().encode(sys.getfilesystemencoding())
-
 	def nameEncoded(self):
-		import urllib
-		return urllib.quote(self.name().encode('utf-8'));
+		import urllib.request, urllib.parse, urllib.error
+		return urllib.parse.quote(self.name());
 
 	def namePretty(self):
 		return self.name().replace(self.extension(), '').replace('-', ' ').replace('_', ' ').strip();
 
 	def open(self):
-		if sublime.platform() == 'osx':
+		if self.isDirectory():
 			import subprocess
-			subprocess.Popen(['open', self.nameSystem()], cwd=self.dirnameSystem())
-		elif sublime.platform() == 'windows':
-			import subprocess
-			subprocess.Popen([self.nameSystem()], cwd=self.dirnameSystem(), shell=True)
+			if sublime.platform() == 'osx':
+				subprocess.Popen(['/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal', '.'], cwd=self.forCwdSystemPath())
+			elif sublime.platform() == 'windows':
+				try:
+					subprocess.Popen(['start', 'powershell'], cwd=self.forCwdSystemPath(), shell=True)
+				except:
+					subprocess.Popen(['start', 'cmd', '.'], cwd=self.forCwdSystemPath(), shell=True)
+			elif sublime.platform() == 'linux':
+				subprocess.Popen(['gnome-terminal', '.'], cwd=self.forCwdSystemPath())
 		else:
-			desktop.open(self.path())
+			if sublime.platform() == 'osx':
+				import subprocess
+				subprocess.Popen(['open', self.name()], cwd=self.dirname())
+			elif sublime.platform() == 'windows':
+				import subprocess
+				subprocess.Popen(['start',  '', self.path()], cwd=self.dirname(), shell=True)
+			else:
+				from . import desktop
+				desktop.open(self.path())
 
 	def edit(self):
 		return sublime.active_window().open_file(self.path())
@@ -213,16 +214,25 @@ class SideBarItem:
 		return codecs.open(self.path(), 'r', 'utf-8').read()
 
 	def contentBinary(self):
-		return file(self.path(), "rb").read()
+		return open(self.path(), "rb").read()
 
 	def contentBase64(self):
-		return 'data:'+self.mime()+';base64,'+(file(self.path(), "rb").read().encode("base64").replace('\n', ''))
+		import base64
+		base64text = base64.b64encode(self.contentBinary()).decode('utf-8')
+		return 'data:'+self.mime()+';charset=utf-8;base64,'+(base64text.replace('\n', ''))
 
 	def reveal(self):
-		sublime.active_window().run_command("open_dir", {"dir": self.dirname(), "file": self.name()} )
+		if sublime.platform() == 'windows':
+			import subprocess
+			if self.isDirectory():
+				subprocess.Popen(["explorer", self.path()])
+			else:
+				subprocess.Popen(["explorer", '/select,', self.path()])
+		else:
+			sublime.active_window().run_command("open_dir", {"dir": self.dirname(), "file": self.name()} )
 
 	def write(self, content):
-		file(self.path(), 'w+').write(content)
+		open(self.path(), 'w+').write(content)
 
 	def mime(self):
 		import mimetypes
@@ -252,14 +262,14 @@ class SideBarItem:
 		location.dirnameCreate();
 		if self.isDirectory():
 			if location.exists():
-				self.copy_recursive(self.path(), location.path())
+				self.copyRecursive(self.path(), location.path())
 			else:
 				shutil.copytree(self.path(), location.path())
 		else:
 			shutil.copy2(self.path(), location.path())
 		return True
 
-	def copy_recursive(self, _from, _to):
+	def copyRecursive(self, _from, _to):
 
 		if os.path.isfile(_from) or os.path.islink(_from):
 			try:
@@ -277,7 +287,7 @@ class SideBarItem:
 			for content in os.listdir(_from):
 				__from = os.path.join(_from, content)
 				__to = os.path.join(_to, content)
-				self.copy_recursive(__from, __to)
+				self.copyRecursive(__from, __to)
 
 	def move(self, location, replace = False):
 		location = SideBarItem(location, os.path.isdir(location));
@@ -293,17 +303,17 @@ class SideBarItem:
 			location.dirnameCreate();
 			os.rename(self.path(), location.path()+'.sublime-temp')
 			os.rename(location.path()+'.sublime-temp', location.path())
-			self._move_moveViews(self.path(), location.path())
+			self._moveMoveViews(self.path(), location.path())
 		else:
 			location.dirnameCreate();
 			if location.exists():
-				self.move_recursive(self.path(), location.path())
+				self.moveRecursive(self.path(), location.path())
 			else:
 				os.rename(self.path(), location.path())
-			self._move_moveViews(self.path(), location.path())
+			self._moveMoveViews(self.path(), location.path())
 		return True
 
-	def move_recursive(self, _from, _to):
+	def moveRecursive(self, _from, _to):
 		if os.path.isfile(_from) or os.path.islink(_from):
 			try:
 				os.makedirs(os.path.dirname(_to));
@@ -320,10 +330,10 @@ class SideBarItem:
 			for content in os.listdir(_from):
 				__from = os.path.join(_from, content)
 				__to = os.path.join(_to, content)
-				self.move_recursive(__from, __to)
+				self.moveRecursive(__from, __to)
 			os.rmdir(_from)
 
-	def _move_moveViews(self, old, location):
+	def _moveMoveViews(self, old, location):
 		for window in sublime.windows():
 			active_view = window.active_view()
 			views = []
@@ -333,106 +343,16 @@ class SideBarItem:
 			views.reverse();
 			for view in views:
 				if old == view.file_name():
-					active_view = self._move_moveView(window, view, location, active_view)
+					active_view = self._moveMoveView(window, view, location, active_view)
 				elif view.file_name().find(old+'\\') == 0:
-					active_view = self._move_moveView(window, view, view.file_name().replace(old+'\\', location+'\\', 1), active_view)
+					active_view = self._moveMoveView(window, view, view.file_name().replace(old+'\\', location+'\\', 1), active_view)
 				elif view.file_name().find(old+'/') == 0:
-					active_view = self._move_moveView(window, view, view.file_name().replace(old+'/', location+'/', 1), active_view)
+					active_view = self._moveMoveView(window, view, view.file_name().replace(old+'/', location+'/', 1), active_view)
 
-	def _move_moveView(self, window, view, location, active_view):
-		if active_view == view:
-			is_active_view = True
-		else:
-			is_active_view = False
+	def _moveMoveView(self, window, view, location, active_view):
+		view.retarget(location)
 
-		options = Object()
-
-		options.scroll = view.viewport_position()
-
-		options.selections = [[item.a, item.b] for item in view.sel()]
-
-		options.marks = [[item.a, item.b] for item in view.get_regions("mark")]
-
-		options.bookmarks = [[item.a, item.b] for item in view.get_regions("bookmarks")]
-
-		if int(sublime.version()) >= 2167:
-			options.folds = [[item.a, item.b] for item in view.folded_regions()]
-		else:
-			options.folds = [[item.a, item.b] for item in view.unfold(sublime.Region(0, view.size()))]
-
-		options.syntax = view.settings().get('syntax')
-
-		try:
-			_window = window or view.window() or sublime.active_window()
-			options.position = _window.get_view_index(view)
-		except:
-			options.position = False
-
-		window.focus_view(view)
-		if view.is_dirty():
-			options.content = view.substr(sublime.Region(0, view.size()))
-			view.window().run_command('revert')
-		else:
-			options.content = False
-
-		_view = view
-		view = window.open_file(location)
-		window.focus_view(_view)
-		window.run_command('close')
-
-		sublime.set_timeout(lambda: self._move_restoreView(view, options, window), 200)
-
-		if is_active_view:
-			window.focus_view(view)
-			return view
-		else:
-			window.focus_view(active_view)
-			return active_view
-
-	def _move_restoreView(self, view, options, window):
-		if view.is_loading():
-			sublime.set_timeout(lambda: self._move_restoreView(view, options, window), 100)
-		else:
-			if options.content != False:
-				edit = view.begin_edit()
-				view.replace(edit, sublime.Region(0, view.size()), options.content);
-				view.sel().clear()
-				view.sel().add(sublime.Region(0))
-				view.end_edit(edit)
-
-			if options.position != False:
-				try:
-					_window = window or view.window() or sublime.active_window()
-					group, index = options.position
-					_window.set_view_index(view, group, index)
-				except:
-					pass
-
-			if options.syntax:
-				view.settings().set('syntax', options.syntax);
-
-			for r in options.folds:
-				view.fold(sublime.Region(r[0], r[1]))
-
-			view.sel().clear()
-			for r in options.selections:
-				view.sel().add(sublime.Region(r[0], r[1]))
-
-			rs = []
-			for r in options.marks:
-				rs.append(sublime.Region(r[0], r[1]))
-			if len(rs):
-				view.add_regions("mark", rs, "mark", "dot", sublime.HIDDEN | sublime.PERSISTENT)
-
-			rs = []
-			for r in options.bookmarks:
-				rs.append(sublime.Region(r[0], r[1]))
-			if len(rs):
-				view.add_regions("bookmarks", rs, "bookmarks", "bookmark", sublime.HIDDEN | sublime.PERSISTENT)
-
-			view.set_viewport_position(options.scroll, False)
-
-	def close_associated_buffers(self):
+	def closeViews(self):
 		path = self.path()
 		closed_items = []
 		for window in sublime.windows():

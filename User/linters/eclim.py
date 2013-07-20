@@ -2,15 +2,19 @@ import json
 import os
 import tempfile
 
-from lint.linter import Linter
-from lint.util import communicate, find
+from lint import Linter
+from lint.util import find
 
-class Java(Linter):
+class Eclim(Linter):
     language = 'java'
     cmd = ('eclim', '-command', 'java_src_update')
     regex = r'.'
 
-    def communicate(self, cmd, code):
+    defaults = {
+        'disable': True,
+    }
+
+    def run(self, cmd, code):
         project = find(os.path.dirname(self.filename), '.project', True)
         if not project:
             return
@@ -34,7 +38,7 @@ class Java(Linter):
 
         try:
             cmd = cmd + ('-p', project, '-f', filename, '-v')
-            output = communicate(cmd, '')
+            output = self.communicate(cmd, '')
         finally:
             if inode is not None:
                 new_inode = os.stat(self.filename).st_ino

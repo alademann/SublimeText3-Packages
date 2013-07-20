@@ -1,13 +1,13 @@
 [
     {
-        "caption": "Preferences: SublimeLint – Default",
+        "caption": "Preferences: SublimeLint Settings – Default",
         "command": "open_file", "args":
         {
             "file": "${packages}/sublimelint/SublimeLint.sublime-settings"
         }
     },
     {
-        "caption": "Preferences: SublimeLint – User",
+        "caption": "Preferences: SublimeLint Settings – User",
         "command": "open_file", "args":
         {
             "file": "${packages}/User/SublimeLint.sublime-settings"
@@ -24,5 +24,17 @@
     {
         "caption": "SublimeLint: Previous Error",
         "command": "sublimelint_next_error", "args": {"direction": -1}
+    },
+    {
+        "caption": "SublimeLint: Report (Open Files)",
+        "command": "sublimelint_report",
+        "args": {"on": "files"}
     }
+    /* folders not implemented
+    {
+        "caption": "SublimeLint: Report (Open Files and Folders)",
+        "command": "sublimelint_report",
+        "args": {"on": "both"}
+    }
+    */
 ]

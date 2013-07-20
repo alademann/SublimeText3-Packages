@@ -1,32 +1,17 @@
 Sublime Lint
 =========
 
-A framework for inline lint highlighting in the [Sublime Text 2](http://sublimetext.com "Sublime Text 2") editor.
+A framework for error highlighting in the [Sublime Text](http://sublimetext.com "Sublime Text") editor.
 
-Supports the following languages:
+It's easy to add language support. Take a look at the [linter repository](http://github.com/lunixbochs/linters "Linter Repository") for examples.
 
-* Python - native, moderately-complete lint
+Linters in your Sublime Text `User/linters` folder will be automatically used. Changes to linters in this folder will be overwritten on automatic update. If you want to change a builtin linter, disable it in the Sublime Lint preferences and copy the source to a new file/class name.
 
-NOTE: the following languages may require you to install additional binaries and place them within your PATH (environment variable)
-
-* C - validation via `clang`
-* C++ - validation via `clang++`
-* CoffeeScript - validation via `coffee --compile`
-* CSS - linting via `csslint`
-* Go - validation via `go build` in a temporary folder
-* HAML - checking via `haml -c`
-* Java - linting via Eclipse command-line `eclim`
-* JavaScript - linting via JSLint command-line `jsl`
-* Lua - syntax checking via `luac -p`
-* NASM - validation via `nasm` and a temporary file
-* Perl - syntax+deprecation checking via `perl -c`
-* PHP - syntax checking via `php -l`
-* Ruby - syntax checking via `ruby -wc`
-* XML - linting via `xmllint`
-
-It's incredibly easy to add your own Linter. Take a look at `languages/extras.py`, `languages/python.py`, and `languages/go.py` for some examples.
+You can also import `Linter` and subclass it inside `plugin_loaded()` from any other Sublime plugin.
 
 Installation
 -----
 
-Find it in [Package Control](http://wbond.net/sublime_packages/package_control "Package Control").
+You can install in ST3 by adding this repository to [Package Control](http://wbond.net/sublime_packages/package_control "Package Control"), which does automatic updates.
+
+Alternatively, you can clone `sublimelint` into your Packages folder and switch to the `st3` branch manually, but you will need to update manually.

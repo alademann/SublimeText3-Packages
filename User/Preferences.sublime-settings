@@ -4,21 +4,23 @@
 	"auto_complete_delay": 100,
 	"binary_file_patterns":
 	[
-		"*.jpg",
-		"*.jpeg",
-		"*.png",
-		"*.gif",
-		"*.ttf",
 		"*.tga",
 		"*.dds",
 		"*.ico",
 		"*.eot",
 		"*.woff",
-		"*.pdf",
-		"*.swf",
 		"*.jar",
 		"*.zip",
-		"*.eps"
+		"*.jpg",
+		"*.jpeg",
+		"*.png",
+		"*.gif",
+		"*.ttf",
+		"*.swf",
+		"*.pdf",
+		"*.eps",
+		"*.psd",
+		"*.ai"
 	],
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
@@ -29,10 +31,17 @@
 	"fallback_encoding": "UTF-8",
 	"file_exclude_patterns":
 	[
+		"*.psd",
+		"*.ai",
+		"*.zip",
+		"*.tar.gz",
+		"*.tar",
 		"*.lock",
 		"*.git",
 		"*.scssc",
 		"*.pyc",
+		"*.cache",
+		"*.s(a|c)ssc",
 		"*.pyo",
 		"*.exe",
 		"*.dll",
@@ -49,10 +58,13 @@
 		"*.idb",
 		".DS_Store",
 		"*.class",
-		"*.psd",
-		"*.ai",
 		"*.db",
-		"*.cache"
+		"*.afm",
+		"*.gspl",
+		"*.as",
+		"*.wpr",
+		"*.project",
+		"*.jshintrc"
 	],
 	"fold_buttons": true,
 	"folder_exclude_patterns":
@@ -61,7 +73,10 @@
 		".git",
 		".hg",
 		"CVS",
-		"sass-cache"
+		".sass-cache",
+		".externalToolBuilders",
+		"node_modules",
+		"node-modules"
 	],
 	"font_options":
 	[
@@ -72,16 +87,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"CSSLint",
-		"SyncedSideBar",
-		"sublimelint",
-		"Git",
-		"SublimeGit",
-		"Element Finder",
-		"HTML Snippets",
-		"Vintage",
 		"Goto-CSS-Declaration",
-		"SublimeCodeIntel"
+		"CSSLint",
+		"Vintage",
+		"SublimeCodeIntel",
+		"SublimeGit",
+		"HTML Snippets",
+		"Element Finder",
+		"SFTP"
 	],
 	"index_files": false,
 	"match_brackets_angle": true,
