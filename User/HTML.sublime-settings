@@ -1,7 +1,8 @@
 {
-	"extensions":
-	[
-		"master",
-		"aspx"
-	]
+    "extensions":
+    [
+        "master",
+        "aspx",
+        "htm"
+    ]
 }
