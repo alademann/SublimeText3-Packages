@@ -3,12 +3,22 @@
     "com.khiltd.abacus.separators": 
     [    
         { 
-            "token":                ": ",
+            "token":                ":",
             "gravity":              "left",
             "preserve_indentation": true
         },
         { 
+            "token":                " $",
+            "gravity":              "right",
+            "preserve_indentation": true
+        },
+        { 
             "token":                "{",
+            "gravity":              "right",
+            "preserve_indentation": true
+        },
+        { 
+            "token":                "{{",
             "gravity":              "right",
             "preserve_indentation": true
         },

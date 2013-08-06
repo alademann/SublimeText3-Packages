@@ -83,14 +83,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SublimeCodeIntel",
+		"Element Finder",
 		"Vintage",
-		"SFTP",
 		"Goto-CSS-Declaration",
-		"CSSLint",
+		"SFTP",
 		"HTML Snippets",
 		"SublimeGit",
-		"Element Finder"
+		"SublimeCodeIntel",
+		"CSSLint"
 	],
 	"indent_guide_options":
 	[
