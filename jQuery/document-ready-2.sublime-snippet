@@ -1,5 +1,5 @@
 <snippet>
-	<content><![CDATA[\$(document).ready(function() {
+	<content><![CDATA[$(document).ready(function() {
 	${0:// Stuff to do as soon as the DOM is ready;}
 });]]></content>
 	<tabTrigger>ready</tabTrigger>
