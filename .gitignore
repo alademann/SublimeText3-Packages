@@ -4,5 +4,6 @@
 *.ca-bundle
 *.pyc
 *.scssc
+*.sassc
 *.sublime-license
 /User/Gist.sublime-settings
