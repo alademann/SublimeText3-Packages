@@ -19,6 +19,11 @@
     },
     {
         "class": "tabset_control",
+        "settings": ["enable_tab_scrolling"],
+        "content_margin": [3, 0, 3, 3]
+    },
+    {
+        "class": "tabset_control",
         "settings": ["mouse_wheel_switches_tabs"],
         "mouse_wheel_switch": true
     },
@@ -69,6 +74,11 @@
         "content_margin": [3, 4, 3, 3],
         "tab_overlap": 24,
         "tab_height": 28
+    },
+    {
+        "class": "tabset_control",
+        "settings": ["soda_classic_tabs", "enable_tab_scrolling"],
+        "content_margin": [6, 4, 6, 3]
     },
     // Tab element
     {
@@ -214,6 +224,50 @@
         "class": "tab_label",
         "attributes": ["transient"],
         "font.italic": true
+    },
+
+//
+// TAB SCROLLING
+//
+
+    // Tab dropdown
+    {
+        "class": "show_tabs_dropdown_button",
+        "content_margin": [9, 7, 8, 6],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-list.png",
+        "layer0.opacity": 1.0,
+        "layer0.inner_margin": 0
+    },
+    {
+        "class": "show_tabs_dropdown_button",
+        "attributes": ["hover"],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-list-hover.png"
+    },
+    // Tab scroll left
+    {
+        "class": "scroll_tabs_left_button",
+        "content_margin": [9, 7, 8, 6],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-left.png",
+        "layer0.opacity": 1.0,
+        "layer0.inner_margin": 0
+    },
+    {
+        "class": "scroll_tabs_left_button",
+        "attributes": ["hover"],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-left-hover.png"
+    },
+    // Tab scroll right
+    {
+        "class": "scroll_tabs_right_button",
+        "content_margin": [9, 7, 8, 6],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-right.png",
+        "layer0.opacity": 1.0,
+        "layer0.inner_margin": 0
+    },
+    {
+        "class": "scroll_tabs_right_button",
+        "attributes": ["hover"],
+        "layer0.texture": "Theme - Soda/Soda Dark/tabset-right-hover.png"
     },
 
 //
@@ -739,7 +793,21 @@
         "layer0.texture": "Theme - Soda/Soda Dark/text-field.png",
         "layer0.opacity": 1.0,
         "layer0.inner_margin": [4, 5, 4, 3],
-        "content_margin": [3, 3]
+        "content_margin": [3, 3, 6, 3]
+    },
+
+    // Text input dropdown
+    {
+        "class": "dropdown_button_control",
+        "content_margin": [8, 8],
+        "layer0.texture": "Theme - Soda/Soda Dark/text-field-list.png",
+        "layer0.opacity": 1.0,
+        "layer0.inner_margin": [4, 4]
+    },
+    {
+        "class": "dropdown_button_control",
+        "attributes": ["hover"],
+        "layer0.texture": "Theme - Soda/Soda Dark/text-field-list-hover.png"
     },
 
 //
