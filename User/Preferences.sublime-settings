@@ -84,13 +84,13 @@
 	"ignored_packages":
 	[
 		"Element Finder",
-		"Vintage",
+		"HTML Snippets",
+		"CSSLint",
 		"Goto-CSS-Declaration",
 		"SFTP",
-		"HTML Snippets",
-		"SublimeGit",
 		"SublimeCodeIntel",
-		"CSSLint"
+		"Vintage",
+		"SublimeGit"
 	],
 	"indent_guide_options":
 	[

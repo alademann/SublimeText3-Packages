@@ -13,6 +13,7 @@
 		"CSScomb",
 		"CSSLint",
 		"DetectSyntax",
+		"EditorConfig",
 		"Element Finder",
 		"FileDiffs",
 		"Gist",
@@ -43,6 +44,7 @@
 		"SyncedSideBar",
 		"Theme - Soda",
 		"Twitter Bootstrap Snippets",
+		"Twitter Recess",
 		"Vintage"
 	]
 }

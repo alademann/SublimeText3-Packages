@@ -8,8 +8,8 @@
             "preserve_indentation": true
         },
         { 
-            "token":                " $",
-            "gravity":              "right",
+            "token":                ": $",
+            "gravity":              "left",
             "preserve_indentation": true
         },
         { 
@@ -23,7 +23,7 @@
             "preserve_indentation": true
         },
         { 
-            "token":                "=",
+            "token":                " =",
             "gravity":              "right",
             "preserve_indentation": true
         },
