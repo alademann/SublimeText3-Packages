@@ -2,7 +2,7 @@ import sublime
 import sys
 
 from lint import Linter
-from lint.util import which
+from sublimelint.lint.util import which
 
 class Python(Linter):
     language = 'python'
