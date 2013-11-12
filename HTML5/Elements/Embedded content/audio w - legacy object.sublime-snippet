@@ -12,5 +12,4 @@
 	<tabTrigger>audio</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;audio&gt; with legacy object</description>
-	<scope>text.html</scope>
 </snippet>

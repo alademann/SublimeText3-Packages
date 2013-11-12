@@ -15,5 +15,4 @@
 	<tabTrigger>table</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;table&gt;</description>
-	<scope>text.html</scope>
 </snippet>

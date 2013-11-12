@@ -593,7 +593,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(&lt;|{)%+#</string>
+					<string>&lt;%+#</string>
 					<key>captures</key>
 					<dict>
 						<key>0</key>
@@ -603,13 +603,13 @@
 						</dict>
 					</dict>
 					<key>end</key>
-					<string>%(&gt;|})</string>
+					<string>%&gt;</string>
 					<key>name</key>
 					<string>comment.block.erb</string>
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(&lt;|{)%+(?!(&gt;|}))=?</string>
+					<string>&lt;%+(?!&gt;)=?</string>
 					<key>captures</key>
 					<dict>
 						<key>0</key>
@@ -619,7 +619,7 @@
 						</dict>
 					</dict>
 					<key>end</key>
-					<string>-?%(&gt;|})</string>
+					<string>-?%&gt;</string>
 					<key>name</key>
 					<string>source.ruby.embedded.html</string>
 					<key>patterns</key>
@@ -634,7 +634,7 @@
 								</dict>
 							</dict>
 							<key>match</key>
-							<string>(#).*?(?=-?%(&gt;|}))</string>
+							<string>(#).*?(?=-?%&gt;)</string>
 							<key>name</key>
 							<string>comment.line.number-sign.ruby</string>
 						</dict>
