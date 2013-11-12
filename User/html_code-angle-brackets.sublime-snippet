@@ -1,0 +1,4 @@
+<snippet>
+	<content><![CDATA[&lt;${1:$SELECTION}&gt;]]></content>
+	<description>HTML angle brackets within code tag</description>
+</snippet>

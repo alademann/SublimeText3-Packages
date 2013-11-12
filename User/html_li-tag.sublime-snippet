@@ -1,0 +1,4 @@
+<snippet>
+	<content><![CDATA[<li>${1:$SELECTION}</li>]]></content>
+	<description>HTML li tag</description>
+</snippet>

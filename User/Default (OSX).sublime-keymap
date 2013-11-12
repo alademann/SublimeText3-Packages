@@ -17,6 +17,12 @@
   { "keys": ["shift+alt+p"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_paragraph-tag.sublime-snippet"} },
   { "keys": ["shift+alt+s"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_span-tag.sublime-snippet"} },
   { "keys": ["shift+alt+d"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_div-tag.sublime-snippet"} },
+  // web-skin component shortcuts
+  { "keys": ["shift+alt+l"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_li-tag.sublime-snippet"} },
+  { "keys": ["shift+alt+b"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/badge.sublime-snippet"} },
+  { "keys": ["alt+c"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_code-tag.sublime-snippet"} },
+  { "keys": ["super+shift+,"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_code-angle-brackets.sublime-snippet"} },
+
 
   // scss snippets
   { "keys": ["alt+s"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-string-interpolation.sublime-snippet"} },  
@@ -48,6 +54,10 @@
   { "keys": ["ctrl+pageup"], "command": "prev_view_in_stack" },
 
   { "keys": ["alt+tab"], "command": "next_view" },
-  { "keys": ["alt+shift+tab"], "command": "prev_view" }
+  { "keys": ["alt+shift+tab"], "command": "prev_view" },
+
+  // css comb
+  { "keys": ["ctrl+shift+c"], "command": "css_sorter" },
+  { "keys": ["alt+shift+c"], "command": "css_sorter" }
 
 ]

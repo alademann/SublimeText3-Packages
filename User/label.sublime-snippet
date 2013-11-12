@@ -1,0 +1,6 @@
+<snippet>
+	<content><![CDATA[
+<span class="label">${1:$SELECTION}</span>
+]]></content>
+	<description>web-skin inline label</description>
+</snippet>
