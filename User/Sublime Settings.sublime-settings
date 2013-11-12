@@ -3,7 +3,6 @@
 	[
 		"sublime-settings",
 		"sublime-project",
-		"sublime-menu",
-		"tmLanguage"
+		"sublime-menu"
 	]
 }

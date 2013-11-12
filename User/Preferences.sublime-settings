@@ -78,19 +78,19 @@
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 14.0,
+	"font_size": 12.0,
 	"gpu_window_buffer": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SFTP",
-		"CSSLint",
-		"SublimeCodeIntel",
-		"SublimeGit",
+		"Vintage",
 		"HTML Snippets",
+		"SublimeCodeIntel",
+		"SFTP",
 		"Goto-CSS-Declaration",
 		"Element Finder",
-		"Vintage"
+		"CSSLint",
+		"SublimeGit"
 	],
 	"indent_guide_options":
 	[

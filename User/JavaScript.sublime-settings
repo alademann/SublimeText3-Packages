@@ -3,6 +3,6 @@
 	[
 		"js",
 		"coffee",
-		".js.liquid"
+		"js.liquid"
 	]
 }
