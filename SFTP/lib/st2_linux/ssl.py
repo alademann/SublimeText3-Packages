@@ -106,7 +106,7 @@ class SSLSocket(socket):
         # see if it's connected
         try:
             socket.getpeername(self)
-        except socket_error, e:
+        except (socket_error) as e:
             if e.errno != errno.ENOTCONN:
                 raise
             # no, no connection yet
@@ -134,7 +134,7 @@ class SSLSocket(socket):
 
         try:
             return self._sslobj.read(len)
-        except SSLError, x:
+        except (SSLError) as x:
             if x.args[0] == SSL_ERROR_EOF and self.suppress_ragged_eofs:
                 return ''
             else:
@@ -172,7 +172,7 @@ class SSLSocket(socket):
             while True:
                 try:
                     v = self._sslobj.write(data)
-                except SSLError, x:
+                except (SSLError) as x:
                     if x.args[0] == SSL_ERROR_WANT_READ:
                         return 0
                     elif x.args[0] == SSL_ERROR_WANT_WRITE:
