@@ -5,6 +5,7 @@
 		"xsd",
 		"xslt",
 		"svg",
-		"vssettings"
+		"vssettings",
+		"tmLanguage"
 	]
 }
