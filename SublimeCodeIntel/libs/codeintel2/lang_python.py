@@ -258,7 +258,7 @@ class PythonImportsEvaluator(Evaluator):
                                     try:
                                         cplns += self._members_from_elem(
                                             e, mgr)
-                                    except CodeIntelError, ex:
+                                    except CodeIntelError as ex:
                                         log.warn(
                                             "%s (skipping members for %s)",
                                             ex, e)
@@ -304,7 +304,7 @@ class PythonImportsEvaluator(Evaluator):
                     raise
 
                 if symbol_name == "*":  # can it be so?
-                    for m_name, m_elem in blob.names.items():
+                    for m_name, m_elem in list(blob.names.items()):
                         m_type = m_elem.get("ilk") or m_elem.tag
                         members.add((m_type, m_name))
                 elif symbol_name in blob.names:
@@ -342,6 +342,11 @@ class PythonLangIntel(CitadelLangIntel, ParenStyleCalltipIntelMixin,
 
     citdl_from_literal_type = {"string": "str"}
 
+    @LazyClassAttribute
+    def keywords(self):
+        from SilverCity.Keywords import python_keywords
+        return python_keywords.split(" ")
+
     def async_eval_at_trg(self, buf, trg, ctlr):
         if _xpcom_:
             trg = UnwrapObject(trg)
@@ -358,10 +363,15 @@ class PythonLangIntel(CitadelLangIntel, ParenStyleCalltipIntelMixin,
             else:
                 try:
                     citdl_expr = self.citdl_expr_from_trg(buf, trg)
-                except CodeIntelError, ex:
+                except CodeIntelError as ex:
                     ctlr.error(str(ex))
                     ctlr.done("error")
                     return
+            evalr = PythonTreeEvaluator(ctlr, buf, trg, citdl_expr, line)
+            buf.mgr.request_eval(evalr)
+        elif trg.id == (self.lang, TRG_FORM_CPLN, "local-symbols"):
+            line = buf.accessor.line_from_pos(trg.pos)
+            citdl_expr = trg.extra.get("citdl_expr")
             evalr = PythonTreeEvaluator(ctlr, buf, trg, citdl_expr, line)
             buf.mgr.request_eval(evalr)
         elif trg.id == (self.lang, TRG_FORM_CPLN, "magic-symbols"):
@@ -467,7 +477,7 @@ class PythonLangIntel(CitadelLangIntel, ParenStyleCalltipIntelMixin,
                 for pth_path in glob(join(dir, "*.pth")):
                     for p in self._gen_python_import_paths_from_pth_path(pth_path):
                         yield p
-            except EnvironmentError, ex:
+            except EnvironmentError as ex:
                 log.warn("error analyzing .pth files in '%s': %s", dir, ex)
 
     def _gen_python_import_paths_from_pth_path(self, pth_path):
@@ -682,6 +692,9 @@ class PythonBuffer(CitadelBuffer):
 
     cb_show_if_empty = True
 
+    keyword_style = ScintillaConstants.SCE_P_WORD
+    identifier_style = ScintillaConstants.SCE_P_IDENTIFIER
+
     @property
     def libs(self):
         return self.langintel.libs_from_buf(self)
@@ -701,8 +714,8 @@ class PythonBuffer(CitadelBuffer):
         """
         DEBUG = False  # not using 'logging' system, because want to be fast
         if DEBUG:
-            print "\n----- Python trg_from_pos(pos=%r, implicit=%r) -----"\
-                  % (pos, implicit)
+            print("\n----- Python trg_from_pos(pos=%r, implicit=%r) -----"\
+                  % (pos, implicit))
 
         if pos == 0:
             return None
@@ -710,19 +723,20 @@ class PythonBuffer(CitadelBuffer):
         last_pos = pos - 1
         last_char = accessor.char_at_pos(last_pos)
         if DEBUG:
-            print "  last_pos: %s" % last_pos
-            print "  last_char: %r" % last_char
+            print("  last_pos: %s" % last_pos)
+            print("  last_char: %r" % last_char)
 
         # Quick out if the preceding char isn't a trigger char.
-        if last_char not in " .(@_,":
-            if DEBUG:
-                print "trg_from_pos: no: %r is not in ' .(@'_" % last_char
-            return None
+        # Note: Cannot use this now that we have a 2-char locals trigger.
+        # if last_char not in " .(@_,":
+        #    if DEBUG:
+        #        print "trg_from_pos: no: %r is not in ' .(@'_" % last_char
+        #    return None
 
         style = accessor.style_at_pos(last_pos)
         if DEBUG:
             style_names = self.style_names_from_style_num(style)
-            print "  style: %s (%s)" % (style, ", ".join(style_names))
+            print("  style: %s (%s)" % (style, ", ".join(style_names)))
 
         if last_char == "@":
             # Possibly python-complete-pythondoc-tags (the only trigger
@@ -755,9 +769,9 @@ class PythonBuffer(CitadelBuffer):
         if (implicit and style in self.implicit_completion_skip_styles and last_char != '_'
                 or style in self.completion_skip_styles):
             if DEBUG:
-                print "trg_from_pos: no: completion is suppressed "\
+                print("trg_from_pos: no: completion is suppressed "\
                       "in style at %s: %s (%s)"\
-                      % (last_pos, style, ", ".join(style_names))
+                      % (last_pos, style, ", ".join(style_names)))
             return None
 
         if last_char == " ":
@@ -846,7 +860,7 @@ class PythonBuffer(CitadelBuffer):
                     if m:
                         dots = len(m.group(1).strip())
                         # magic value for imp_prefix, means "from .<|>"
-                        imp_prefix = tuple('' for i in xrange(dots+2))
+                        imp_prefix = tuple('' for i in range(dots+2))
                         return Trigger(self.lang, TRG_FORM_CPLN,
                                        "available-imports", pos, implicit,
                                        imp_prefix=imp_prefix)
@@ -879,8 +893,8 @@ class PythonBuffer(CitadelBuffer):
             else:
                 ch = None
             if DEBUG:
-                print "trg_from_pos: no: non-ws char preceding '.' is not "\
-                      "an identifier char or ')': %r" % ch
+                print("trg_from_pos: no: non-ws char preceding '.' is not "\
+                      "an identifier char or ')': %r" % ch)
             return None
 
         elif last_char == "_":
@@ -903,10 +917,10 @@ class PythonBuffer(CitadelBuffer):
                 beforeStyle = accessor.style_at_pos(last_pos-2)
 
             if DEBUG:
-                print "trg_from_pos:: checking magic symbol, beforeChar: %r" % (beforeChar)
+                print("trg_from_pos:: checking magic symbol, beforeChar: %r" % (beforeChar))
             if beforeChar and beforeChar in "\"'" and beforeStyle in self.string_styles():
                 if DEBUG:
-                    print "trg_from_pos:: magic-symbols - string"
+                    print("trg_from_pos:: magic-symbols - string")
                 return Trigger(self.lang, TRG_FORM_CPLN,
                                "magic-symbols", last_pos-1, implicit,
                                symbolstype="string")
@@ -927,13 +941,13 @@ class PythonBuffer(CitadelBuffer):
                                                    min(accessor.length, pos+20)
                                                    ).replace(" ", "")
                     if DEBUG:
-                        print "trg_from_pos:: magic-symbols - def"
+                        print("trg_from_pos:: magic-symbols - def")
                     return Trigger(self.lang, TRG_FORM_CPLN,
                                    "magic-symbols", last_pos-1, implicit,
                                    symbolstype="def",
                                    posttext=posttext)
             if DEBUG:
-                print "trg_from_pos:: magic-symbols - global"
+                print("trg_from_pos:: magic-symbols - global")
             return Trigger(self.lang, TRG_FORM_CPLN,
                            "magic-symbols", last_pos-1, implicit,
                            symbolstype="global", text=text)
@@ -974,19 +988,19 @@ class PythonBuffer(CitadelBuffer):
                     lstripped = line.lstrip()
                     if lstripped.startswith("def"):
                         if DEBUG:
-                            print "trg_from_pos: no: point is function declaration"
+                            print("trg_from_pos: no: point is function declaration")
                     elif lstripped.startswith("class") and '(' not in lstripped:
                         # Second test is necessary to not exclude:
                         #   class Foo(bar(<|>
                         if DEBUG:
-                            print "trg_from_pos: no: point is class declaration"
+                            print("trg_from_pos: no: point is class declaration")
                     elif lstripped.startswith('from ') and ' import' in lstripped:
                         # Need better checks
                         # is it "from FOO import (<|>" ?
                         imp_prefix = tuple(lstripped[len(
                             'from '):lstripped.index(' import')].split('.'))
                         if DEBUG:
-                            print "trg_from_pos: from FOO import ("
+                            print("trg_from_pos: from FOO import (")
                         return Trigger(self.lang, TRG_FORM_CPLN,
                                        "module-members", pos, implicit,
                                        imp_prefix=imp_prefix)
@@ -995,11 +1009,11 @@ class PythonBuffer(CitadelBuffer):
                                        "call-signature", pos, implicit)
                 else:
                     if DEBUG:
-                        print "trg_from_pos: no: non-ws char preceding "\
-                              "'(' is not an identifier char: %r" % ch
+                        print("trg_from_pos: no: non-ws char preceding "\
+                              "'(' is not an identifier char: %r" % ch)
             else:
                 if DEBUG:
-                    print "trg_from_pos: no: no chars preceding '('"
+                    print("trg_from_pos: no: no chars preceding '('")
             return None
         elif last_char == ',':
             working_text = accessor.text_range(max(0, last_pos - 200), last_pos)
@@ -1013,6 +1027,49 @@ class PythonBuffer(CitadelBuffer):
                 return None
             else:
                 return None
+
+        elif pos >= 2 and style in (self.identifier_style, self.keyword_style):
+            # 2 character trigger for local symbols
+            if DEBUG:
+                if style == self.identifier_style:
+                    print("Identifier style")
+                else:
+                    print("Identifier keyword style")
+            # Previous char also need to be an identifier/word, then the one
+            # before that needs to be something different (operator/space).
+            if (accessor.style_at_pos(last_pos-1) != style or
+                    (pos > 2 and accessor.style_at_pos(last_pos-2) == style)):
+                if DEBUG:
+                    print("Not a block of two ident/word chars")
+                return None
+            if pos > 2 and accessor.char_at_pos(last_pos-2) == ".":
+                if DEBUG:
+                    print("  preceeded by '.' operator - not a trigger")
+                return None
+
+            # Check if it makes sense to show the completions here. If defining
+            # a class name, or function name, you don't want to see completions.
+            # Also, do not override another completion type (e.g. imports).
+            start = accessor.line_start_pos_from_pos(pos)
+            preceeding_text = accessor.text_range(start, last_pos-2).strip()
+            if preceeding_text:
+                first_word = preceeding_text.split(" ")[0]
+                if first_word in ("class", "def", "import", "from", "except"):
+                    if DEBUG:
+                        print("  no trigger, as starts with %r" % (first_word, ))
+                    # Don't trigger over the top of another trigger, i.e.
+                    #   complete-available-imports
+                    #   complete-module-members
+                    #   complete-available-exceptions
+                    return None
+
+            citdl_expr = accessor.text_range(last_pos-1, last_pos+1)
+            if DEBUG:
+                print("  triggered 2 char symbol trigger: %r" % (citdl_expr, ))
+            return Trigger(self.lang, TRG_FORM_CPLN, "local-symbols",
+                           last_pos-1, implicit,
+                           citdl_expr=citdl_expr,
+                           preceeding_text=preceeding_text)
 
     def _last_logical_line(self, text):
         lines = text.splitlines(0) or ['']
@@ -1059,10 +1116,10 @@ class PythonImportHandler(ImportHandler):
             compiler = which.which("python")
         self.corePath = self._shellOutForPath(compiler)
 
-    def _findScannableFiles(self,
-                            (files, searchedDirs, skipRareImports,
-                             importableOnly),
+    def _findScannableFiles(self, xxx_todo_changeme,
                             dirname, names):
+        (files, searchedDirs, skipRareImports,
+                             importableOnly) = xxx_todo_changeme
         if sys.platform.startswith("win"):
             cpath = dirname.lower()
         else:
@@ -1184,13 +1241,6 @@ class PythonCILEDriver(CILEDriver):
         log.info("scan_purelang: path: %r lang: %s", buf.path, buf.lang)
         # log.warn("TODO: python cile that uses elementtree")
         content = buf.accessor.text
-        if isinstance(content, unicode):
-            encoding = buf.encoding or "utf-8"
-            try:
-                content = content.encode(encoding)
-            except UnicodeError, ex:
-                raise CodeIntelError("cannot encode Python content as %r (%s)"
-                                     % (encoding, ex))
         el = pythoncile.scan_et(content, buf.path, lang=self.lang)
         return el
 

@@ -38,17 +38,26 @@ import os
 import sys
 import time
 import types
-if sys.platform != "win32":
+if sys.platform != "win32" or sys.version_info[:2] >= (3, 0):
     import signal  # used by kill() method on Linux/Mac
 import logging
 import threading
 import warnings
-from subprocess import Popen, PIPE
 
 #-------- Globals -----------#
 
 log = logging.getLogger("process")
 # log.setLevel(logging.DEBUG)
+
+try:
+    from subprocess32 import Popen, PIPE
+except ImportError:
+    # Not available on Windows - fallback to using regular subprocess module.
+    from subprocess import Popen, PIPE
+    if sys.platform != "win32" or sys.version_info[:2] >= (3, 0):
+        log.warn(
+            "Could not import subprocess32 module, falling back to subprocess module")
+
 
 CREATE_NEW_CONSOLE = 0x10  # same as win32process.CREATE_NEW_CONSOLE
 CREATE_NEW_PROCESS_GROUP = 0x200  # same as win32process.CREATE_NEW_PROCESS_GROUP
@@ -68,7 +77,7 @@ class ProcessError(Exception):
 
 
 # Check if this is Windows NT and above.
-if sys.platform == "win32" and sys.getwindowsversion()[3] == 2:
+if sys.platform == "win32" and sys.getwindowsversion()[3] == 2 and sys.version_info[:2] < (3, 0):
 
     import winprocess
     from subprocess import pywintypes, list2cmdline, STARTUPINFO
@@ -109,7 +118,7 @@ if sys.platform == "win32" and sys.getwindowsversion()[3] == 2:
                            errread, errwrite):
             """Execute program (MS Windows version)"""
 
-            if not isinstance(args, types.StringTypes):
+            if not isinstance(args, str):
                 args = list2cmdline(args)
 
             # Process startup details
@@ -126,7 +135,7 @@ if sys.platform == "win32" and sys.getwindowsversion()[3] == 2:
                 startupinfo.wShowWindow = SW_HIDE
                 comspec = os.environ.get("COMSPEC", "cmd.exe")
                 args = comspec + " /c " + args
-                if (GetVersion() >= 0x80000000L or
+                if (GetVersion() >= 0x80000000 or
                         os.path.basename(comspec).lower() == "command.com"):
                     # Win9x, or using command.com on NT. We need to
                     # use the w9xpopen intermediate program. For more
@@ -162,7 +171,7 @@ if sys.platform == "win32" and sys.getwindowsversion()[3] == 2:
                                                  env,
                                                  cwd,
                                                  startupinfo)
-            except pywintypes.error, e:
+            except pywintypes.error as e:
                 # Translate pywintypes.error to WindowsError, which is
                 # a subclass of OSError.  FIXME: We should really
                 # translate errno using _sys_errlist (or simliar), but
@@ -234,6 +243,7 @@ class ProcessOpen(Popen):
             output is redirected to Komodo's log files.
         "universal_newlines": On by default (the opposite of subprocess).
         """
+        self._child_created = False
         self.__use_killpg = False
         auto_piped_stdin = False
         preexec_fn = None
@@ -256,22 +266,23 @@ class ProcessOpen(Popen):
                     # http://bugs.activestate.com/show_bug.cgi?id=75467
                     cmd = '"%s"' % (cmd, )
 
-            # XXX - subprocess needs to be updated to use the wide string API.
-            # subprocess uses a Windows API that does not accept unicode, so
-            # we need to convert all the environment variables to strings
-            # before we make the call. Temporary fix to bug:
-            #   http://bugs.activestate.com/show_bug.cgi?id=72311
-            if env:
-                encoding = sys.getfilesystemencoding()
-                _enc_env = {}
-                for key, value in env.items():
-                    try:
-                        _enc_env[key.encode(encoding)] = value.encode(encoding)
-                    except UnicodeEncodeError:
-                        # Could not encode it, warn we are dropping it.
-                        log.warn("Could not encode environment variable %r "
-                                 "so removing it", key)
-                env = _enc_env
+            if sys.version_info[:2] < (3, 0):
+                # XXX - subprocess needs to be updated to use the wide string API.
+                # subprocess uses a Windows API that does not accept unicode, so
+                # we need to convert all the environment variables to strings
+                # before we make the call. Temporary fix to bug:
+                #   http://bugs.activestate.com/show_bug.cgi?id=72311
+                if env:
+                    encoding = sys.getfilesystemencoding()
+                    _enc_env = {}
+                    for key, value in env.items():
+                        try:
+                            _enc_env[key.encode(encoding)] = value.encode(encoding)
+                        except (UnicodeEncodeError, UnicodeDecodeError):
+                            # Could not encode it, warn we are dropping it.
+                            log.warn("Could not encode environment variable %r "
+                                     "so removing it", key)
+                    env = _enc_env
 
             if flags is None:
                 flags = CREATE_NO_WINDOW
@@ -313,16 +324,13 @@ class ProcessOpen(Popen):
             # it by setting the handle to `subprocess.PIPE`, resulting in
             # a different and workable code path.
             if self._needToHackAroundStdHandles() \
-               and not (flags & CREATE_NEW_CONSOLE):
-                if stdin is None and sys.stdin \
-                   and sys.stdin.fileno() not in (0, 1, 2):
+                    and not (flags & CREATE_NEW_CONSOLE):
+                if self._checkFileObjInheritable(sys.stdin, "STD_INPUT_HANDLE"):
                     stdin = PIPE
                     auto_piped_stdin = True
-                if stdout is None and sys.stdout \
-                   and sys.stdout.fileno() not in (0, 1, 2):
+                if self._checkFileObjInheritable(sys.stdout, "STD_OUTPUT_HANDLE"):
                     stdout = PIPE
-                if stderr is None and sys.stderr \
-                   and sys.stderr.fileno() not in (0, 1, 2):
+                if self._checkFileObjInheritable(sys.stderr, "STD_ERROR_HANDLE"):
                     stderr = PIPE
         else:
             # Set flags to 0, subprocess raises an exception otherwise.
@@ -355,7 +363,7 @@ class ProcessOpen(Popen):
     @classmethod
     def _needToHackAroundStdHandles(cls):
         if cls.__needToHackAroundStdHandles is None:
-            if sys.platform != "win32":
+            if sys.platform != "win32" or sys.version_info[:2] >= (3, 0):
                 cls.__needToHackAroundStdHandles = False
             else:
                 from _subprocess import GetStdHandle, STD_INPUT_HANDLE
@@ -370,6 +378,39 @@ class ProcessOpen(Popen):
                 else:
                     cls.__needToHackAroundStdHandles = False
         return cls.__needToHackAroundStdHandles
+
+    @classmethod
+    def _checkFileObjInheritable(cls, fileobj, handle_name):
+        """Check if a given file-like object (or whatever else subprocess.Popen
+        takes as a handle/stream) can be correctly inherited by a child process.
+        This just duplicates the code in subprocess.Popen._get_handles to make
+        sure we go down the correct code path; this to catch some non-standard
+        corner cases."""
+        import _subprocess
+        import ctypes
+        import msvcrt
+        new_handle = None
+        try:
+            if fileobj is None:
+                handle = _subprocess.GetStdHandle(getattr(_subprocess,
+                                                          handle_name))
+                if handle is None:
+                    return True  # No need to check things we create
+            elif fileobj == subprocess.PIPE:
+                return True  # No need to check things we create
+            elif isinstance(fileobj, int):
+                handle = msvcrt.get_osfhandle(fileobj)
+            else:
+                # Assuming file-like object
+                handle = msvcrt.get_osfhandle(fileobj.fileno())
+            new_handle = self._make_inheritable(handle)
+            return True
+        except:
+            return False
+        finally:
+            CloseHandle = ctypes.windll.kernel32.CloseHandle
+            if new_handle is not None:
+                CloseHandle(new_handle)
 
     # Override the returncode handler (used by subprocess.py), this is so
     # we can notify any listeners when the process has finished.
@@ -407,7 +448,7 @@ class ProcessOpen(Popen):
             # Use the parent call.
             try:
                 return Popen.wait(self)
-            except OSError, ex:
+            except OSError as ex:
                 # If the process has already ended, that is fine. This is
                 # possible when wait is called from a different thread.
                 if ex.errno != 10:  # No child process
@@ -481,7 +522,7 @@ class ProcessOpen(Popen):
                     os.killpg(self.pid, sig)
                 else:
                     os.kill(self.pid, sig)
-            except OSError, ex:
+            except OSError as ex:
                 if ex.errno != 3:
                     # Ignore:   OSError: [Errno 3] No such process
                     raise

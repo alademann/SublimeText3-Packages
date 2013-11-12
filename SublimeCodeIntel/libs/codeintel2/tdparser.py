@@ -20,7 +20,7 @@ This implementation is a subject to change as it is very premature.
 """
 
 import re
-import cStringIO as sio
+import io as sio
 import tokenize
 
 
@@ -89,7 +89,7 @@ class Symbol(object):
 
     @property
     def next(self):
-        return self.parser.next
+        return self.parser.__next__
 
     @property
     def expression(self):
@@ -112,18 +112,18 @@ class Parser(object):
 
     def expression(self, rbp=0):
         t = self.token
-        self.token = self.next()
+        self.token = next(self)
         left = t.nud()
         while rbp < self.token.lbp:
             t = self.token
-            self.token = self.next()
+            self.token = next(self)
             left = t.led(left)
         return left
 
     def advance(self, id=None):
         if id and self.token.id != id:
             raise ParseError("Expected '%r', got '%r'" % (id, self.token))
-        self.token = self.next()
+        self.token = next(self)
 
     def gen_python_symbols(self, source):
         for id, value, begin, end in gen_python_tokens(source):
@@ -144,8 +144,8 @@ class Parser(object):
             yield inst
 
     def parse(self, source):
-        self.next = self.gen_python_symbols(source).next
-        self.token = self.next()
+        self.next = self.gen_python_symbols(source).__next__
+        self.token = next(self)
         result = self.expression()
         if self.token.id != "(end)":
             raise ParseError("Expected end, got '%r'" % self.token)
@@ -515,6 +515,8 @@ def py_expr_grammar():
         while 1:
             val = None
             type = None
+            check_annotation = False
+            check_default_value = False
             if self.token.id == "*":
                 arg = self.token
                 self.advance("*")
@@ -523,21 +525,33 @@ def py_expr_grammar():
                 else:
                     arg = self.advance_name()
                     arg.value = "*" + arg.value
+                    check_annotation = True
             elif self.token.id == "**":
                 self.advance("**")
                 arg = self.advance_name()
                 arg.value = "**" + arg.value
+                check_annotation = True
             else:
                 arg = self.advance_name()
+                check_annotation = True
+                check_default_value = True
 
-                if self.token.id == "=":
-                    self.advance("=")
-                    val = self.expression()
+            if check_default_value and self.token.id == "=":
+                self.advance("=")
+                val = self.expression()
+                check_default_value = False
 
-                if not in_lambda:
-                    if self.token.id == ":":
-                        self.advance(":")
-                        type = self.expression()
+            if not in_lambda:
+                if check_annotation and self.token.id == ":":
+                    self.advance(":")
+                    type = self.expression()
+                    if check_default_value and self.token.id == "=":
+                        self.advance("=")
+                        val = self.expression()
+
+            if self.token.id == "->":
+                self.advance("->")
+                self.expression()
 
             arglist.append((arg, val, type))
 
@@ -554,8 +568,8 @@ class PyExprParser(Parser):
     grammar = py_expr_grammar()
 
     def parse_bare_arglist(self, source):
-        self.next = self.gen_python_symbols(source.strip()).next
-        self.token = self.next()
+        self.next = self.gen_python_symbols(source.strip()).__next__
+        self.token = next(self)
         arglist = self.token.argument_list()
         if self.token.id != "(end)":
             raise ParseError("Expected end, got '%r'" % self.token)
@@ -565,7 +579,7 @@ class PyExprParser(Parser):
 if __name__ == '__main__':
     import sys
     if len(sys.argv) < 2:
-        print "Usage: tdparser.py filename"
+        print("Usage: tdparser.py filename")
     parser = PyExprParser()
     res = parser.parse_bare_arglist(file(sys.argv[1]).read())
-    print res
+    print(res)

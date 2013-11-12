@@ -1,7 +1,7 @@
 SublimeCodeIntel
 ================
 
-Code intelligence plugin ported from `Open Komodo Editor <http://www.openkomodo.com/>`_ to `Sublime Text 2 <http://www.sublimetext.com/2>`_.
+Code intelligence plugin ported from `Open Komodo Editor <http://www.openkomodo.com/>`_ to `Sublime Text <http://www.sublimetext.com/>`_.
 
 Supports all the languages Komodo Editor supports for Code Intelligence (CIX, CodeIntel2):
 
@@ -15,37 +15,37 @@ Provides the following features:
 
 Plugin should work in all three platforms (MacOS X, Windows and Linux).
 
-.. image:: http://pledgie.com/campaigns/16511.png?skin_name=chrome
-   :alt: Click here to lend your support to SublimeCodeIntel and make a donation at pledgie.com!
-   :target: http://pledgie.com/campaigns/16511
+.. image:: https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif
+   :alt: Click here to lend your support to SublimeCodeIntel and make a donation!
+   :target: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VVX4Q9H3924LE
 
 
 Installing
 ----------
 **With the Package Control plugin:** The easiest way to install SublimeCodeIntel is through Package Control, which can be found at this site: http://wbond.net/sublime_packages/package_control
 
-Once you install Package Control, restart ST2 and bring up the Command Palette (``Command+Shift+P`` on OS X, ``Control+Shift+P`` on Linux/Windows). Select "Package Control: Install Package", wait while Package Control fetches the latest package list, then select SublimeCodeIntel when the list appears. The advantage of using this method is that Package Control will automatically keep SublimeCodeIntel up to date with the latest version.
+Once you install Package Control, restart Sublime Text and bring up the Command Palette (``Command+Shift+P`` on OS X, ``Control+Shift+P`` on Linux/Windows). Select "Package Control: Install Package", wait while Package Control fetches the latest package list, then select SublimeCodeIntel when the list appears. The advantage of using this method is that Package Control will automatically keep SublimeCodeIntel up to date with the latest version.
 
 **Without Git:** Download the latest source from `GitHub <http://github.com/SublimeCodeIntel/SublimeCodeIntel>`_ and copy the whole directory into the Packages directory.
 
-**With Git:** Clone the repository in your Sublime Text 2 Packages directory, located somewhere in user's "Home" directory::
+**With Git:** Clone the repository in your Sublime Text Packages directory, located somewhere in user's "Home" directory::
 
     git clone git://github.com/SublimeCodeIntel/SublimeCodeIntel.git
 
 
-The "Packages" packages directory is located at:
+The "Packages" packages directory is located differently in different platforms. To access the directory use:
 
 * OS X::
 
-    ~/Library/Application Support/Sublime Text 2/Packages/
+    Sublime Text -> Preferences -> Browse Packages...
 
 * Linux::
 
-    ~/.Sublime Text 2/Packages/
+    Preferences -> Browse Packages...
 
 * Windows::
 
-    %APPDATA%/Sublime Text 2/Packages/
+    Preferences -> Browse Packages...
 
 
 Using
@@ -111,13 +111,17 @@ Configuration files (``~/.codeintel/config`` or ``project_root/.codeintel/config
 
 Additional settings can be configured in the User File Settings:
 
+Do NOT edit the default SublimeCodeIntel settings. Your changes will be lost when SublimeCodeIntel is updated. ALWAYS edit the user SublimeCodeIntel settings by selecting "Preferences->Package Settings->SublimeCodeIntel->Settings - User". Note that individual settings you include in your user settings will **completely** replace the corresponding default setting, so you must provide that setting in its entirety.
+
+Available settings:
+
 * A list of disabled languages can be set using "codeintel_disabled_languages". Ex. ``"codeintel_disabled_languages": ['css']``
 
 * Live autocomplete can be disabled by setting "codeintel_live" to false.
 
 * Live autocompletion can be disabled in a per-language basis, using "codeintel_live_disabled_languages". Ex. ``"codeintel_live_disabled_languages": ['css']``
 
-* Information for more settings is available in the ``Base File.sublime-settings`` file.
+* Information for more settings is available in the ``SublimeCodeIntel.sublime-settings`` file in the package.
 
 
 Troubleshooting
@@ -125,13 +129,13 @@ Troubleshooting
 
 To force re-indexation of the code intelligence database you need to follow these steps:
 
-* Close Sublime Text 2
+* Close Sublime Text
 
 * Open a terminal or navigate through your directories to find the directory ``~/.codeintel`` that contains ``codeintel.log``, ``VERSION`` and the directory ``db``. In Windows, this should be at ``%userprofile%\.codeintel``.
 
 * Delete the whole directory ``~/.codeintel`` and all of its content. Particularly, if you want to delete only the indexes, the code intelligence database indexes are located inside ``~/.codeintel/db``.
 
-* Start Sublime Text 2 and enjoy a clean re-indexing!
+* Start Sublime Text and enjoy a clean re-indexing!
 
 
 Building
@@ -144,6 +148,45 @@ More information in SublimeCodeIntel/CodeIntelSources/`src <https://github.com/S
 
 What's New
 ----------
+v2.0.6 (?):
+
++ Tooltips can use Popups, Output Panel or Status Bar ("popup", "panel", "status" respectively, in the settings)
+
+- Resolved issues with XML and other languages.
+
+- Improved speed by using cache for some things (added zope.cachedescriptors)
+
+
+v2.0.5 (18-09-2013):
+
+- Resolved issues with ST2 in Mac OS X and Windows
+
+- Fixed a few problems with Ruby and HTML parsers in ST3
+
+
+v2.0.4 (16-09-2013):
+
+* First non-pre-release for ST3
+
+
+v2.0.3 (14-09-2013):
+
+* Libraries built for compatibility with more systems.
+
+
+v2.0.2 (12-09-2013):
+
+* Initial Sublime Text 3 support!
+
++ OpenKomodo codebase updated to r13636
+
++ Snippets insertion delayed a bit.
+
++ Tooltips are removed when line changes.
+
+- Improved autocomplete in HTML.
+
+
 v2.0.1 (19-07-2013):
 
 - Removed some Linux dependencies to GLIBC_2.4.

@@ -67,8 +67,9 @@ Configuration files (`~/.codeintel/config' or `project_root/.codeintel/config').
         }
     }
 """
+from __future__ import print_function
 
-VERSION = "2.0.1"
+VERSION = "2.0.6"
 
 import os
 import re
@@ -81,8 +82,7 @@ import sublime
 import sublime_plugin
 import threading
 import logging
-
-from cStringIO import StringIO
+from io import StringIO
 
 CODEINTEL_HOME_DIR = os.path.expanduser(os.path.join('~', '.codeintel'))
 __file__ = os.path.normpath(os.path.abspath(__file__))
@@ -98,7 +98,6 @@ if arch_path not in sys.path:
 
 from codeintel2.common import CodeIntelError, EvalTimeout, LogEvalController, TRG_FORM_CPLN, TRG_FORM_CALLTIP, TRG_FORM_DEFN
 from codeintel2.manager import Manager
-from codeintel2.citadel import CitadelBuffer
 from codeintel2.environment import SimplePrefsEnvironment
 from codeintel2.util import guess_lang_from_path
 
@@ -122,8 +121,8 @@ log = logging.getLogger("SublimeCodeIntel")
 codeintel_log.handlers = [codeintel_hdlr]
 log.handlers = [stderr_hdlr]
 codeintel_log.setLevel(logging.INFO)  # INFO
-logging.getLogger("codeintel.db").setLevel(logging.WARNING)  # WARNING
-
+for logger in ('codeintel.db', 'codeintel.pythoncile'):
+    logging.getLogger(logger).setLevel(logging.WARNING)  # WARNING
 for logger in ('css', 'django', 'html', 'html5', 'javascript', 'mason', 'nodejs',
              'perl', 'php', 'python', 'python3', 'rhtml', 'ruby', 'smarty',
              'tcl', 'templatetoolkit', 'xbl', 'xml', 'xslt', 'xul'):
@@ -167,10 +166,95 @@ def pos2bytes(content, pos):
     return len(content[:pos].encode('utf-8'))
 
 
-def calltip(view, ltype, msg=None, timeout=None, delay=0, lid='CodeIntel', logger=None):
+class TooltipOutputCommand(sublime_plugin.TextCommand):
+    def run(self, edit, output='', clear=True):
+        if clear:
+            region = sublime.Region(0, self.view.size())
+            self.view.erase(edit, region)
+        self.view.insert(edit, 0, output)
+
+
+def tooltip_popup(view, snippets):
+    vid = view.id()
+    completions[vid] = snippets
+    view.run_command('auto_complete', {
+        'disable_auto_insert': True,
+        'api_completions_only': True,
+        'next_completion_if_showing': False,
+        'auto_complete_commit_on_tab': True,
+    })
+
+
+def tooltip(view, calltips, original_pos):
+    view_settings = view.settings()
+    codeintel_snippets = view_settings.get('codeintel_snippets', True)
+    codeintel_tooltips = view_settings.get('codeintel_tooltips', 'popup')
+
+    snippets = []
+    for calltip in calltips:
+        tip_info = calltip.split('\n')
+        text = ' '.join(tip_info[1:])
+        snippet = None
+        # Insert parameters as snippet:
+        m = re.search(r'([^\s]+)\(([^\[\(\)]*)', tip_info[0])
+        if m:
+            params = [p.strip() for p in m.group(2).split(',')]
+            if params:
+                snippet = []
+                for i, p in enumerate(params):
+                    if p:
+                        var, _, _ = p.partition('=')
+                        var = var.strip()
+                        if ' ' in var:
+                            var = var.split(' ')[1]
+                        if var[0] == '$':
+                            var = var[1:]
+                        snippet.append('${%s:%s}' % (i + 1, var))
+                snippet = ', '.join(snippet)
+            text += ' - ' + tip_info[0]  # Add function to the end
+        else:
+            text = tip_info[0] + ' ' + text  # No function match, just add the first line
+        if not codeintel_snippets:
+            snippet = None
+        snippets.extend((('  ' if i > 0 else '') + l, snippet or '${0}') for i, l in enumerate(tip_info))
+
+    if codeintel_tooltips == 'popup':
+        tooltip_popup(view, snippets)
+    elif codeintel_tooltips in ('status', 'panel'):
+        if codeintel_tooltips == 'status':
+            set_status(view, 'tip', text, timeout=15000)
+        else:
+            window = view.window()
+            output_panel = window.get_output_panel('tooltips')
+            output_panel.set_read_only(False)
+            text = '\n'.join(list(zip(*snippets))[0])
+            output_panel.run_command('tooltip_output', {'output': text})
+            output_panel.set_read_only(True)
+            window.run_command('show_panel', {'panel': 'output.tooltips'})
+            sublime.set_timeout(lambda: window.run_command('hide_panel', {'panel': 'output.tooltips'}), 15000)
+
+        if snippets and codeintel_snippets:
+            # Insert function call snippets:
+            # func = m.group(1)
+            # scope = view.scope_name(pos)
+            # view.run_command('new_snippet', {'contents': snippets[0][0], 'tab_trigger': func, 'scope': scope})  # FIXME: Doesn't add the new snippet... is it possible to do so?
+            def _insert_snippet():
+                # Check to see we are still at a position where the snippet is wanted:
+                view_sel = view.sel()
+                if not view_sel:
+                    return
+                sel = view_sel[0]
+                pos = sel.end()
+                if not pos or pos != original_pos:
+                    return
+                view.run_command('insert_snippet', {'contents': snippets[0][0]})
+            sublime.set_timeout(_insert_snippet, 500)  # Delay snippet insertion a bit... it's annoying some times
+
+
+def set_status(view, ltype, msg=None, timeout=None, delay=0, lid='CodeIntel', logger=None):
     if timeout is None:
         timeout = {'error': 3000, 'warning': 5000, 'info': 10000,
-                    'event': 10000, 'tip': 15000}.get(ltype, 3000)
+                    'event': 10000}.get(ltype, 3000)
 
     if msg is None:
         msg, ltype = ltype, 'debug'
@@ -186,30 +270,24 @@ def calltip(view, ltype, msg=None, timeout=None, delay=0, lid='CodeIntel', logge
     finally:
         status_lock.release()
 
-    def _calltip_set():
+    def _set_status():
         view_sel = view.sel()
-        lineno = view.line(view_sel[0]) if view_sel else 0
+        lineno = view.rowcol(view_sel[0].end())[0] if view_sel else 0
         status_lock.acquire()
         try:
             current_type, current_msg, current_order = status_msg.get(lid, [None, None, 0])
             if msg != current_msg and order == current_order:
-                if msg:
-                    print >>condeintel_log_file, "+", "%s: %s" % (ltype.capitalize(), msg)
-                    (logger or log.info)(msg)
+                print("+", "%s: %s" % (ltype.capitalize(), msg), file=condeintel_log_file)
+                (logger or log.info)(msg)
                 if ltype != 'debug':
-                    if msg:
-                        view.set_status(lid, "%s: %s" % (ltype.capitalize(), msg))
-                    else:
-                        view.erase_status(lid)
-                    status_msg[lid][0] = [ltype, msg, order]
-                if 'warning' not in lid and msg:
+                    view.set_status(lid, "%s: %s" % (ltype.capitalize(), msg))
+                    status_msg[lid] = [ltype, msg, order]
+                if 'warning' not in lid:
                     status_lineno[lid] = lineno
-                elif lid in status_lineno:
-                    del status_lineno[lid]
         finally:
             status_lock.release()
 
-    def _calltip_erase():
+    def _erase_status():
         status_lock.acquire()
         try:
             if msg == status_msg.get(lid, [None, None, 0])[1]:
@@ -220,20 +298,21 @@ def calltip(view, ltype, msg=None, timeout=None, delay=0, lid='CodeIntel', logge
         finally:
             status_lock.release()
 
-    sublime.set_timeout(_calltip_set, delay or 0)
-
     if msg:
-        sublime.set_timeout(_calltip_erase, timeout)
+        sublime.set_timeout(_set_status, delay or 0)
+        sublime.set_timeout(_erase_status, timeout)
+    else:
+        sublime.set_timeout(_erase_status, delay or 0)
 
 
 def logger(view, ltype, msg=None, timeout=None, delay=0, lid='CodeIntel'):
     if msg is None:
         msg, ltype = ltype, 'info'
-    calltip(view, ltype, msg, timeout=timeout, delay=delay, lid=lid + '-' + ltype, logger=getattr(log, ltype, None))
+    set_status(view, ltype, msg, timeout=timeout, delay=delay, lid=lid + '-' + ltype, logger=getattr(log, ltype, None))
 
 
 def guess_lang(view=None, path=None):
-    if not view or not view.settings().get('codeintel', True):
+    if not view or not codeintel_enabled(view):
         return None
 
     syntax = None
@@ -286,14 +365,14 @@ def guess_lang(view=None, path=None):
 
 
 def autocomplete(view, timeout, busy_timeout, forms, preemptive=False, args=[], kwargs={}):
-    def _autocomplete_callback(view, path, lang):
+    def _autocomplete_callback(view, path, original_pos, lang):
         view_sel = view.sel()
         if not view_sel:
             return
 
         sel = view_sel[0]
         pos = sel.end()
-        if not pos:
+        if not pos or pos != original_pos:
             return
 
         lpos = view.line(sel).begin()
@@ -302,10 +381,8 @@ def autocomplete(view, timeout, busy_timeout, forms, preemptive=False, args=[], 
 
         if not next or next != '_' and not next.isalnum():
             vid = view.id()
-            content = view.substr(sublime.Region(0, view.size()))
 
             def _trigger(calltips, cplns=None):
-                view_settings = view.settings()
                 if cplns is not None or calltips is not None:
                     codeintel_log.info("Autocomplete called (%s) [%s]", lang, ','.join(c for c in ['cplns' if cplns else None, 'calltips' if calltips else None] if c))
 
@@ -313,7 +390,7 @@ def autocomplete(view, timeout, busy_timeout, forms, preemptive=False, args=[], 
                     function = None if 'import ' in text else 'function'
                     _completions = sorted(
                         [('%s  (%s)' % (n, t), n + ('($0)' if t == function else '')) for t, n in cplns],
-                        cmp=lambda a, b: cmp(a[1], b[1]) if a[1].startswith('_') == b[1].startswith('_') else 1 if a[1].startswith('_') else -1
+                        key=lambda o: o[1]
                     )
                     if _completions:
                         # Show autocompletions:
@@ -324,26 +401,10 @@ def autocomplete(view, timeout, busy_timeout, forms, preemptive=False, args=[], 
                             'next_completion_if_showing': False,
                             'auto_complete_commit_on_tab': True,
                         })
+                if calltips:
+                    tooltip(view, calltips, original_pos)
 
-                if calltips is not None:
-                    # Trigger a tooltip
-                    calltip(view, 'tip', calltips[0])
-                    # Insert function call snippets:
-                    if view_settings.get('codeintel_snippets', True):
-                        # Insert parameters as snippet:
-                        if content[sel.begin() - 1] == '(' and content[sel.begin()] == ')':
-                            m = re.search(r'\(([^\[\(\)]*)', calltips[0])
-                            params = [p.strip() for p in m.group(1).split(',')] if m else None
-                            if params:
-                                snippet = []
-                                for i, p in enumerate(params):
-                                    var, _, _ = p.partition('=')
-                                    if ' ' in var:
-                                        var = var.split(' ')[1]
-                                    if var[0] == '$':
-                                        var = var[1:]
-                                    snippet.append('${%s:%s}' % (i + 1, var))
-                                view.run_command('insert_snippet', {'contents': ', '.join(snippet)})
+            content = view.substr(sublime.Region(0, view.size()))
             codeintel(view, path, content, lang, pos, forms, _trigger)
     # If it's a fill char, queue using lower values and preemptive behavior
     queue(view, _autocomplete_callback, timeout, busy_timeout, preemptive, args=args, kwargs=kwargs)
@@ -359,8 +420,19 @@ _ci_next_cullmem_ = 0
 ################################################################################
 # Queue dispatcher system:
 
-queue_thread_name = "codeintel callbacks"
 MAX_DELAY = -1  # Does not apply
+queue_thread_name = "codeintel callbacks"
+
+
+def queue_dispatcher(force=False):
+    """
+    Default implementation of queue dispatcher (just clears the queue)
+    """
+    __lock_.acquire()
+    try:
+        QUEUE.clear()
+    finally:
+        __lock_.release()
 
 
 def queue_loop():
@@ -471,7 +543,7 @@ def codeintel_callbacks(force=False):
     global _ci_next_savedb_, _ci_next_cullmem_
     __lock_.acquire()
     try:
-        views = QUEUE.values()
+        views = list(QUEUE.values())
         QUEUE.clear()
     finally:
         __lock_.release()
@@ -480,7 +552,7 @@ def codeintel_callbacks(force=False):
             callback(view, *args, **kwargs)
         sublime.set_timeout(_callback, 0)
     # saving and culling cached parts of the database:
-    for folders_id in _ci_mgr_.keys():
+    for folders_id in list(_ci_mgr_.keys()):
         mgr = codeintel_manager(folders_id)
         now = time.time()
         if now >= _ci_next_savedb_ or force:
@@ -525,7 +597,7 @@ def codeintel_manager(folders_id):
         condeintel_log_file = open(condeintel_log_filename, 'w', 1)
         codeintel_log.handlers = [logging.StreamHandler(condeintel_log_file)]
         msg = "Starting logging SublimeCodeIntel v%s rev %s (%s) on %s" % (VERSION, get_revision()[:12], os.stat(__file__)[stat.ST_MTIME], datetime.datetime.now().ctime())
-        print >>condeintel_log_file, "%s\n%s" % (msg, "=" * len(msg))
+        print("%s\n%s" % (msg, "=" * len(msg)), file=condeintel_log_file)
 
         _ci_mgr_[folders_id] = mgr
     return mgr
@@ -638,13 +710,13 @@ def codeintel_scan(view, path, content, lang, callback=None, pos=None, forms=Non
             _config = {}
             try:
                 tryReadDict(config_default_file, _config)
-            except Exception, e:
+            except Exception as e:
                 msg = "Malformed configuration file '%s': %s" % (config_default_file, e)
                 log.error(msg)
                 codeintel_log.error(msg)
             try:
                 tryReadDict(config_file, _config)
-            except Exception, e:
+            except Exception as e:
                 msg = "Malformed configuration file '%s': %s" % (config_default_file, e)
                 log.error(msg)
                 codeintel_log.error(msg)
@@ -654,7 +726,7 @@ def codeintel_scan(view, path, content, lang, callback=None, pos=None, forms=Non
                 v = [p.strip() for p in config.get(conf, []) + folders if p.strip()]
                 config[conf] = os.pathsep.join(set(p if p.startswith('/') else os.path.expanduser(p) if p.startswith('~') else os.path.abspath(os.path.join(project_base_dir, p)) if project_base_dir else p for p in v if p.strip()))
             for conf, p in config.items():
-                if isinstance(p, basestring) and p.startswith('~'):
+                if isinstance(p, str) and p.startswith('~'):
                     config[conf] = os.path.expanduser(p)
 
             # Setup environment variables
@@ -683,8 +755,8 @@ def codeintel_scan(view, path, content, lang, callback=None, pos=None, forms=Non
         msgs = []
         if env._valid:
             if forms:
-                calltip(view, 'tip', "")
-                calltip(view, 'event', "")
+                set_status(view, 'tip', "")
+                set_status(view, 'event', "")
                 msg = "CodeIntel(%s) for %s@%s [%s]" % (', '.join(forms), path, pos, lang)
                 msgs.append(('info', "\n%s\n%s" % (msg, "-" * len(msg))))
 
@@ -694,16 +766,16 @@ def codeintel_scan(view, path, content, lang, callback=None, pos=None, forms=Non
                 codeintel_log.warning(msg)
                 msgs.append(('info', msg))
 
-            buf = mgr.buf_from_content(content.encode('utf-8'), lang, env, path or "<Unsaved>", 'utf-8')
+            buf = mgr.buf_from_content(content, lang, env, path or "<Unsaved>", 'utf-8')
 
-            now = datetime.datetime.now()
-            if not _ci_next_scan_.get(vid) or now > _ci_next_scan_[vid]:
-                _ci_next_scan_[vid] = now + datetime.timedelta(seconds=10)
-                if isinstance(buf, CitadelBuffer):
+            if mgr.is_citadel_lang(lang):
+                now = datetime.datetime.now()
+                if not _ci_next_scan_.get(vid) or now > _ci_next_scan_[vid]:
+                    _ci_next_scan_[vid] = now + datetime.timedelta(seconds=10)
                     despair = 0
                     despaired = False
                     msg = "Updating indexes for '%s'... The first time this can take a while." % lang
-                    print >>condeintel_log_file, msg
+                    print(msg, file=condeintel_log_file)
                     logger(view, 'info', msg, timeout=20000, delay=1000)
                     if not path or is_scratch:
                         buf.scan()  # FIXME: Always scanning unsaved files (since many tabs can have unsaved files, or find other path as ID)
@@ -717,7 +789,7 @@ def codeintel_scan(view, path, content, lang, callback=None, pos=None, forms=Non
             buf = None
         if callback:
             msg = "Doing CodeIntel for '%s' (hold on)..." % lang
-            print >>condeintel_log_file, msg
+            print(msg, file=condeintel_log_file)
             logger(view, 'info', msg, timeout=20000, delay=1000)
             callback(buf, msgs)
         else:
@@ -784,7 +856,7 @@ def codeintel(view, path, content, lang, pos, forms, callback=None, timeout=7000
                         continue
                     merge = ''
                     if not result and msg.startswith('evaluating '):
-                        calltip(view, 'warning', msg)
+                        set_status(view, 'warning', msg)
                         result = True
 
         ret = []
@@ -803,7 +875,7 @@ def codeintel(view, path, content, lang, pos, forms, callback=None, timeout=7000
             timestr = "%sms" % int(round(total))
         if not despaired or total < timeout:
             msg = "Done '%s' CodeIntel! Full CodeIntel took %s" % (lang, timestr)
-            print >>condeintel_log_file, msg
+            print(msg, file=condeintel_log_file)
 
             def _callback():
                 view_sel = view.sel()
@@ -813,7 +885,7 @@ def codeintel(view, path, content, lang, pos, forms, callback=None, timeout=7000
             sublime.set_timeout(_callback, 0)
         else:
             msg = "Just finished indexing '%s'! Please try again. Full CodeIntel took %s" % (lang, timestr)
-            print >>condeintel_log_file, msg
+            print(msg, file=condeintel_log_file)
             logger(view, 'info', msg, timeout=3000)
     codeintel_scan(view, path, content, lang, _codeintel, pos, forms)
 
@@ -890,6 +962,7 @@ def get_revision(path=None):
 ALL_SETTINGS = [
     'codeintel',
     'codeintel_snippets',
+    'codeintel_tooltips',
     'codeintel_enabled_languages',
     'codeintel_live',
     'codeintel_live_enabled_languages',
@@ -911,14 +984,17 @@ def settings_changed():
 
 def reload_settings(view):
     '''Restores user settings.'''
-    settings = sublime.load_settings(__name__ + '.sublime-settings')
-    settings.clear_on_change(__name__)
-    settings.add_on_change(__name__, settings_changed)
+    settings_name = 'SublimeCodeIntel'
+    settings = sublime.load_settings(settings_name + '.sublime-settings')
+    settings.clear_on_change(settings_name)
+    settings.add_on_change(settings_name, settings_changed)
 
     view_settings = view.settings()
-    for setting in ALL_SETTINGS:
-        if settings.get(setting) is not None:
-            view_settings.set(setting, settings.get(setting))
+
+    for setting_name in ALL_SETTINGS:
+        if settings.get(setting_name) is not None:
+            setting = settings.get(setting_name)
+            view_settings.set(setting_name, setting)
 
     if view_settings.get('codeintel') is None:
         view_settings.set('codeintel', True)
@@ -932,16 +1008,13 @@ def reload_settings(view):
     return view_settings
 
 
+def codeintel_enabled(view, default=None):
+    if view.settings().get('codeintel') is None:
+        reload_settings(view)
+    return view.settings().get('codeintel', default)
+
+
 class PythonCodeIntel(sublime_plugin.EventListener):
-    def on_load(self, view):
-        reload_settings(view)
-
-    def on_new(self, view):
-        reload_settings(view)
-
-    def on_clone(self, view):
-        reload_settings(view)
-
     def on_close(self, view):
         vid = view.id()
         if vid in completions:
@@ -968,9 +1041,9 @@ class PythonCodeIntel(sublime_plugin.EventListener):
         text = view.substr(sublime.Region(pos - 1, pos))
         is_fill_char = (text and text[-1] in cpln_fillup_chars.get(lang, ''))
 
-        # print 'on_modified', view.command_history(1), view.command_history(0), view.command_history(-1)
-        if (not hasattr(view, 'command_history') or view.command_history(1)[0] is None and (
-                view.command_history(0)[0] in ('insert', 'paste') or
+        # print('on_modified', view.command_history(1), view.command_history(0), view.command_history(-1))
+        if (not hasattr(view, 'command_history') or view.command_history(1)[1] is None and (
+                view.command_history(0)[0] == 'insert' or
                 view.command_history(-1)[0] in ('insert', 'paste') and (
                     view.command_history(0)[0] == 'commit_completion' or
                     view.command_history(0)[0] == 'insert_snippet' and view.command_history(0)[1]['contents'] == '($0)'
@@ -980,7 +1053,7 @@ class PythonCodeIntel(sublime_plugin.EventListener):
                 forms = ('calltips',)
             else:
                 forms = ('calltips', 'cplns')
-            autocomplete(view, 0 if is_fill_char else 200, 50 if is_fill_char else 600, forms, is_fill_char, args=[path, lang])
+            autocomplete(view, 0 if is_fill_char else 200, 50 if is_fill_char else 600, forms, is_fill_char, args=[path, pos, lang])
         else:
             view.run_command('hide_auto_complete')
 
@@ -1002,7 +1075,7 @@ class PythonCodeIntel(sublime_plugin.EventListener):
             finally:
                 status_lock.release()
             for vid in slns:
-                calltip(view, "", lid=vid)
+                set_status(view, "", lid=vid)
 
     def on_query_completions(self, view, prefix, locations):
         vid = view.id()
@@ -1016,10 +1089,15 @@ class PythonCodeIntel(sublime_plugin.EventListener):
 class CodeIntelAutoComplete(sublime_plugin.TextCommand):
     def run(self, edit, block=False):
         view = self.view
+        view_sel = view.sel()
+        if not view_sel:
+            return
+        sel = view_sel[0]
+        pos = sel.end()
         path = view.file_name()
         lang = guess_lang(view, path)
         if lang:
-            autocomplete(view, 0, 0, ('calltips', 'cplns'), True, args=[path, lang])
+            autocomplete(view, 0, 0, ('calltips', 'cplns'), True, args=[path, pos, lang])
 
 
 class GotoPythonDefinition(sublime_plugin.TextCommand):
@@ -1147,11 +1225,7 @@ class CodeintelCommand(sublime_plugin.TextCommand):
 class SublimecodeintelWindowCommand(sublime_plugin.WindowCommand):
     def is_enabled(self):
         view = self.window.active_view()
-
-        if view:
-            return True
-        else:
-            return False
+        return bool(view)
 
     def run_(self, args):
         pass
@@ -1163,9 +1237,9 @@ class SublimecodeintelCommand(SublimecodeintelWindowCommand):
 
         if active is not None:
             view = self.window.active_view()
-            enabled = enabled and view.settings().get('codeintel', True) == active
+            enabled = enabled and codeintel_enabled(view, True) == active
 
-        return enabled
+        return bool(enabled)
 
     def run_(self, args={}):
         view = self.window.active_view()
@@ -1204,7 +1278,7 @@ class SublimecodeintelLiveCommand(SublimecodeintelCommand):
             else:
                 enabled = enabled and view.settings().get('codeintel_live', True) == active
 
-        return enabled
+        return bool(enabled)
 
 
 class SublimecodeintelEnableLiveCommand(SublimecodeintelLiveCommand):

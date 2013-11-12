@@ -59,6 +59,8 @@ __all__ = [
     "CorruptDatabase", "NotFoundInDatabase", "CITDLError",
     "NoModuleEntry", "NoCIDBModuleEntry",
 
+    "LazyClassAttribute",
+
     "ENABLE_HEURISTICS",
     "_xpcom_",
 ]
@@ -72,6 +74,14 @@ import time
 import threading
 import logging
 import warnings
+
+try:
+    from zope.cachedescriptors.property import Lazy as LazyClassAttribute
+except ImportError:
+    import warnings
+    warnings.warn("Unable to import zope.cachedescriptors.property")
+    # Fallback to regular properties.
+    LazyClassAttribute = property
 
 import SilverCity
 from SilverCity.Lexer import Lexer
@@ -231,7 +241,7 @@ class NoCIDBModuleEntry(CIDBError):  # XXX change name to NoModuleEntryForPath
 
 #---- globals
 # Trigger forms.
-TRG_FORM_CPLN, TRG_FORM_CALLTIP, TRG_FORM_DEFN = range(3)
+TRG_FORM_CPLN, TRG_FORM_CALLTIP, TRG_FORM_DEFN = list(range(3))
 
 # Priorities at which scanning requests can be scheduled.
 PRIORITY_CONTROL = 0        # Special sentinal priority to control scheduler
@@ -242,12 +252,12 @@ PRIORITY_BACKGROUND = 4     # info may be needed sometime
 
 # TODO: these are unused, drop them
 # CIDB base type constants
-BT_CLASSREF, BT_INTERFACEREF = range(2)
+BT_CLASSREF, BT_INTERFACEREF = list(range(2))
 
 # TODO: These are unused, drop them, the symbolType2Name below and its dead
 #      usage in cb.py.
 # CIDB symbol type constants
-(ST_FUNCTION, ST_CLASS, ST_INTERFACE, ST_VARIABLE, ST_ARGUMENT) = range(5)
+(ST_FUNCTION, ST_CLASS, ST_INTERFACE, ST_VARIABLE, ST_ARGUMENT) = list(range(5))
 _symbolType2Name = {
     ST_FUNCTION: "function",
     ST_CLASS: "class",
@@ -265,7 +275,7 @@ class Trigger(object):
     lang = None  # e.g. "Python", "CSS"
     form = None  # TRG_FORM_CPLN or TRG_FORM_CALLTIP
     type = None  # e.g. "object-members"
-    pos = None
+    pos = None  # Trigger position, in bytes (of UTF 8)
     implicit = None
     # The number characters of the trigger. For most (but not all) triggers
     # there is a clear distinction between a trigger token and a preceding
@@ -669,7 +679,7 @@ def xmlattrstr(attrs):
     # XXX Should this be using
     from xml.sax.saxutils import quoteattr
     s = ''
-    names = attrs.keys()
+    names = list(attrs.keys())
     names.sort()  # dump attrs sorted by key, not necessary but is more stable
     for name in names:
         s += ' %s=%s' % (name, quoteattr(str(attrs[name])))
@@ -767,6 +777,6 @@ def parseAttributes(attrStr=None):
 if __name__ == '__main__':
     def _test():
         import doctest
-        import common
+        from . import common
         return doctest.testmod(common)
     _test()

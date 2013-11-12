@@ -66,7 +66,7 @@ class EmptyDatasetHandler:
             tags = tree.tags.get(tree.namespace(node), {})
         else:
             tags = tree.tags.get("", {})
-        return [t for t in tags.keys() if t]
+        return [t for t in list(tags.keys()) if t]
 
     def attrs(self, tree, node=None):
         if node is None:
@@ -76,7 +76,7 @@ class EmptyDatasetHandler:
         # now, get all attributes from all the tags
         for n in nodes:
             attrs.update(n.attrib)
-        return attrs.keys()
+        return list(attrs.keys())
 
     def values(self, attrname, tree, node=None):
         return []
@@ -133,6 +133,10 @@ class DatasetHandlerService:
     resolver = None
 
     def __init__(self):
+        self._default_public_ids = {
+            "HTML": "-//W3C//DTD HTML 5//EN",
+        }
+        self._default_namespace_ids = {}
         self.defaultHandler = EmptyDatasetHandler()
         self.resolver = CatalogResolver()
 
@@ -141,12 +145,22 @@ class DatasetHandlerService:
         DatasetHandlerService.handlers = {}
 
     def getDefaultPublicId(self, lang, env):
-        if lang == "HTML":
-            return "-//W3C//DTD HTML 4.01//EN"
-        return None
+        decl = self._default_public_ids.get(lang, None)
+        if env:
+            decl = env.get_pref("default%sDecl" % (lang,), decl)
+        return decl
+
+    def setDefaultPublicId(self, lang, public_id):
+        self._default_public_ids[lang] = public_id
 
     def getDefaultNamespace(self, lang, env):
-        return None
+        namespace = self._default_namespace_ids.get(lang, None)
+        if env:
+            namespace = env.get_pref("default%sNamespace" % (lang,), namespace)
+        return namespace
+
+    def setDefaultNamespace(self, lang, namespace):
+        self._default_namespace_ids[lang] = namespace
 
     def createDatasetHandler(self, publicId, systemId, namespace):
         dataset = self.resolver.getDataset(publicId, systemId, namespace)
@@ -180,81 +194,6 @@ class DatasetHandlerService:
             if handler:
                 return handler
         return EmptyDatasetHandler()
-
-
-if "CODEINTEL_NO_PYXPCOM" in os.environ:
-    _xpcom_ = False
-else:
-    try:
-        from xpcom import components, _xpcom
-        from xpcom.server import WrapObject
-        _xpcom_ = True
-    except ImportError:
-        _xpcom_ = False
-
-if _xpcom_:
-    PyDatasetHandlerService = DatasetHandlerService
-
-    class XPCOMDatasetHandlerService(PyDatasetHandlerService):
-        """koDatasetHandlerService
-        subclass the dataset handler service so we can provide catalog paths
-        from preferences
-        """
-        _com_interfaces_ = [components.interfaces.nsIObserver]
-
-        def __init__(self):
-            self._prefSvc = components.classes["@activestate.com/koPrefService;1"].\
-                getService(
-                    components.interfaces.koIPrefService)
-
-            self._wrapped = WrapObject(self, components.interfaces.nsIObserver)
-            self._prefSvc.prefs.prefObserverService.addObserver(
-                self._wrapped, 'xmlCatalogPaths', 0)
-
-            PyDatasetHandlerService.__init__(self)
-            self.reset()
-
-        def getDefaultPublicId(self, lang, env):
-            return env.get_pref("default%sDecl" % lang)
-
-        def getDefaultNamespace(self, lang, env):
-            return env.get_pref("default%sNamespace" % lang)
-
-        def reset(self):
-            catalogs = self._prefSvc.prefs.getStringPref(
-                "xmlCatalogPaths") or []
-            if catalogs:
-                catalogs = catalogs.split(os.pathsep)
-
-            # get xml catalogs from extensions
-            from directoryServiceUtils import getExtensionDirectories
-            for dir in getExtensionDirectories():
-                candidates = [
-                    # The new, cleaner, location.
-                    os.path.join(dir, "xmlcatalogs", "catalog.xml"),
-                    # The old location (for compat). This is DEPRECATED
-                    # and should be removed in a future Komodo version.
-                    os.path.join(dir, "catalog.xml"),
-                ]
-                for candidate in candidates:
-                    if os.path.exists(candidate):
-                        catalogs.append(candidate)
-                        break
-
-            # add our default catalog file
-            koDirs = components.classes["@activestate.com/koDirs;1"].\
-                getService(components.interfaces.koIDirs)
-            catalogs.append(os.path.join(str(
-                koDirs.supportDir), "catalogs", "catalog.xml"))
-            self.setCatalogs(catalogs)
-
-        def observe(self, subject, topic, data):
-            # watch for changes to XMLCatalogPaths and update our resolver with
-            # new catalogs
-            if topic == "xmlCatalogPaths":
-                self.reset()
-
-    DatasetHandlerService = XPCOMDatasetHandlerService
 
 __datasetSvc = None
 
@@ -355,7 +294,7 @@ if __name__ == "__main__":
         tree = koXMLTreeService.getService().getTreeForURI(uri, text)
         if tree.current is None:
             return None
-        already_supplied = tree.current.attrib.keys()
+        already_supplied = list(tree.current.attrib.keys())
         handlerclass = get_tree_handler(
             tree, tree.current, default_completion.get(lang))
         attrs = handlerclass.attrs(tree)

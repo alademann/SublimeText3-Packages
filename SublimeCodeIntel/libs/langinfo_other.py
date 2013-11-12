@@ -59,7 +59,7 @@ class _CSSLangInfoCommon(LangInfo):
     # I.e., look for:
     #   @charset "<IANA defined charset name>";
     # at the start of the CSS document.
-    encoding_decl_pattern = re.compile(r'\A@charset "(?P<encoding>[\w-]+)";')
+    encoding_decl_pattern = re.compile(br'\A@charset "(?P<encoding>[\w-]+)";')
 
 
 class CSSLangInfo(_CSSLangInfoCommon):
@@ -143,7 +143,7 @@ class POVRayLangInfo(LangInfo):
     exts = [".pov"]
 
 
-class PORayLangInfo(LangInfo):
+class POGetTextLangInfo(LangInfo):
     name = "GetText"
     conforms_to_bases = ["Text"]
     exts = [".po"]
