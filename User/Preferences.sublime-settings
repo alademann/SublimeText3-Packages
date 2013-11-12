@@ -71,8 +71,8 @@
 		"CVS",
 		".sass-cache",
 		".externalToolBuilders",
-		"node_modules",
-		"node-modules"
+		"bower_components",
+		"node_modules"
 	],
 	"font_options":
 	[
@@ -83,14 +83,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Element Finder",
+		"Vintage",
 		"HTML Snippets",
+		"Element Finder",
 		"CSSLint",
 		"Goto-CSS-Declaration",
+		"SublimeGit",
 		"SFTP",
-		"SublimeCodeIntel",
-		"Vintage",
-		"SublimeGit"
+		"SublimeCodeIntel"
 	],
 	"indent_guide_options":
 	[
