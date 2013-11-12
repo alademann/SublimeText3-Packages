@@ -8,8 +8,8 @@ except (ImportError):
     from urllib import urlencode
     from urlparse import urlparse
 
-from ..console_write import console_write
-from ..download_manager import grab, release
+from .client_exception import ClientException
+from ..download_manager import downloader
 
 
 class JSONApiClient():
@@ -26,7 +26,7 @@ class JSONApiClient():
         :param prefer_cached:
             If a cached copy of the content is preferred
 
-        :return: The bytes/string, or False on error
+        :return: The bytes/string
         """
 
         # If there are extra params for the domain name, add them
@@ -37,10 +37,9 @@ class JSONApiClient():
             joiner = '?%s' if url.find('?') == -1 else '&%s'
             url += joiner % params
 
-        download_manager = grab(url, self.settings)
-        content = download_manager.fetch(url,
-            'Error downloading repository.', prefer_cached)
-        release(url, download_manager)
+        with downloader(url, self.settings) as manager:
+            content = manager.fetch(url, 'Error downloading repository.',
+                prefer_cached)
         return content
 
     def fetch_json(self, url, prefer_cached=False):
@@ -53,14 +52,13 @@ class JSONApiClient():
         :param prefer_cached:
             If a cached copy of the JSON is preferred
 
-        :return: A dict or list from the JSON, or False on error
+        :return: A dict or list from the JSON
         """
 
         repository_json = self.fetch(url, prefer_cached)
-        if repository_json == False:
-            return False
+
         try:
             return json.loads(repository_json.decode('utf-8'))
         except (ValueError):
-            console_write(u'Error parsing JSON from repository %s.' % url, True)
-        return False
+            error_string = u'Error parsing JSON from URL %s.' % url
+            raise ClientException(error_string)

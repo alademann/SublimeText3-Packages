@@ -37,8 +37,14 @@ class CliDownloader(object):
             BinaryNotFoundError when the executable can not be found
         """
 
-        for dir in os.environ['PATH'].split(os.pathsep):
-            path = os.path.join(dir, name)
+        dirs = os.environ['PATH'].split(os.pathsep)
+        if os.name != 'nt':
+            # This is mostly for OS X, which seems to launch ST with a
+            # minimal set of environmental variables
+            dirs.append('/usr/local/bin')
+
+        for dir_ in dirs:
+            path = os.path.join(dir_, name)
             if os.path.exists(path):
                 return path
 

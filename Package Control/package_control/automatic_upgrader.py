@@ -15,8 +15,8 @@ from .open_compat import open_compat, read_compat
 class AutomaticUpgrader(threading.Thread):
     """
     Automatically checks for updated packages and installs them. controlled
-    by the `auto_upgrade`, `auto_upgrade_ignore`, `auto_upgrade_frequency` and
-    `auto_upgrade_last_run` settings.
+    by the `auto_upgrade`, `auto_upgrade_ignore`, and `auto_upgrade_frequency`
+    settings.
     """
 
     def __init__(self, found_packages):
@@ -37,17 +37,41 @@ class AutomaticUpgrader(threading.Thread):
         self.auto_upgrade = self.settings.get('auto_upgrade')
         self.auto_upgrade_ignore = self.settings.get('auto_upgrade_ignore')
 
-        self.next_run = int(time.time())
+        self.load_last_run()
+        self.determine_next_run()
+
+        # Detect if a package is missing that should be installed
+        self.missing_packages = list(set(self.installed_packages) -
+            set(found_packages))
+
+        if self.auto_upgrade and self.next_run <= time.time():
+            self.save_last_run(time.time())
+
+        threading.Thread.__init__(self)
+
+    def load_last_run(self):
+        """
+        Loads the last run time from disk into memory
+        """
+
         self.last_run = None
-        last_run_file = os.path.join(sublime.packages_path(), 'User',
+
+        self.last_run_file = os.path.join(sublime.packages_path(), 'User',
             'Package Control.last-run')
 
-        if os.path.isfile(last_run_file):
-            with open_compat(last_run_file) as fobj:
+        if os.path.isfile(self.last_run_file):
+            with open_compat(self.last_run_file) as fobj:
                 try:
                     self.last_run = int(read_compat(fobj))
                 except ValueError:
                     pass
+
+    def determine_next_run(self):
+        """
+        Figure out when the next run should happen
+        """
+
+        self.next_run = int(time.time())
 
         frequency = self.settings.get('auto_upgrade_frequency')
         if frequency:
@@ -56,15 +80,17 @@ class AutomaticUpgrader(threading.Thread):
             else:
                 self.next_run = time.time()
 
-        # Detect if a package is missing that should be installed
-        self.missing_packages = list(set(self.installed_packages) -
-            set(found_packages))
+    def save_last_run(self, last_run):
+        """
+        Saves a record of when the last run was
 
-        if self.auto_upgrade and self.next_run <= time.time():
-            with open_compat(last_run_file, 'w') as fobj:
-                fobj.write(str(int(time.time())))
+        :param last_run:
+            The unix timestamp of when to record the last run as
+        """
 
-        threading.Thread.__init__(self)
+        with open_compat(self.last_run_file, 'w') as fobj:
+            fobj.write(str(int(last_run)))
+
 
     def load_settings(self):
         """
@@ -128,33 +154,62 @@ class AutomaticUpgrader(threading.Thread):
 
         self.package_renamer.rename_packages(self.installer)
 
-        packages = self.installer.make_package_list(['install',
+        package_list = self.installer.make_package_list(['install',
             'reinstall', 'downgrade', 'overwrite', 'none'],
             ignore_packages=self.auto_upgrade_ignore)
 
         # If Package Control is being upgraded, just do that and restart
-        for package in packages:
+        for package in package_list:
             if package[0] != 'Package Control':
                 continue
 
             def reset_last_run():
-                settings = sublime.load_settings(self.settings_file)
-                settings.set('auto_upgrade_last_run', None)
-                sublime.save_settings(self.settings_file)
+                # Re-save the last run time so it runs again after PC has
+                # been updated
+                self.save_last_run(self.last_run)
             sublime.set_timeout(reset_last_run, 1)
-            packages = [package]
+            package_list = [package]
             break
 
-        if not packages:
+        if not package_list:
             console_write(u'No updated packages', True)
             return
 
-        console_write(u'Installing %s upgrades' % len(packages), True)
-        for package in packages:
-            self.installer.manager.install_package(package[0])
-            version = re.sub('^.*?(v[\d\.]+).*?$', '\\1', package[2])
-            if version == package[2] and version.find('pull with') != -1:
-                vcs = re.sub('^pull with (\w+).*?$', '\\1', version)
-                version = 'latest %s commit' % vcs
-            message_string = u'Upgraded %s to %s' % (package[0], version)
-            console_write(message_string, True)
+        console_write(u'Installing %s upgrades' % len(package_list), True)
+
+        disabled_packages = []
+
+        def do_upgrades():
+            # Wait so that the ignored packages can be "unloaded"
+            time.sleep(0.5)
+
+            # We use a function to generate the on-complete lambda because if
+            # we don't, the lambda will bind to info at the current scope, and
+            # thus use the last value of info from the loop
+            def make_on_complete(name):
+                return lambda: self.installer.reenable_package(name)
+
+            for info in package_list:
+                if info[0] in disabled_packages:
+                    on_complete = make_on_complete(info[0])
+                else:
+                    on_complete = None
+
+                self.installer.manager.install_package(info[0])
+
+                version = re.sub('^.*?(v[\d\.]+).*?$', '\\1', info[2])
+                if version == info[2] and version.find('pull with') != -1:
+                    vcs = re.sub('^pull with (\w+).*?$', '\\1', version)
+                    version = 'latest %s commit' % vcs
+                message_string = u'Upgraded %s to %s' % (info[0], version)
+                console_write(message_string, True)
+                if on_complete:
+                    sublime.set_timeout(on_complete, 1)
+
+        # Disabling a package means changing settings, which can only be done
+        # in the main thread. We then create a new background thread so that
+        # the upgrade process does not block the UI.
+        def disable_packages():
+            disabled_packages.extend(self.installer.disable_packages([info[0] for info in package_list]))
+            threading.Thread(target=do_upgrades).start()
+        sublime.set_timeout(disable_packages, 1)

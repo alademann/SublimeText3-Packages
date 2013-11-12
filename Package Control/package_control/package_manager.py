@@ -9,15 +9,18 @@ import shutil
 from fnmatch import fnmatch
 import datetime
 import tempfile
+import locale
 
 try:
     # Python 3
     from urllib.parse import urlencode, urlparse
     import compileall
+    str_cls = str
 except (ImportError):
     # Python 2
     from urllib import urlencode
     from urlparse import urlparse
+    str_cls = unicode
 
 import sublime
 
@@ -25,12 +28,16 @@ from .show_error import show_error
 from .console_write import console_write
 from .open_compat import open_compat, read_compat
 from .unicode import unicode_from_os
+from .rmtree import rmtree
 from .clear_directory import clear_directory
 from .cache import (clear_cache, set_cache, get_cache, merge_cache_under_settings,
     merge_cache_over_settings, set_cache_under_settings, set_cache_over_settings)
 from .versions import version_comparable, version_sort
 from .downloaders.background_downloader import BackgroundDownloader
-from .download_manager import grab, release
+from .downloaders.downloader_exception import DownloaderException
+from .providers.provider_exception import ProviderException
+from .clients.client_exception import ClientException
+from .download_manager import downloader
 from .providers.channel_provider import ChannelProvider
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
@@ -67,7 +74,7 @@ class PackageManager():
                 'files_to_include', 'files_to_include_binary', 'certs',
                 'ignore_vcs_packages', 'proxy_username', 'proxy_password',
                 'debug', 'user_agent', 'http_cache', 'http_cache_length',
-                'install_prereleases']:
+                'install_prereleases', 'openssl_binary']:
             if settings.get(setting) == None:
                 continue
             self.settings[setting] = settings.get(setting)
@@ -91,7 +98,7 @@ class PackageManager():
         # Reduce the settings down to exclude channel info since that will
         # make the settings always different
         filtered_settings = self.settings.copy()
-        for key in ['repositories', 'channels', 'package_name_map', 'certs', 'cache']:
+        for key in ['repositories', 'channels', 'package_name_map', 'cache']:
             if key in filtered_settings:
                 del filtered_settings[key]
 
@@ -137,7 +144,7 @@ class PackageManager():
 
         cache_ttl = self.settings.get('cache_length')
 
-        repositories = self.settings.get('repositories')
+        repositories = self.settings.get('repositories')[:]
         channels = self.settings.get('channels')
         for channel in channels:
             channel = channel.strip()
@@ -149,44 +156,44 @@ class PackageManager():
             merge_cache_under_settings(self, 'package_name_map', channel)
             merge_cache_under_settings(self, 'renamed_packages', channel)
             merge_cache_under_settings(self, 'unavailable_packages', channel, list_=True)
-            merge_cache_over_settings(self, 'certs', channel)
 
             # If any of the info was not retrieved from the cache, we need to
             # grab the channel to get it
-            if channel_repositories == None or \
-                    self.settings.get('package_name_map') == None or \
-                    self.settings.get('renamed_packages') == None:
+            if channel_repositories == None:
 
                 for provider_class in CHANNEL_PROVIDERS:
                     if provider_class.match_url(channel):
                         provider = provider_class(channel, self.settings)
                         break
 
-                channel_repositories = provider.get_repositories()
-                if channel_repositories == False:
+                try:
+                    channel_repositories = provider.get_repositories()
+                    set_cache(cache_key, channel_repositories, cache_ttl)
+
+                    for repo in channel_repositories:
+                        repo_packages = provider.get_packages(repo)
+                        packages_cache_key = repo + '.packages'
+                        set_cache(packages_cache_key, repo_packages, cache_ttl)
+
+                    # Have the local name map override the one from the channel
+                    name_map = provider.get_name_map()
+                    set_cache_under_settings(self, 'package_name_map', channel, name_map, cache_ttl)
+
+                    renamed_packages = provider.get_renamed_packages()
+                    set_cache_under_settings(self, 'renamed_packages', channel, renamed_packages, cache_ttl)
+
+                    unavailable_packages = provider.get_unavailable_packages()
+                    set_cache_under_settings(self, 'unavailable_packages', channel, unavailable_packages, cache_ttl, list_=True)
+
+                    provider_certs = provider.get_certs()
+                    certs = self.settings.get('certs', {}).copy()
+                    certs.update(provider_certs)
+                    # Save the master list of certs, used by downloaders/cert_provider.py
+                    set_cache('*.certs', certs, cache_ttl)
+
+                except (DownloaderException, ClientException, ProviderException) as e:
+                    console_write(e, True)
                     continue
-                set_cache(cache_key, channel_repositories, cache_ttl)
-
-                for repo in channel_repositories:
-                    if provider.get_packages(repo) == False:
-                        continue
-                    packages_cache_key = repo + '.packages'
-                    set_cache(packages_cache_key, provider.get_packages(repo), cache_ttl)
-
-                # Have the local name map override the one from the channel
-                name_map = provider.get_name_map()
-                set_cache_under_settings(self, 'package_name_map', channel, name_map, cache_ttl)
-
-                renamed_packages = provider.get_renamed_packages()
-                set_cache_under_settings(self, 'renamed_packages', channel, renamed_packages, cache_ttl)
-
-                unavailable_packages = provider.get_unavailable_packages()
-                set_cache_under_settings(self, 'unavailable_packages', channel, unavailable_packages, cache_ttl, list_=True)
-
-                certs = provider.get_certs()
-                set_cache_over_settings(self, 'certs', channel, certs, cache_ttl)
-                # Save the master list of certs, used by downloaders/cert_provider.py
-                set_cache('*.certs', self.settings['certs'], cache_ttl)
 
             repositories.extend(channel_repositories)
         return [repo.strip() for repo in repositories]
@@ -214,7 +221,7 @@ class PackageManager():
         cache_ttl = self.settings.get('cache_length')
         repositories = self.list_repositories()
         packages = {}
-        downloaders = {}
+        bg_downloaders = {}
         active = []
         repos_to_download = []
         name_map = self.settings.get('package_name_map', {})
@@ -230,37 +237,39 @@ class PackageManager():
 
             else:
                 domain = urlparse(repo).hostname
-                if domain not in downloaders:
-                    downloaders[domain] = BackgroundDownloader(self.settings,
-                        REPOSITORY_PROVIDERS)
-                downloaders[domain].add_url(repo)
+                if domain not in bg_downloaders:
+                    bg_downloaders[domain] = BackgroundDownloader(
+                        self.settings, REPOSITORY_PROVIDERS)
+                bg_downloaders[domain].add_url(repo)
                 repos_to_download.append(repo)
 
-        for downloader in list(downloaders.values()):
-            downloader.start()
-            active.append(downloader)
+        for bg_downloader in list(bg_downloaders.values()):
+            bg_downloader.start()
+            active.append(bg_downloader)
 
         # Wait for all of the downloaders to finish
         while active:
-            downloader = active.pop()
-            downloader.join()
+            bg_downloader = active.pop()
+            bg_downloader.join()
 
         # Grabs the results and stuff it all in the cache
         for repo in repos_to_download:
             domain = urlparse(repo).hostname
-            downloader = downloaders[domain]
-            provider = downloader.get_provider(repo)
-
-            _repository_packages = provider.get_packages()
-            if _repository_packages == False:
-                continue
+            bg_downloader = bg_downloaders[domain]
+            provider = bg_downloader.get_provider(repo)
 
             # Allow name mapping of packages for schema version < 2.0
             repository_packages = {}
-            for name, info in _repository_packages.items():
+            for name, info in provider.get_packages():
                 name = name_map.get(name, name)
                 info['name'] = name
                 repository_packages[name] = info
+
+            # Display errors we encountered while fetching package info
+            for url, exception in provider.get_failed_sources():
+                console_write(exception, True)
+            for name, exception in provider.get_broken_packages():
+                console_write(exception, True)
 
             cache_key = repo + '.packages'
             set_cache(cache_key, repository_packages, cache_ttl)
@@ -283,7 +292,7 @@ class PackageManager():
         """
 
         package_names = os.listdir(sublime.packages_path())
-        package_names = [path for path in package_names if
+        package_names = [path for path in package_names if path[0] != '.' and
             os.path.isdir(os.path.join(sublime.packages_path(), path))]
 
         if int(sublime.version()) > 3000 and unpacked_only == False:
@@ -318,6 +327,7 @@ class PackageManager():
             bundled_packages_path = os.path.join(os.path.dirname(sublime.executable_path()),
                 'Packages')
             files = os.listdir(bundled_packages_path)
+
         else:
             files = os.listdir(os.path.join(os.path.dirname(
                 sublime.packages_path()), 'Pristine Packages'))
@@ -358,7 +368,7 @@ class PackageManager():
         :return: bool if the package file was successfully created
         """
 
-        package_dir = self.get_package_dir(package_name) + '/'
+        package_dir = self.get_package_dir(package_name)
 
         if not os.path.exists(package_dir):
             show_error(u'The folder for the package name specified, %s, does not exist in %s' % (
@@ -394,9 +404,11 @@ class PackageManager():
             files_to_ignore = self.settings.get('files_to_ignore_binary', [])
             files_to_include = self.settings.get('files_to_include_binary', [])
 
-        package_dir_regex = re.compile('^' + re.escape(package_dir))
+        slash = '\\' if os.name == 'nt' else '/'
+        trailing_package_dir = package_dir + slash if package_dir[-1] != slash else package_dir
+        package_dir_regex = re.compile('^' + re.escape(trailing_package_dir))
         for root, dirs, files in os.walk(package_dir):
-            [dirs.remove(dir) for dir in dirs if dir in dirs_to_ignore]
+            [dirs.remove(dir_) for dir_ in dirs if dir_ in dirs_to_ignore]
             paths = dirs
             paths.extend(files)
             for path in paths:
@@ -440,23 +452,26 @@ class PackageManager():
 
         packages = self.list_available_packages()
 
-        if package_name in self.settings.get('unavailable_packages', []):
+        is_available = package_name in list(packages.keys())
+        is_unavailable = package_name in self.settings.get('unavailable_packages', [])
+
+        if is_unavailable and not is_available:
             console_write(u'The package "%s" is not available on this platform.' % package_name, True)
             return False
 
-        if package_name not in list(packages.keys()):
+        if not is_available:
             show_error(u'The package specified, %s, is not available' % package_name)
             return False
 
         url = packages[package_name]['download']['url']
         package_filename = package_name + '.sublime-package'
 
-        tmp_dir = tempfile.mkdtemp()
+        tmp_dir = tempfile.mkdtemp(u'')
 
         try:
             # This is refers to the zipfile later on, so we define it here so we can
             # close the zip file if set during the finally clause
-            package_file = None
+            package_zip = None
 
             tmp_package_path = os.path.join(tmp_dir, package_filename)
 
@@ -485,11 +500,14 @@ class PackageManager():
             is_upgrade = old_version != None
 
             # Download the sublime-package or zip file
-            download_manager = grab(url, self.settings)
-            package_bytes = download_manager.fetch(url, 'Error downloading package.')
-            release(url, download_manager)
-            if package_bytes == False:
+            try:
+                with downloader(url, self.settings) as manager:
+                    package_bytes = manager.fetch(url, 'Error downloading package.')
+            except (DownloaderException) as e:
+                console_write(e, True)
+                show_error(u'Unable to download %s. Please view the console for more details.' % package_name)
                 return False
+
             with open_compat(tmp_package_path, "wb") as package_file:
                 package_file.write(package_bytes)
 
@@ -504,7 +522,15 @@ class PackageManager():
             root_level_paths = []
             last_path = None
             for path in package_zip.namelist():
+                try:
+                    if not isinstance(path, str_cls):
+                        path = path.decode('utf-8', 'strict')
+                except (UnicodeDecodeError):
+                    console_write(u'One or more of the zip file entries in %s is not encoded using UTF-8, aborting' % package_name, True)
+                    return False
+
                 last_path = path
+
                 if path.find('/') in [len(path) - 1, -1]:
                     root_level_paths.append(path)
                 # Make sure there are no paths that look like security vulnerabilities
@@ -574,18 +600,18 @@ class PackageManager():
             extracted_paths = []
             for path in package_zip.namelist():
                 dest = path
+
                 try:
-                    # Python 3 seems to return the paths as str instead of
-                    # bytes, so we only need this for Python 2
-                    if int(sublime.version()) < 3000 and not isinstance(dest, unicode):
-                        dest = unicode(dest, 'utf-8', 'strict')
+                    if not isinstance(dest, str_cls):
+                        dest = dest.decode('utf-8', 'strict')
                 except (UnicodeDecodeError):
-                    dest = unicode(dest, 'cp1252', 'replace')
+                    console_write(u'One or more of the zip file entries in %s is not encoded using UTF-8, aborting' % package_name, True)
+                    return False
 
                 if os.name == 'nt':
                     regex = ':|\*|\?|"|<|>|\|'
                     if re.search(regex, dest) != None:
-                        console_write(u'Skipping file from package named %s due to an invalid filename' % path, True)
+                        console_write(u'Skipping file from package named %s due to an invalid filename' % package_name, True)
                         continue
 
                 # If there was only a single directory in the package, we remove
@@ -600,11 +626,11 @@ class PackageManager():
 
                 dest = os.path.join(package_dir, dest)
 
-                def add_extracted_dirs(dir):
-                    while dir not in extracted_paths:
-                        extracted_paths.append(dir)
-                        dir = os.path.dirname(dir)
-                        if dir == package_dir:
+                def add_extracted_dirs(dir_):
+                    while dir_ not in extracted_paths:
+                        extracted_paths.append(dir_)
+                        dir_ = os.path.dirname(dir_)
+                        if dir_ == package_dir:
                             break
 
                 if path.endswith('/'):
@@ -624,11 +650,13 @@ class PackageManager():
                         if re.search('[Ee]rrno 13', message):
                             overwrite_failed = True
                             break
-                        console_write(u'Skipping file from package named %s due to an invalid filename' % path, True)
+                        console_write(u'Skipping file from package named %s due to an invalid filename' % package_name, True)
 
                     except (UnicodeDecodeError):
-                        console_write(u'Skipping file from package named %s due to an invalid filename' % path, True)
+                        console_write(u'Skipping file from package named %s due to an invalid filename' % package_name, True)
+
             package_zip.close()
+            package_zip = None
 
             # If upgrading failed, queue the package to upgrade upon next start
             if overwrite_failed:
@@ -695,7 +723,7 @@ class PackageManager():
                 try:
                     # Remove the downloaded file since we are going to overwrite it
                     os.remove(tmp_package_path)
-                    package_file = zipfile.ZipFile(tmp_package_path, "w",
+                    package_zip = zipfile.ZipFile(tmp_package_path, "w",
                         compression=zipfile.ZIP_DEFLATED)
                 except (OSError, IOError) as e:
                     show_error(u'An error occurred creating the package file %s in %s.\n\n%s' % (
@@ -711,10 +739,10 @@ class PackageManager():
                         relative_path = re.sub(package_dir_regex, '', full_path)
                         if os.path.isdir(full_path):
                             continue
-                        package_file.write(full_path, relative_path)
+                        package_zip.write(full_path, relative_path)
 
-                package_file.close()
-                package_file = None
+                package_zip.close()
+                package_zip = None
 
                 if os.path.exists(package_path):
                     os.remove(package_path)
@@ -731,15 +759,15 @@ class PackageManager():
         finally:
             # We need to make sure the zipfile is closed to
             # help prevent permissions errors on Windows
-            if package_file:
-                package_file.close()
+            if package_zip:
+                package_zip.close()
 
             # Try to remove the tmp dir after a second to make sure
             # a virus scanner is holding a reference to the zipfile
             # after we close it.
             def remove_tmp_dir():
                 try:
-                    shutil.rmtree(tmp_dir)
+                    rmtree(tmp_dir)
                 except (PermissionError):
                     # If we can't remove the tmp dir, don't let an uncaught exception
                     # fall through and break the install process
@@ -777,7 +805,7 @@ class PackageManager():
             show_error(u'An error occurred while trying to backup the package directory for %s.\n\n%s' % (
                 package_name, unicode_from_os(e)))
             if os.path.exists(package_backup_dir):
-                shutil.rmtree(package_backup_dir)
+                rmtree(package_backup_dir)
             return False
 
     def print_messages(self, package, package_dir, is_upgrade, old_version):
@@ -974,12 +1002,19 @@ class PackageManager():
             self.get_metadata('Package Control').get('version')
         params['sublime_platform'] = self.settings.get('platform')
         params['sublime_version'] = self.settings.get('version')
+
+        # For Python 2, we need to explicitly encoding the params
+        for param in params:
+            if isinstance(params[param], str_cls):
+                params[param] = params[param].encode('utf-8')
+
         url = self.settings.get('submit_url') + '?' + urlencode(params)
 
-        download_manager = grab(url, self.settings)
-        result = download_manager.fetch(url, 'Error submitting usage information.')
-        release(url, download_manager)
-        if result == False:
+        try:
+            with downloader(url, self.settings) as manager:
+                result = manager.fetch(url, 'Error submitting usage information.')
+        except (DownloaderException) as e:
+            console_write(e, True)
             return
 
         try:

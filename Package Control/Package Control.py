@@ -1,6 +1,7 @@
 import sublime
 import sys
 import os
+import locale
 
 
 st_version = 2
@@ -72,6 +73,26 @@ else:
 
 
     def plugin_loaded():
+        # Make sure the user's locale can handle non-ASCII. A whole bunch of
+        # work was done to try and make Package Control work even if the locale
+        # was poorly set, by manually encoding all file paths, but it ended up
+        # being a fool's errand since the package loading code built into
+        # Sublime Text is not written to work that way, and although packages
+        # could be installed, they could not be loaded properly.
+        try:
+            os.path.exists(os.path.join(sublime.packages_path(), u"fran\u00e7ais"))
+        except (UnicodeEncodeError) as e:
+            message = (u"Package Control\n\nYour system's locale is set to a " +
+                u"value that can not handle non-ASCII characters. Package " +
+                u"Control can not properly work unless this is fixed.\n\n" +
+                u"On Linux, please reference your distribution's docs for " +
+                u"information on properly setting the LANG environmental " +
+                u"variable. As a temporary work-around, you can launch " +
+                u"Sublime Text from the terminal with:\n\n" +
+                u"LANG=en_US.UTF-8 sublime_text")
+            sublime.error_message(message)
+            return
+
         # Start shortly after Sublime starts so package renames don't cause errors
         # with keybindings, settings, etc disappearing in the middle of parsing
         sublime.set_timeout(lambda: PackageCleanup().start(), 2000)

@@ -20,6 +20,7 @@ from ..unicode import unicode_from_os
 from .non_http_error import NonHttpError
 from .http_error import HttpError
 from .rate_limit_exception import RateLimitException
+from .downloader_exception import DownloaderException
 from .decoding_downloader import DecodingDownloader
 from .limiting_downloader import LimitingDownloader
 from .caching_downloader import CachingDownloader
@@ -148,8 +149,12 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
         :param prefer_cached:
             If a cached version should be returned instead of trying a new request
 
+        :raises:
+            RateLimitException: when a rate limit is hit
+            DownloaderException: when any other download error occurs
+
         :return:
-            The string contents of the URL, or False on error
+            The string contents of the URL
         """
 
         if prefer_cached:
@@ -193,7 +198,7 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
             created_connection = True
 
             # Connect to the internet if necessary
-            state = self.read_option(0, self.INTERNET_OPTION_CONNECTED_STATE)
+            state = self.read_option(None, self.INTERNET_OPTION_CONNECTED_STATE)
             state = ord(state)
             if state & self.INTERNET_STATE_DISCONNECTED or state & self.INTERNET_STATE_DISCONNECTED_BY_USER:
                 # Track the previous state so we can go back once complete
@@ -211,8 +216,7 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
 
             if not self.network_connection:
                 error_string = u'%s %s during network phase of downloading %s.' % (error_message, self.extract_error(), url)
-                console_write(error_string, True)
-                return False
+                raise DownloaderException(error_string)
 
             win_timeout = wintypes.DWORD(int(timeout) * 1000)
             # Apparently INTERNET_OPTION_CONNECT_TIMEOUT just doesn't work, leaving it in hoping they may fix in the future
@@ -232,26 +236,19 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
 
             if not self.tcp_connection:
                 error_string = u'%s %s during connection phase of downloading %s.' % (error_message, self.extract_error(), url)
-                console_write(error_string, True)
-                return False
+                raise DownloaderException(error_string)
 
-            if self.debug:
-                proxy_struct = self.read_option(self.network_connection, self.INTERNET_OPTION_PROXY)
-                proxy = ''
-                if proxy_struct.lpszProxy:
-                    proxy = proxy_struct.lpszProxy.decode('iso-8859-1')
-                proxy_bypass = ''
-                if proxy_struct.lpszProxyBypass:
-                    proxy_bypass = proxy_struct.lpszProxyBypass.decode('iso-8859-1')
-
-                proxy_username = self.read_option(self.tcp_connection, self.INTERNET_OPTION_PROXY_USERNAME)
-                proxy_password = self.read_option(self.tcp_connection, self.INTERNET_OPTION_PROXY_PASSWORD)
-
-                console_write(u"WinINet Debug Proxy", True)
-                console_write(u"  proxy: %s" % proxy)
-                console_write(u"  proxy bypass: %s" % proxy_bypass)
-                console_write(u"  proxy username: %s" % proxy_username)
-                console_write(u"  proxy password: %s" % proxy_password)
+            # Normally the proxy info would come from IE, but this allows storing it in
+            # the Package Control settings file.
+            proxy_username = self.settings.get('proxy_username')
+            proxy_password = self.settings.get('proxy_password')
+            if proxy_username and proxy_password:
+                username = ctypes.c_wchar_p(proxy_username)
+                password = ctypes.c_wchar_p(proxy_password)
+                wininet.InternetSetOptionW(self.tcp_connection,
+                    self.INTERNET_OPTION_PROXY_USERNAME, ctypes.cast(username, ctypes.c_void_p), len(proxy_username))
+                wininet.InternetSetOptionW(self.tcp_connection,
+                    self.INTERNET_OPTION_PROXY_PASSWORD, ctypes.cast(password, ctypes.c_void_p), len(proxy_password))
 
             self.hostname = hostname
             self.port = port
@@ -263,6 +260,7 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                 console_write(u"  Re-using connection to %s on port %s for request #%s" % (
                     self.hostname, self.port, self.use_count))
 
+        error_string = None
         while tries > 0:
             tries -= 1
             try:
@@ -281,8 +279,7 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                 http_connection = wininet.HttpOpenRequestW(self.tcp_connection, u'GET', path, u'HTTP/1.1', None, None, http_flags, 0)
                 if not http_connection:
                     error_string = u'%s %s during HTTP connection phase of downloading %s.' % (error_message, self.extract_error(), url)
-                    console_write(error_string, True)
-                    return False
+                    raise DownloaderException(error_string)
 
                 request_header_lines = []
                 for header, value in request_headers.items():
@@ -290,10 +287,29 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                 request_header_lines = u"\r\n".join(request_header_lines)
 
                 success = wininet.HttpSendRequestW(http_connection, request_header_lines, len(request_header_lines), None, 0)
+
                 if not success:
                     error_string = u'%s %s during HTTP write phase of downloading %s.' % (error_message, self.extract_error(), url)
-                    console_write(error_string, True)
-                    return False
+                    raise DownloaderException(error_string)
+
+                # If we try to query before here, the proxy info will not be available to the first request
+                if self.debug:
+                    proxy_struct = self.read_option(self.network_connection, self.INTERNET_OPTION_PROXY)
+                    proxy = ''
+                    if proxy_struct.lpszProxy:
+                        proxy = proxy_struct.lpszProxy.decode('cp1252')
+                    proxy_bypass = ''
+                    if proxy_struct.lpszProxyBypass:
+                        proxy_bypass = proxy_struct.lpszProxyBypass.decode('cp1252')
+
+                    proxy_username = self.read_option(self.tcp_connection, self.INTERNET_OPTION_PROXY_USERNAME)
+                    proxy_password = self.read_option(self.tcp_connection, self.INTERNET_OPTION_PROXY_PASSWORD)
+
+                    console_write(u"WinINet Debug Proxy", True)
+                    console_write(u"  proxy: %s" % proxy)
+                    console_write(u"  proxy bypass: %s" % proxy_bypass)
+                    console_write(u"  proxy username: %s" % proxy_username)
+                    console_write(u"  proxy password: %s" % proxy_password)
 
                 self.use_count += 1
 
@@ -301,15 +317,31 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                     if self.scheme == 'https':
                         cert_struct = self.read_option(http_connection, self.INTERNET_OPTION_SECURITY_CERTIFICATE_STRUCT)
 
-                        issuer_info = cert_struct.lpszIssuerInfo.decode('cp1252')
-                        issuer_parts = issuer_info.split("\r\n")
-                        subject_info = cert_struct.lpszSubjectInfo.decode('cp1252')
-                        subject_parts = subject_info.split("\r\n")
+                        if cert_struct.lpszIssuerInfo:
+                            issuer_info = cert_struct.lpszIssuerInfo.decode('cp1252')
+                            issuer_parts = issuer_info.split("\r\n")
+                        else:
+                            issuer_parts = ['No issuer info']
+
+                        if cert_struct.lpszSubjectInfo:
+                            subject_info = cert_struct.lpszSubjectInfo.decode('cp1252')
+                            subject_parts = subject_info.split("\r\n")
+                        else:
+                            subject_parts = ["No subject info"]
 
                         common_name = subject_parts[-1]
 
-                        issue_date = self.convert_filetime_to_datetime(cert_struct.ftStart)
-                        expiration_date = self.convert_filetime_to_datetime(cert_struct.ftExpiry)
+                        if cert_struct.ftStart.dwLowDateTime != 0 and cert_struct.ftStart.dwHighDateTime != 0:
+                            issue_date = self.convert_filetime_to_datetime(cert_struct.ftStart)
+                            issue_date = issue_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
+                        else:
+                            issue_date = u"No issue date"
+
+                        if cert_struct.ftExpiry.dwLowDateTime != 0 and cert_struct.ftExpiry.dwHighDateTime != 0:
+                            expiration_date = self.convert_filetime_to_datetime(cert_struct.ftExpiry)
+                            expiration_date = expiration_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
+                        else:
+                            expiration_date = u"No expiration date"
 
                         console_write(u"WinINet HTTPS Debug General", True)
                         if changed_to_online:
@@ -318,8 +350,8 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                         console_write(u"    subject: %s" % ", ".join(subject_parts))
                         console_write(u"    issuer: %s" % ", ".join(issuer_parts))
                         console_write(u"    common name: %s" % common_name)
-                        console_write(u"    issue date: %s" % issue_date.strftime('%a, %d %b %Y %H:%M:%S GMT'))
-                        console_write(u"    expire date: %s" % expiration_date.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                        console_write(u"    issue date: %s" % issue_date)
+                        console_write(u"    expire date: %s" % expiration_date)
 
                     elif changed_to_online:
                         console_write(u"WinINet HTTP Debug General", True)
@@ -349,8 +381,7 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                     if not success:
                         if ctypes.GetLastError() != self.ERROR_INSUFFICIENT_BUFFER:
                             error_string = u'%s %s during header read phase of downloading %s.' % (error_message, self.extract_error(), url)
-                            console_write(error_string, True)
-                            return False
+                            raise DownloaderException(error_string)
                         # The error was a buffer that was too small, so try again
                         header_buffer_size = to_read_was_read.value
                         try_again = True
@@ -382,10 +413,13 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                 general, headers = self.parse_headers(headers)
                 self.handle_rate_limit(headers, url)
 
-                if general['status'] == 503:
+                if general['status'] == 503 and tries != 0:
                     # GitHub and BitBucket seem to rate limit via 503
-                    error_string = u'Downloading %s was rate limited, trying again' % url
-                    console_write(error_string, True)
+                    error_string = u'Downloading %s was rate limited' % url
+                    if tries:
+                        error_string += ', trying again'
+                        if self.debug:
+                            console_write(error_string, True)
                     continue
 
                 encoding = headers.get('content-encoding')
@@ -396,27 +430,30 @@ class WinINetDownloader(DecodingDownloader, LimitingDownloader, CachingDownloade
                     headers, result)
 
                 if general['status'] not in [200, 304]:
-                    raise HttpError("HTTP error %s %s" % (general['status'], general['message']), general['status'])
+                    raise HttpError("HTTP error %s" % general['status'], general['status'])
 
                 return result
 
             except (NonHttpError, HttpError) as e:
 
                 # GitHub and BitBucket seem to time out a lot
-                if e.args[0].find('timed out') != -1:
-                    error_string = u'Downloading %s timed out, trying again' % url
-                    console_write(error_string, True)
+                if str(e).find('timed out') != -1:
+                    error_string = u'Downloading %s timed out' % url
+                    if tries:
+                        error_string += ', trying again'
+                        if self.debug:
+                            console_write(error_string, True)
                     continue
 
-                error_string = u'%s %s downloading %s.' % (error_message, e.args[0], url)
-                console_write(error_string, True)
+                error_string = u'%s %s downloading %s.' % (error_message, e, url)
 
             finally:
                 if http_connection:
                     wininet.InternetCloseHandle(http_connection)
 
             break
-        return False
+
+        raise DownloaderException(error_string)
 
     def convert_filetime_to_datetime(self, filetime):
         """

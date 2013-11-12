@@ -9,6 +9,7 @@ except (ImportError):
 
 from ..versions import version_sort, version_filter
 from .json_api_client import JSONApiClient
+from ..downloaders.downloader_exception import DownloaderException
 
 
 class GitHubClient(JSONApiClient):
@@ -25,8 +26,12 @@ class GitHubClient(JSONApiClient):
             If the last option, grabs the info from the newest
             tag that is a valid semver version.
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, False if no commit, or a dict with the following keys:
               `version` - the version number of the download
               `url` - the download URL of a zip file of the package
               `date` - the ISO-8601 timestamp string when the version was published
@@ -36,15 +41,13 @@ class GitHubClient(JSONApiClient):
         if not commit_info:
             return commit_info
 
-        commit_date = commit_info['timestamp'][0:19].replace('T', ' ')
-
         return {
-            'version': re.sub('[\-: ]', '.', commit_date),
-            # We specifically use nodeload.github.com here because the download
+            'version': commit_info['version'],
+            # We specifically use codeload.github.com here because the download
             # URLs all redirect there, and some of the downloaders don't follow
             # HTTP redirect headers
-            'url': 'https://nodeload.github.com/%s/zip/%s' % (commit_info['user_repo'], quote(commit_info['commit'])),
-            'date': commit_date
+            'url': 'https://codeload.github.com/%s/zip/%s' % (commit_info['user_repo'], quote(commit_info['commit'])),
+            'date': commit_info['timestamp']
         }
 
     def repo_info(self, url):
@@ -56,8 +59,12 @@ class GitHubClient(JSONApiClient):
               https://github.com/{user}/{repo}
               https://github.com/{user}/{repo}/tree/{branch}
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, or a dict with the following keys:
               `name`
               `description`
               `homepage` - URL of the homepage
@@ -74,8 +81,6 @@ class GitHubClient(JSONApiClient):
         api_url = self._make_api_url(user_repo)
 
         info = self.fetch_json(api_url)
-        if not info:
-            return info
 
         output = self._extract_repo_info(info)
         output['readme'] = None
@@ -97,8 +102,12 @@ class GitHubClient(JSONApiClient):
             The URL to the user/organization, in the following form:
               https://github.com/{user}
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or am list of dicts with the following keys:
+            None if no match, or am list of dicts with the following keys:
               `name`
               `description`
               `homepage` - URL of the homepage
@@ -116,8 +125,6 @@ class GitHubClient(JSONApiClient):
         api_url = self._make_api_url(user)
 
         repos_info = self.fetch_json(api_url)
-        if not repos_info:
-            return repos_info
 
         output = []
         for info in repos_info:
@@ -136,25 +143,33 @@ class GitHubClient(JSONApiClient):
             If the last option, grabs the info from the newest
             tag that is a valid semver version.
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, False is no commit, or a dict with the following keys:
               `user_repo` - the user/repo name
               `timestamp` - the ISO-8601 UTC timestamp string
               `commit` - the branch or tag name
+              `version` - the extracted version number
         """
 
         tags_match = re.match('https?://github.com/([^/]+/[^/]+)/tags/?$', url)
+
+        version = None
 
         if tags_match:
             user_repo = tags_match.group(1)
             tags_url = self._make_api_url(user_repo, '/tags')
             tags_list = self.fetch_json(tags_url)
-            if tags_list == False:
-                return False
             tags = [tag['name'] for tag in tags_list]
             tags = version_filter(tags, self.settings.get('install_prereleases'))
             tags = version_sort(tags, reverse=True)
+            if not tags:
+                return False
             commit = tags[0]
+            version = re.sub('^v', '', commit)
 
         else:
             user_repo, commit = self._user_repo_branch(url)
@@ -164,13 +179,17 @@ class GitHubClient(JSONApiClient):
         query_string = urlencode({'sha': commit, 'per_page': 1})
         commit_url = self._make_api_url(user_repo, '/commits?%s' % query_string)
         commit_info = self.fetch_json(commit_url)
-        if commit_info == False:
-            return False
+
+        commit_date = commit_info[0]['commit']['committer']['date'][0:19].replace('T', ' ')
+
+        if not version:
+            version = re.sub('[\-: ]', '.', commit_date)
 
         return {
             'user_repo': user_repo,
-            'timestamp': commit_info[0]['commit']['committer']['date'],
-            'commit': commit
+            'timestamp': commit_date,
+            'commit': commit,
+            'version': version
         }
 
     def _extract_repo_info(self, result):
@@ -230,13 +249,22 @@ class GitHubClient(JSONApiClient):
         :param prefer_cached:
             If a cached version of the info should be returned instead of making a new HTTP request
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, or a dict containing all of the info from the GitHub API
+            A dict containing all of the info from the GitHub API, or None if no readme exists
         """
 
         query_string = urlencode({'ref': branch})
         readme_url = self._make_api_url(user_repo, '/readme?%s' % query_string)
-        return self.fetch_json(readme_url, prefer_cached)
+        try:
+            return self.fetch_json(readme_url, prefer_cached)
+        except (DownloaderException) as e:
+            if str(e).find('HTTP error 404') != -1:
+                return None
+            raise
 
     def _user_repo_branch(self, url):
         """

@@ -32,8 +32,12 @@ class BitBucketClient(JSONApiClient):
             If the last option, grabs the info from the newest
             tag that is a valid semver version.
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, False if no commit, or a dict with the following keys:
               `version` - the version number of the download
               `url` - the download URL of a zip file of the package
               `date` - the ISO-8601 timestamp string when the version was published
@@ -43,12 +47,10 @@ class BitBucketClient(JSONApiClient):
         if not commit_info:
             return commit_info
 
-        commit_date = commit_info['timestamp'][0:19]
-
         return {
-            'version': re.sub('[\-: ]', '.', commit_date),
+            'version': commit_info['version'],
             'url': 'https://bitbucket.org/%s/get/%s.zip' % (commit_info['user_repo'], commit_info['commit']),
-            'date': commit_date
+            'date': commit_info['timestamp']
         }
 
     def repo_info(self, url):
@@ -60,8 +62,12 @@ class BitBucketClient(JSONApiClient):
               https://bitbucket.org/{user}/{repo}
               https://bitbucket.org/{user}/{repo}/src/{branch}
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, or a dict with the following keys:
               `name`
               `description`
               `homepage` - URL of the homepage
@@ -78,8 +84,6 @@ class BitBucketClient(JSONApiClient):
         api_url = self._make_api_url(user_repo)
 
         info = self.fetch_json(api_url)
-        if not info:
-            return info
 
         issues_url = u'https://bitbucket.org/%s/issues' % user_repo
 
@@ -105,24 +109,32 @@ class BitBucketClient(JSONApiClient):
             If the last option, grabs the info from the newest
             tag that is a valid semver version.
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            False if error, None if no match, or a dict with the following keys:
+            None if no match, False if no commit, or a dict with the following keys:
               `user_repo` - the user/repo name
               `timestamp` - the ISO-8601 UTC timestamp string
               `commit` - the branch or tag name
+              `version` - the extracted version number
         """
 
         tags_match = re.match('https?://bitbucket.org/([^/]+/[^#/]+)/?#tags$', url)
+
+        version = None
 
         if tags_match:
             user_repo = tags_match.group(1)
             tags_url = self._make_api_url(user_repo, '/tags')
             tags_list = self.fetch_json(tags_url)
-            if tags_list == False:
-                return False
             tags = version_filter(tags_list.keys(), self.settings.get('install_prereleases'))
             tags = version_sort(tags, reverse=True)
+            if not tags:
+                return False
             commit = tags[0]
+            version = re.sub('^v', '', commit)
 
         else:
             user_repo, commit = self._user_repo_branch(url)
@@ -131,13 +143,17 @@ class BitBucketClient(JSONApiClient):
 
         changeset_url = self._make_api_url(user_repo, '/changesets/%s' % commit)
         commit_info = self.fetch_json(changeset_url)
-        if commit_info == False:
-            return False
+
+        commit_date = commit_info['timestamp'][0:19]
+
+        if not version:
+            version = re.sub('[\-: ]', '.', commit_date)
 
         return {
             'user_repo': user_repo,
-            'timestamp': commit_info['timestamp'],
-            'commit': commit
+            'timestamp': commit_date,
+            'commit': commit,
+            'version': version
         }
 
     def _main_branch_name(self, user_repo):
@@ -147,14 +163,16 @@ class BitBucketClient(JSONApiClient):
         :param user_repo:
             The user/repo name to get the main branch for
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
             The name of the main branch - `master` or `default`
         """
 
         main_branch_url = self._make_api_url(user_repo, '/main-branch')
         main_branch_info = self.fetch_json(main_branch_url, True)
-        if main_branch_info == False:
-            return False
         return main_branch_info['name']
 
     def _make_api_url(self, user_repo, suffix=''):
@@ -187,14 +205,16 @@ class BitBucketClient(JSONApiClient):
         :param prefer_cached:
             If a cached directory listing should be used instead of a new HTTP request
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
             The URL to the readme file, or None
         """
 
         listing_url = self._make_api_url(user_repo, '/src/%s/' % branch)
         root_dir_info = self.fetch_json(listing_url, prefer_cached)
-        if not root_dir_info:
-            return None
 
         for entry in root_dir_info['files']:
             if entry['path'].lower() in _readme_filenames:
@@ -212,8 +232,12 @@ class BitBucketClient(JSONApiClient):
               https://bitbucket.org/{user}/{repo}
               https://bitbucket.org/{user}/{repo}/src/{branch}
 
+        :raises:
+            DownloaderException: when there is an error downloading
+            ClientException: when there is an error parsing the response
+
         :return:
-            A tuple of (user/repo, branch name), (False, False) if error, or (None, None) if not matching
+            A tuple of (user/repo, branch name) or (None, None) if not matching
         """
 
         repo_match = re.match('https?://bitbucket.org/([^/]+/[^/]+)/?$', url)
@@ -222,8 +246,6 @@ class BitBucketClient(JSONApiClient):
         if repo_match:
             user_repo = repo_match.group(1)
             branch = self._main_branch_name(user_repo)
-            if not branch:
-                return (False, False)
 
         elif branch_match:
             user_repo = branch_match.group(1)
