@@ -1,5 +1,9 @@
+import fnmatch
+import os
 import re
+import shlex
 import sublime
+import traceback
 
 from .highlight import Highlight
 from . import persist
@@ -10,11 +14,11 @@ syntax_re = re.compile(r'/([^/]+)\.tmLanguage$')
 class Tracker(type):
     def __init__(cls, name, bases, attrs):
         if bases:
+            cls._cmd = attrs.get('cmd', ())
             persist.add_language(cls, name, attrs)
 
 class Linter(metaclass=Tracker):
     language = ''
-    cmd = ()
     regex = ''
     multiline = False
     flags = 0
@@ -31,6 +35,7 @@ class Linter(metaclass=Tracker):
     lint_settings = None
 
     def __init__(self, view, syntax, filename=None):
+        self.__class__.cmd = property(self.__class__.get_cmd)
         self.view = view
         self.syntax = syntax
         self.filename = filename
@@ -46,11 +51,22 @@ class Linter(metaclass=Tracker):
 
         self.highlight = Highlight(scope=self.scope)
 
+    def get_cmd(self):
+        cmd = self.settings.get('cmd', self._cmd)
+        if isinstance(cmd, str):
+            cmd = shlex.split(cmd)
+        cmd = tuple(cmd)
+        return cmd
+
     @classmethod
     def get_settings(cls):
         plugins = persist.settings.get('plugins', {})
+        base_settings = {}
+        if cls._cmd:
+            base_settings['cmd'] = cls._cmd
+        base_settings.update(plugins.get(cls.__name__, {}))
         settings = cls.defaults or {}
-        settings.update(plugins.get(cls.__name__, {}))
+        settings.update(base_settings)
         return settings
 
     @property
@@ -204,6 +220,19 @@ class Linter(metaclass=Tracker):
     def lint(self):
         if not (self.language and self.cmd and self.regex):
             raise NotImplementedError
+
+        excludes = self.settings.get('excludes')
+        if excludes:
+            try:
+                if isinstance(excludes, str):
+                    excludes = [excludes]
+                for pattern in excludes:
+                    if fnmatch.fnmatch(self.filename, pattern):
+                        persist.debug("skipping `{}` for pattern '{}'".format(
+                            os.path.basename(self.filename), pattern))
+                        return
+            except Exception:
+                persist.debug(traceback.format_exc())
 
         output = self.run(self.cmd, self.code)
         if not output:
