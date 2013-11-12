@@ -496,6 +496,14 @@
 					<string>#string_single</string>
 				</dict>
 				<dict>
+					<key>include</key>
+					<string>#string-double</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#string-single</string>
+				</dict>
+				<dict>
 					<key>begin</key>
 					<string>\s*(url)?\s*(?:\(|"|')\s*</string>
 					<key>beginCaptures</key>
@@ -537,11 +545,23 @@
 							<key>include</key>
 							<string>#string_double</string>
 						</dict>
+						<dict>
+							<key>include</key>
+							<string>#string-single</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#string-double</string>
+						</dict>
 					</array>
 				</dict>
 				<dict>
 					<key>include</key>
 					<string>#media_query_list</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#media-query-list</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -705,6 +725,10 @@
 					<string>meta.at-rule.media.scss</string>
 					<key>patterns</key>
 					<array>
+						<dict>
+							<key>include</key>
+							<string>#media-query-list</string>
+						</dict>
 						<dict>
 							<key>include</key>
 							<string>#media_query_list</string>
@@ -1113,6 +1137,7 @@
 		<dict>
 			<key>begin</key>
 			<string>([\w-]+)\s*(\(+)</string>
+			<!-- <string>([\w-]+)\s*(\()</string> -->
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
