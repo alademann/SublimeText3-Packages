@@ -1,7 +1,10 @@
 [
-  { "keys": ["super+alt+up"], "command": "sftp_vcs_changed_files" },
-  { "keys": ["super+shift+alt+down"], "command": "sftp_sync_down" },
-  { "keys": ["super+shift+alt+up"], "command": "sftp_sync_up" },
+  // Sublime Native Functionality Overrides
+  { "keys": ["super+shift+r"], "command": "goto_definition" },
+
+  //{ "keys": ["super+alt+up"], "command": "sftp_vcs_changed_files" },
+  //{ "keys": ["super+shift+alt+down"], "command": "sftp_sync_down" },
+  //{ "keys": ["super+shift+alt+up"], "command": "sftp_sync_up" },
   // end sftp keystrokes
 
   // Sublime TODO
@@ -17,12 +20,12 @@
   { "keys": ["shift+alt+p"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_paragraph-tag.sublime-snippet"} },
   { "keys": ["shift+alt+s"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_span-tag.sublime-snippet"} },
   { "keys": ["shift+alt+d"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_div-tag.sublime-snippet"} },
+
   // web-skin component shortcuts
   { "keys": ["shift+alt+l"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_li-tag.sublime-snippet"} },
   { "keys": ["shift+alt+b"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/badge.sublime-snippet"} },
   { "keys": ["alt+c"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_code-tag.sublime-snippet"} },
   { "keys": ["super+shift+,"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_code-angle-brackets.sublime-snippet"} },
-
 
   // scss snippets
   { "keys": ["alt+s"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-string-interpolation.sublime-snippet"} },  

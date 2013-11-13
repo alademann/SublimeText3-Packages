@@ -78,25 +78,25 @@
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 12.0,
+	"font_size": 14.0,
 	"gpu_window_buffer": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Vintage",
-		"HTML Snippets",
 		"SublimeCodeIntel",
 		"SFTP",
-		"Goto-CSS-Declaration",
+		"Vintage",
 		"Element Finder",
+		"Goto-CSS-Declaration",
 		"CSSLint",
-		"SublimeGit"
+		"SublimeGit",
+		"Goto Symbol"
 	],
 	"indent_guide_options":
 	[
 		"draw_active"
 	],
-	"index_files": false,
+	"index_files": true,
 	"match_brackets_angle": true,
 	"match_selection": false,
 	"preview_on_click": false,
