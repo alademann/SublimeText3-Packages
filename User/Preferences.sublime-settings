@@ -24,7 +24,7 @@
 	],
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
-	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
+	"color_scheme": "Packages/User/Tomorrow-Night-Soda.tmTheme",
 	"detect_slow_plugins": false,
 	"ensure_newline_at_eof_on_save": false,
 	"fade_fold_buttons": false,
@@ -83,14 +83,16 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SublimeCodeIntel",
 		"SFTP",
 		"Vintage",
 		"Element Finder",
-		"Goto-CSS-Declaration",
 		"CSSLint",
+		"SCSS",
+		"SublimeCodeIntel",
+		"Goto Symbol",
+		"Goto-CSS-Declaration",
 		"SublimeGit",
-		"Goto Symbol"
+		"CSS"
 	],
 	"indent_guide_options":
 	[
@@ -159,5 +161,5 @@
 	"translate_tabs_to_spaces": true,
 	"use_simple_full_screen": true,
 	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@$#%^&*|+=[]{}`~?"
+	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
 }

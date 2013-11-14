@@ -1,7 +1,7 @@
 {
 	"extensions":
 	[
-		"scss",
-		"scss.liquid"
+		"scss.liquid",
+		"scss"
 	]
 }
