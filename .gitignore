@@ -6,4 +6,5 @@
 *.scssc
 *.sassc
 *.sublime-license
+*.bak
 /User/Gist.sublime-settings
