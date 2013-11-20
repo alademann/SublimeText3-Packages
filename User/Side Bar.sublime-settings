@@ -1,3 +1,4 @@
 {
-	"version": "2012.06.06.1611.2"
+	"confirm_before_deleting" : false,
+    "default_browser": "chrome", //one of this list: firefox, chrome, canary, chromium, opera, safari
 }

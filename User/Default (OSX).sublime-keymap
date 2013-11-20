@@ -1,7 +1,7 @@
 [
   // Sublime Native Functionality Overrides
   { "keys": ["alt+shift+r"], "command": "goto_definition" },
-  { "keys": ["super+alt+r"], "command": "goto_symbol_in_project" },
+  { "keys": ["super+ctrl+r"], "command": "goto_symbol_in_project" },
   { "keys": ["super+shift+r"], "command": "goto_selected_symbol_in_project" },
 
   //{ "keys": ["super+alt+up"], "command": "sftp_vcs_changed_files" },
