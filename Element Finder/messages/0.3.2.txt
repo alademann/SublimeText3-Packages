@@ -1,3 +1,0 @@
-Thanks for updating Element Finder to version 0.3.2.
-
-A defect was preventing Element Finder from working in Windows.

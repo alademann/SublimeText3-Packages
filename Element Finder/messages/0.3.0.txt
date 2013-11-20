@@ -1,3 +1,0 @@
-Thanks for updating Element Finder to version 0.3.0.
-
-Element Finder now calculates the line number of matching elements.
