@@ -27,9 +27,9 @@
                 <string>#505050B0</string> -->
 
                 <key>guide</key>
-                <string>#484745B0</string>
+                <string>#4d4d4d99</string>
                 <key>activeGuide</key>
-                <string>#696765B0</string>
+                <string>#4d4d4dB3</string>
                 
                 <key>bracketsForeground</key>
                 <string>#F8F8F2A5</string>
