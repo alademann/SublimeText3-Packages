@@ -1,4 +1,0 @@
-CSSLint v1.1.3 changelog
-========================
-
-* Path fixes for Windows
