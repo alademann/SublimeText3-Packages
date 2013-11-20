@@ -78,21 +78,16 @@
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 14.0,
+	"font_size": 12.0,
 	"gpu_window_buffer": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SFTP",
-		"Vintage",
-		"Element Finder",
-		"CSSLint",
-		"SCSS",
-		"SublimeCodeIntel",
-		"Goto Symbol",
-		"Goto-CSS-Declaration",
+		"RestructuredText",
 		"SublimeGit",
-		"CSS"
+		"Vintage",
+		"Makefile",
+		"SFTP"
 	],
 	"indent_guide_options":
 	[
@@ -154,12 +149,12 @@
 		{
 			"BUG": "BUG[\\s]*?:+(?P<bug>.*)$",
 			"CHANGED": "CHANGED[\\s]*?:+(?P<changed>\\S.*)$",
+			"NOTE": "NOTE[\\s]*?:+(?P<note>.*)$",
 			"TODO": "TODO[\\s]*?:+(?P<todo>.*)$"
 		},
 		"result_title": "TODO Results"
 	},
 	"translate_tabs_to_spaces": true,
 	"use_simple_full_screen": true,
-	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
+	"wide_caret": true
 }

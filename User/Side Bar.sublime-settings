@@ -1,4 +1,5 @@
 {
-	"confirm_before_deleting" : false,
-    "default_browser": "chrome", //one of this list: firefox, chrome, canary, chromium, opera, safari
+	"confirm_before_deleting": false,
+	"default_browser": "chrome",
+	"version": "2012.06.06.1611.2"
 }
