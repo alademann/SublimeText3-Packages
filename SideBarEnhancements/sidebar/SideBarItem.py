@@ -116,8 +116,8 @@ class SideBarItem:
 		return urllib.parse.quote(self.pathAbsoluteFromProject())
 
 	def uri(self):
-		import urllib.request, urllib.parse, urllib.error
-		return 'file:'+urllib.request.pathname2url(self.path());
+		uri = 'file:'+(self.path().replace('\\', '/').replace('//', '/'));
+		return uri
 
 	def join(self, name):
 		return os.path.join(self.path(), name)
@@ -232,7 +232,7 @@ class SideBarItem:
 			sublime.active_window().run_command("open_dir", {"dir": self.dirname(), "file": self.name()} )
 
 	def write(self, content):
-		open(self.path(), 'w+').write(content)
+		open(self.path(), 'w+', encoding='utf8').write(content)
 
 	def mime(self):
 		import mimetypes
@@ -243,6 +243,15 @@ class SideBarItem:
 
 	def exists(self):
 		return os.path.isdir(self.path()) or os.path.isfile(self.path())
+
+	def overwrite(self):
+		overwrite = sublime.ok_cancel_dialog("Destination exists", "Delete, and overwrite")
+		if overwrite:
+			from SideBarEnhancements.send2trash import send2trash
+			send2trash(self.path())
+			return True
+		else:
+			return False
 
 	def create(self):
 		if self.isDirectory():

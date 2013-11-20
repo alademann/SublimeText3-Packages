@@ -37,7 +37,7 @@ def plugin_loaded():
 	s = sublime.load_settings('Side Bar.sublime-settings')
 	if s.get('expand_sidebar_on_startup', True):
 		for window in sublime.windows():
-		   window.run_command('reveal_in_side_bar');
+			 window.run_command('reveal_in_side_bar');
 	checkVersion()
 
 def Window():
@@ -960,8 +960,11 @@ class SideBarDuplicateCommand(sublime_plugin.WindowCommand):
 		item = SideBarItem(old, os.path.isdir(old))
 		try:
 			if not item.copy(new):
-				sublime.error_message("Unable to duplicate, destination exists.")
-				self.run([old], new)
+				# destination exists
+				if SideBarItem(new, os.path.isdir(new)).overwrite():
+					self.on_done(old, new)
+				else:
+					self.run([old], new)
 				return
 		except:
 			sublime.error_message("Unable to copy:\n\n"+old+"\n\nto\n\n"+new)
@@ -991,9 +994,12 @@ class SideBarRenameCommand(sublime_plugin.WindowCommand):
 		item = SideBarItem(old, os.path.isdir(old))
 		try:
 			if not item.move(new):
-				sublime.error_message("Unable to rename, destination exists.")
-				self.run([old], leaf)
-				return
+				# sublime.error_message("Unable to rename, destination exists.")
+				# destination exists
+				if SideBarItem(new, os.path.isdir(new)).overwrite():
+					self.on_done(old, branch, leaf)
+				else:
+					self.run([old], leaf)
 		except:
 			sublime.error_message("Unable to rename:\n\n"+old+"\n\nto\n\n"+new)
 			self.run([old], leaf)
@@ -1003,6 +1009,52 @@ class SideBarRenameCommand(sublime_plugin.WindowCommand):
 
 	def is_enabled(self, paths = []):
 		return SideBarSelection(paths).len() == 1 and SideBarSelection(paths).hasProjectDirectories() == False
+
+class SideBarMassRenameCommand(sublime_plugin.WindowCommand):
+	def run(self, paths = []):
+		import functools
+		Window().run_command('hide_panel');
+		view = Window().show_input_panel("Find:", '', functools.partial(self.on_find, paths), None, None)
+
+	def on_find(self, paths, find):
+		if not find:
+			return
+		import functools
+		Window().run_command('hide_panel');
+		view = Window().show_input_panel("Replace:", '', functools.partial(self.on_replace, paths, find), None, None)
+
+	def on_replace(self, paths, find, replace):
+		if not replace:
+			return
+		if find == '' or replace == '':
+			return None
+		else:
+			to_rename_or_move = []
+			for item in SideBarSelection(paths).getSelectedItemsWithoutChildItems():
+				self.recurse(item.path(), to_rename_or_move)
+			to_rename_or_move.sort()
+			to_rename_or_move.reverse()
+			for item in to_rename_or_move:
+				if find in item:
+					origin = SideBarItem(item, os.path.isdir(item))
+					destination = SideBarItem(origin.pathProject()+''+origin.pathWithoutProject().replace(find, replace), os.path.isdir(item))
+					origin.move(destination.path());
+			SideBarProject().refresh();
+
+	def recurse(self, path, paths):
+		if os.path.isfile(path) or os.path.islink(path):
+			paths.append(path)
+		else:
+			for content in os.listdir(path):
+				file = os.path.join(path, content)
+				if os.path.isfile(file) or os.path.islink(file):
+					paths.append(file)
+				else:
+					self.recurse(file, paths)
+			paths.append(path)
+
+	def is_enabled(self, paths = []):
+		return SideBarSelection(paths).len() > 0 and SideBarSelection(paths).hasProjectDirectories() == False
 
 class SideBarMoveCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = [], new = False):
@@ -1016,8 +1068,11 @@ class SideBarMoveCommand(sublime_plugin.WindowCommand):
 		item = SideBarItem(old, os.path.isdir(old))
 		try:
 			if not item.move(new):
-				sublime.error_message("Unable to move, destination exists.")
-				self.run([old], new)
+				# sublime.error_message("Unable to move, destination exists.")
+				if SideBarItem(new, os.path.isdir(new)).overwrite():
+					self.on_done(old, new)
+				else:
+					self.run([old], new)
 				return
 		except:
 			sublime.error_message("Unable to move:\n\n"+old+"\n\nto\n\n"+new)
@@ -1043,7 +1098,10 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
 				for item in SideBarSelection(paths).getSelectedItemsWithoutChildItems():
 					if s.get('close_affected_buffers_when_deleting_even_if_dirty', False):
 						item.closeViews()
-					send2trash(item.path())
+					if s.get('disable_send_to_trash', False):
+						self.remove(item.path());
+					else:
+						send2trash(item.path())
 				SideBarProject().refresh();
 			except:
 				import functools
@@ -1230,9 +1288,7 @@ class SideBarProjectItemExcludeCommand(sublime_plugin.WindowCommand):
 class SideBarOpenInBrowserCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = [], type = False):
 
-		browser = s.get("default_browser")
-		if browser == '':
-			browser = ''
+		browser = s.get("default_browser", "")
 
 		if type == False or type == 'testing':
 			type = 'url_testing'
@@ -1291,6 +1347,32 @@ class SideBarOpenInBrowserCommand(sublime_plugin.WindowCommand):
 					,'google-chrome'
 				])
 				commands = ['-new-tab', url]
+
+		elif browser == 'canary':
+				if sublime.platform() == 'osx':
+						items.extend(['open'])
+						commands = ['-a', '/Applications/Google Chrome Canary.app', url]
+				elif sublime.platform() == 'windows':
+					# read local app data path from registry
+					aKey = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
+					reg_value, reg_type = winreg.QueryValueEx (aKey, "Local AppData")
+
+					if s.get('portable_browser') != '':
+						items.extend([s.get('portable_browser')])
+					items.extend([
+						'%HOMEPATH%\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe'
+
+						,reg_value+'\\Chrome SxS\\Application\\chrome.exe'
+						,reg_value+'\\Google\\Chrome SxS\\Application\\chrome.exe'
+						,'%HOMEPATH%\\Google\\Chrome SxS\\Application\\chrome.exe'
+						,'%PROGRAMFILES%\\Google\\Chrome SxS\\Application\\chrome.exe'
+						,'%PROGRAMFILES(X86)%\\Google\\Chrome SxS\\Application\\chrome.exe'
+						,'%USERPROFILE%\\Local\ Settings\\Application\ Data\\Google\\Chrome SxS\\chrome.exe'
+						,'%HOMEPATH%\\Local\ Settings\\Application\ Data\\Google\\Chrome SxS\\Application\\chrome.exe'
+						,'%HOMEPATH%\\Local Settings\\Application Data\\Google\\Chrome SxS\\Application\\chrome.exe'
+					])
+
+					commands = ['-new-tab', url]
 
 		elif browser == 'chromium':
 			if sublime.platform() == 'osx':
@@ -1399,6 +1481,10 @@ class SideBarOpenInBrowserCommand(sublime_plugin.WindowCommand):
 					,'Safari.exe'
 				])
 				commands = ['-new-tab', '-url', url]
+		else:
+			if s.get('portable_browser') != '':
+				items.extend([s.get('portable_browser')])
+			commands = ['-new-tab', url]
 
 		for item in items:
 			try:
@@ -1437,7 +1523,15 @@ class SideBarOpenInNewWindowCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = []):
 		import subprocess
 		items = []
-		items.append(sublime.executable_path())
+
+		executable_path = sublime.executable_path()
+
+		if sublime.platform() == 'osx':
+			app_path = executable_path[:executable_path.rfind(".app/")+5]
+			executable_path = app_path+"Contents/SharedSupport/bin/subl"
+
+		items.append(executable_path)
+
 		for item in SideBarSelection(paths).getSelectedItems():
 			items.append(item.forCwdSystemPath())
 			items.append(item.path())

@@ -24,11 +24,13 @@
 	"disabled_menuitem_empty":    					true,
 
 	//if installed in a default location maybe this works.
-	"default_browser": "", //one of this list: firefox, chrome, chromium, opera, safari
+	"default_browser": "", //one of this list: firefox, chrome, canary, chromium, opera, safari
 
 	"portable_browser": "", // for example:  C:/Program Files (x86)/Nightly/firefox.exe
 
-	"expand_sidebar_on_startup":    					true
+	"expand_sidebar_on_startup":    					true,
+
+	"disable_send_to_trash": false
 
 
 }
