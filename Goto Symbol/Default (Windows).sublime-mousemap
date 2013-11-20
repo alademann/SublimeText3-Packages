@@ -1,8 +1,0 @@
-[
-    {
-        "button": "button1",
-        "modifiers": ["alt"],
-        "command": "goto_symbol",
-        "args": { "action": "list_carret_matches" }
-    }
-]
