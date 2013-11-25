@@ -550,10 +550,18 @@
 					<string>constant.character.entity.html</string>
 				</dict>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>invalid.illegal.bad-ampersand.html</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>&amp;</string>
+					<string>(\s)(&amp;)(\s)</string>
 					<key>name</key>
-					<string>invalid.illegal.bad-ampersand.html</string>
+					<string>constant.character.entity.html</string>
 				</dict>
 			</array>
 		</dict>
@@ -680,6 +688,30 @@
 							<string>source.ruby</string>
 						</dict>
 					</array>
+				</dict>
+			</array>
+		</dict>
+		<key>liquid_ruby</key>
+		<dict>
+			<key>begin</key>
+			<string>{% include</string>
+			<key>end</key>
+			<string>-?(\w|%})</string>
+			<key>name</key>
+			<string>string.quoted.double.liquid.include.html</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>source.ruby</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#embedded-code</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#entities</string>
 				</dict>
 			</array>
 		</dict>

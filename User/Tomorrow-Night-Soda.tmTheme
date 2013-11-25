@@ -94,7 +94,7 @@
             <key>name</key>
             <string>Tag Begin and End</string>
             <key>scope</key>
-            <string>punctuation.definition.tag, punctuation.definition.tag.begin, punctuation.definition.tag.end, punctuation.section.property-list.begin, punctuation.section.property-list.end, meta.set.variable, punctuation.section.embedded.ruby, punctuation.definition.entry.yaml, punctuation.separator.key-value.yaml</string>
+            <string>punctuation.definition.tag, punctuation.definition.tag.begin, punctuation.definition.tag.end, punctuation.section.property-list.begin, punctuation.section.property-list.end, meta.set.variable, punctuation.definition.entry.yaml, punctuation.separator.key-value.yaml</string>
             <key>settings</key>
             <dict>
                 <key>foreground</key>
@@ -116,7 +116,7 @@
 			<key>name</key>
 			<string>Variable, String Link, Regular Expression, Tag Name, GitGutter deleted</string>
 			<key>scope</key>
-			<string>variable, support.other.variable, string.other.link, string.regexp, entity.name.tag, meta.tag, declaration.tag, source.ruby.embedded.html, markup.deleted.git_gutter</string>
+			<string>variable, support.other.variable, string.other.link, string.regexp, entity.name.tag, meta.tag, declaration.tag, markup.deleted.git_gutter</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -226,7 +226,7 @@
 			<key>name</key>
 			<string>Function, Variable Declaration, Special Method, Block Level, GitGutter changed</string>
 			<key>scope</key>
-			<string>entity.name.function, meta.function-call, support.function, keyword.other.special-method, meta.block-level, markup.changed.git_gutter</string>
+			<string>entity.name.function, source.ruby.embedded.html, meta.function-call, support.function, keyword.other.special-method, meta.block-level, markup.changed.git_gutter</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>

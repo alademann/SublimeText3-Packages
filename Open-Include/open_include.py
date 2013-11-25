@@ -44,7 +44,7 @@ class OpenInclude(sublime_plugin.TextCommand):
 			# current line quotes and parenthesis
 			if not opened:
 				line = view.substr(sublime.Region(view.line(region.begin()).begin(), view.line(region.end()).end()))
-				line = line.replace(')', '"').replace('(', '"').replace("'", '"')
+				line = line.replace(')', '"').replace('(', '"').replace("'", '"').replace(' ', '"').replace(' ', '"')
 				lines = line.split('"')
 				for line in lines:
 					line = line.strip()
@@ -89,10 +89,13 @@ class OpenInclude(sublime_plugin.TextCommand):
 			if path.strip() == '':
 				continue
 
-			extensions = ["", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"];
+			extensions = ["", ".html", ".htm", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"];
 			for extension in extensions:
 				# remove quotes
 				path = re.sub('^"|\'', '',  re.sub('"|\'$', '', path.strip()))
+
+				# remove liquid {% include
+				path = re.sub('^{%\sinclude\s', '', re.sub('\.html\s+(%})$', '', path.strip()))
 
 				# remove :row:col
 				path = re.sub('(\:[0-9]*)+$', '', path.strip()).strip()
@@ -123,6 +126,13 @@ class OpenInclude(sublime_plugin.TextCommand):
 				# relative to view dirname minus two folders
 				if not opened and view.file_name() != None and view.file_name() != '':
 					maybe_path = self.resolve_relative(os.path.dirname(os.path.dirname(view.file_name())), "../../" + newpath)
+					opened = self.try_open(window, maybe_path)
+					if opened:
+						something_opened = True
+
+				# relative to project folders in a static/_includes directory
+				if not opened and view.file_name() != None and view.file_name() != '':
+					maybe_path = self.resolve_relative(os.path.dirname(os.path.dirname(view.file_name())), "static/_includes/" + newpath)
 					opened = self.try_open(window, maybe_path)
 					if opened:
 						something_opened = True

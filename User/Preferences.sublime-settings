@@ -83,11 +83,12 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"RestructuredText",
-		"SublimeGit",
-		"Vintage",
 		"Makefile",
-		"SFTP"
+		"SFTP",
+		"SublimeGit",
+		"RestructuredText",
+		"Vintage",
+		"Anaconda"
 	],
 	"indent_guide_options":
 	[
