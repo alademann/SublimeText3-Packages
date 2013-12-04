@@ -9,5 +9,5 @@
     "create_if_not_exists" : false,
 
     //extensions to use
-    "use_extensions": ["", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"]
+    "use_extensions": ["", ".htm", ".html", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"]
 }
