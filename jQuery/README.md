@@ -16,3 +16,6 @@ This bundle is dual-licensed under MIT and GPL licenses (just like jQuery).
 * [http://www.gnu.org/licenses/gpl.html](http://www.gnu.org/licenses/gpl.html)
 
 Use it, change it, fork it, sell it. Do what you will, but please leave the author attribution.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SublimeText/jquery/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
