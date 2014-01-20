@@ -14,8 +14,6 @@ from string import Template
 
 from .anaconda_lib import ioloop
 from .anaconda_lib.worker import LOOP_RUNNING
-from .anaconda_lib.linting.sublime import monitor
-from .anaconda_lib.helpers import get_settings, active_view
 
 from .commands import *
 from .listeners import *
@@ -49,17 +47,10 @@ def plugin_loaded():
     if not LOOP_RUNNING:
         ioloop.loop()
 
-    if get_settings(active_view(), 'anaconda_linting_behaviour') != 'always':
-        return
-
-    if not monitor.is_alive():
-        monitor.start()
-
 
 def plugin_unloaded():
     """Called directly from sublime on plugin unload
     """
 
-    monitor.die = True
     if LOOP_RUNNING:
         ioloop.terminate()
