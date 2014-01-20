@@ -1,8 +1,8 @@
-
 /* LESS syntax coloring tests */
 
 // --------------------------------------------------
 // LESS functions
+
 escape(@string);               // URL encodes a string
 e(@string);                    // escape string content
 %(@string, values...);         // formats a string
@@ -449,4 +449,13 @@ body:not(.something) {
 p::first-letter {
   color: @red; 
   font-size: 130%; 
+}
+
+//https://github.com/danro/LESS-sublime/pull/52
+div {
+  display: table-caption;
+  display: table-cell;
+  display: table-column;
+  display: table-column-group;
+  display: table-row-group;
 }
