@@ -5,10 +5,10 @@ from itertools import chain
 
 try:
     # Python 3
-    from urllib.parse import urlparse
+    from urllib.parse import urljoin
 except (ImportError):
     # Python 2
-    from urlparse import urlparse
+    from urlparse import urljoin
 
 from ..console_write import console_write
 from .release_selector import ReleaseSelector
@@ -114,21 +114,21 @@ class RepositoryProvider(ReleaseSelector):
             return
 
         # Allow repositories to include other repositories
-        if re.match('https?://', self.repo, re.I):
-            url_pieces = urlparse(self.repo)
-            domain = url_pieces.scheme + '://' + url_pieces.netloc
-            path = '/' if url_pieces.path == '' else url_pieces.path
-            if path[-1] != '/':
-                path = os.path.dirname(path)
-            relative_base = domain + path
+        if re.match('https?://', self.repo, re.I) is None:
+            relative_base = os.path.dirname(self.repo)
+            is_http = False
         else:
-            relative_base = os.path.dirname(self.repo) + '/'
+            is_http = True
 
         includes = self.repo_info.get('includes', [])
         del self.repo_info['includes']
         for include in includes:
             if re.match('^\./|\.\./', include):
-                include = os.path.normpath(relative_base + include)
+                if is_http:
+                    include = urljoin(self.repo, include)
+                else:
+                    include = os.path.join(relative_base, include)
+                    include = os.path.normpath(include)
             include_info = self.fetch_location(include)
             included_packages = include_info.get('packages', [])
             self.repo_info['packages'].extend(included_packages)
@@ -390,6 +390,21 @@ class RepositoryProvider(ReleaseSelector):
 
             if 'download' not in info and 'releases' not in info:
                 self.broken_packages[info['name']] = ProviderException(u'No "releases" key for the package "%s" in the repository %s.' % (info['name'], self.repo))
+                continue
+
+            # Make sure the single download, or all releases, have the appropriate keys.
+            # We use a function here so that we can break out of multiple loops.
+            def has_broken_release():
+                download = info.get('download')
+                download_list = [download] if download else []
+                for release in info.get('releases', download_list):
+                    for key in ['version', 'date', 'url']:
+                        if key not in release:
+                            self.broken_packages[info['name']] = ProviderException(u'Missing "%s" key for one of the releases of the package "%s" in the repository %s.' % (key, info['name'], self.repo))
+                            return True
+                return False
+
+            if has_broken_release():
                 continue
 
             for field in ['previous_names', 'labels']:
