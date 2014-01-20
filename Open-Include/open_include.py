@@ -149,6 +149,10 @@ class OpenInclude(sublime_plugin.TextCommand):
                         maybe_path = os.path.dirname(maybe_path)
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + path)
                         
+                    # relative to view in static/_includes directory
+                    if not opened:
+                        opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + "./static/_includes/" + path)
+
                     if opened:
                         break
 
