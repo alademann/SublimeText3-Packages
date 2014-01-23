@@ -14,13 +14,15 @@
 		"*.ico",
 		"*.eot",
 		"*.woff",
+		"*.otf",
 		"*.pdf",
 		"*.swf",
 		"*.jar",
 		"*.zip",
 		"*.eps",
 		"*.psd",
-		"*.ai"
+		"*.ai",
+		"*.svg"
 	],
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
@@ -50,6 +52,8 @@
 		".DS_Store",
 		"*.class",
 		"*.psd",
+		"*.svg",
+		"*.ai",
 		"*.db",
 		"*.sublime-workspace",
 		"*.project",
@@ -78,16 +82,17 @@
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 12.0,
+	"font_size": 14.0,
 	"gpu_window_buffer": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
+		"RestructuredText",
+		"SFTP",
+		"Makefile",
 		"SublimeGit",
 		"Vintage",
-		"RestructuredText",
-		"Makefile",
-		"SFTP",
+		"EditorConfig",
 		"Anaconda"
 	],
 	"indent_guide_options":
@@ -156,6 +161,7 @@
 		"result_title": "TODO Results"
 	},
 	"translate_tabs_to_spaces": true,
+	"trim_automatic_white_space": false,
 	"use_simple_full_screen": true,
 	"wide_caret": true
 }
