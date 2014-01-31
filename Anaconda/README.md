@@ -132,6 +132,7 @@ Anaconda IDE Features
 With this command you can go to a file where a variable, function or class that your cursor is over is defined.
 
 * Shortcut: Linux `super+g`, Mac OS X and Windows `ctrl+alt+g`
+* Vintage Mode Shortcut (Command Mode): `gd`
 * Context Menu: `Anaconda > Goto Definition`
 
 #### Find Usages
@@ -291,10 +292,10 @@ You can control the way that anaconda mark the error lines in your files adjusti
 
 This program is distributed under the terms of the GNU GPL v3. See the [LICENSE](https://raw.github.com/DamnWidget/anaconda/master/LICENSE) file for details.
 
-Troubleshoting
---------------
+Troubleshootings
+----------------
 
-Guide to solve common trobleshootings
+Guide to solve common issues
 
 #### Anaconda does not appear in the available packages list on Package Control
 

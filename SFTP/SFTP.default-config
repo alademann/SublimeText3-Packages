@@ -22,7 +22,7 @@
     "remote_path": "${16:/example/path/}",
     "ignore_regexes": [${17:
         "\\\.sublime-(project|workspace)", "sftp-config(-alt\\\d?)?\\\.json",
-        "sftp-settings\\\.json", "/venv/", "\\\.svn", "\\\.hg", "\\\.git",
+        "sftp-settings\\\.json", "/venv/", "\\\.svn/", "\\\.hg/", "\\\.git/",
         "\\\.bzr", "_darcs", "CVS", "\\\.DS_Store", "Thumbs\\\.db", "desktop\\\.ini"
     }],
     ${18://}"file_permissions": "${19:664}",
@@ -33,11 +33,13 @@
     "connect_timeout": ${24:30},
     ${25://}"keepalive": ${26:120},
     ${27://}"ftp_passive_mode": ${28:true},
-    ${29://}"ssh_key_file": "${30:~/.ssh/id_rsa}",
-    ${31://}"sftp_flags": [${32:"-F", "/path/to/ssh_config"}],
+    ${29://}"ftp_obey_passive_host": ${30:false},
+    ${31://}"ssh_key_file": "${32:~/.ssh/id_rsa}",
+    ${33://}"sftp_flags": [${34:"-F", "/path/to/ssh_config"}],
     
-    ${33://}"preserve_modification_times": ${34:false},
-    ${35://}"remote_time_offset_in_hours": ${36:0},
-    ${37://}"remote_encoding": "${38:utf-8}",
-    ${39://}"remote_locale": "${40:C}",
+    ${35://}"preserve_modification_times": ${36:false},
+    ${37://}"remote_time_offset_in_hours": ${38:0},
+    ${39://}"remote_encoding": "${40:utf-8}",
+    ${41://}"remote_locale": "${42:C}",
+    ${43://}"allow_config_upload": ${44:false},
 }

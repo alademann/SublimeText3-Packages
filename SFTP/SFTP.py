@@ -46,7 +46,7 @@ reloading = {
 
 reload_mods = []
 for mod in sys.modules:
-    if (mod[0:5].lower() == 'sftp.' or mod == 'sftp') and sys.modules[mod] != None:
+    if (mod[0:9] == 'SFTP.sftp' or mod[0:5] == 'sftp.' or mod == 'sftp') and sys.modules[mod] != None:
         reload_mods.append(mod)
         reloading['happening'] = True
 
