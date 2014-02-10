@@ -1,6 +1,6 @@
 # coding=utf8
 import sublime, sublime_plugin
-import os
+import os, shutil
 
 import threading, time
 
@@ -204,13 +204,16 @@ class SideBarFilesOpenWithCommand(sublime_plugin.WindowCommand):
 			items = SideBarSelection(paths).getSelectedFilesWithExtension(extensions)
 
 		import subprocess
-		for item in items:
-			if sublime.platform() == 'osx':
-				subprocess.Popen(['open', '-a', application, item.name()], cwd=item.dirname())
-			elif sublime.platform() == 'windows':
-				subprocess.Popen([application_name, item.path()], cwd=expandVars(application_dir), shell=True)
-			else:
-				subprocess.Popen([application_name, item.name()], cwd=item.dirname())
+		try:
+			for item in items:
+				if sublime.platform() == 'osx':
+					subprocess.Popen(['open', '-a', application, item.name()], cwd=item.dirname())
+				elif sublime.platform() == 'windows':
+					subprocess.Popen([application_name, item.path()], cwd=expandVars(application_dir), shell=True)
+				else:
+					subprocess.Popen([application_name, item.name()], cwd=item.dirname())
+		except:
+			sublime.error_message('Unable to "Open With..", probably incorrect path to application, check the Console.')
 
 	def is_enabled(self, paths = [], application = "", extensions = ""):
 		if extensions == '*':
@@ -462,6 +465,31 @@ class SideBarCopyCommand(sublime_plugin.WindowCommand):
 
 class SideBarPasteCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = [], in_parent = 'False', test = 'True', replace = 'False'):
+		SideBarPasteThread(paths, in_parent, test, replace).start()
+
+	def is_enabled(self, paths = [], in_parent = False):
+		s = sublime.load_settings("SideBarEnhancements/Clipboard.sublime-settings")
+		return s.get('cut', '') + s.get('copy', '') != '' and len(SideBarSelection(paths).getSelectedDirectoriesOrDirnames()) == 1
+
+	def is_visible(self, paths = [], in_parent = False):
+		if in_parent == 'True':
+			return not s.get('disabled_menuitem_paste_in_parent')
+		else:
+			return True
+
+class SideBarPasteThread(threading.Thread):
+	def __init__(self, paths = [], in_parent = 'False', test = 'True', replace = 'False'):
+		self.paths = paths
+		self.in_parent = in_parent
+		self.test = test
+		self.replace = replace
+		threading.Thread.__init__(self)
+
+	def run(self):
+		SideBarPasteCommand2(sublime_plugin.WindowCommand).run(self.paths, self.in_parent, self.test, self.replace)
+
+class SideBarPasteCommand2(sublime_plugin.WindowCommand):
+	def run(self, paths = [], in_parent = 'False', test = 'True', replace = 'False'):
 		s = sublime.load_settings("SideBarEnhancements/Clipboard.sublime-settings")
 
 		cut = s.get('cut', '')
@@ -521,7 +549,7 @@ class SideBarPasteCommand(sublime_plugin.WindowCommand):
 			if test == 'True' and len(already_exists_paths):
 				self.confirm(paths, in_parent, already_exists_paths)
 			elif test == 'True' and not len(already_exists_paths):
-				self.run(paths, in_parent, 'False', 'False')
+				SideBarPasteThread(paths, in_parent, 'False', 'False').start();
 			elif test == 'False':
 				cut = s.set('cut', '')
 				SideBarProject().refresh();
@@ -549,19 +577,9 @@ class SideBarPasteCommand(sublime_plugin.WindowCommand):
 	def on_done(self, paths, in_parent, result):
 		if result != -1:
 			if result == 0:
-				self.run(paths, in_parent, 'False', 'True')
+				SideBarPasteThread(paths, in_parent, 'False', 'True').start()
 			else:
-				self.run(paths, in_parent, 'False', 'False')
-
-	def is_enabled(self, paths = [], in_parent = False):
-		s = sublime.load_settings("SideBarEnhancements/Clipboard.sublime-settings")
-		return s.get('cut', '') + s.get('copy', '') != '' and len(SideBarSelection(paths).getSelectedDirectoriesOrDirnames()) == 1
-
-	def is_visible(self, paths = [], in_parent = False):
-		if in_parent == 'True':
-			return not s.get('disabled_menuitem_paste_in_parent')
-		else:
-			return True
+				SideBarPasteThread(paths, in_parent, 'False', 'False').start()
 
 class SideBarCopyNameCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = []):
@@ -1076,7 +1094,10 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
 					if s.get('close_affected_buffers_when_deleting_even_if_dirty', False):
 						item.closeViews()
 					if s.get('disable_send_to_trash', False):
-						self.remove(item.path());
+						if sublime.platform() == 'windows':
+							self.remove('\\\\?\\'+item.path());
+						else:
+							self.remove(item.path());
 					else:
 						send2trash(item.path())
 				SideBarProject().refresh();
@@ -1118,7 +1139,10 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
 		if s.get('close_affected_buffers_when_deleting_even_if_dirty', False):
 			item = SideBarItem(new, os.path.isdir(new))
 			item.closeViews()
-		self.remove(new)
+		if sublime.platform() == 'windows':
+			self.remove('\\\\?\\'+new);
+		else:
+			self.remove(new)
 		SideBarProject().refresh();
 
 	def remove(self, path):
@@ -1146,9 +1170,18 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
 	def remove_safe_dir(self, path):
 		if not SideBarSelection().isNone(path):
 			try:
-				os.rmdir(path)
+				shutil.rmtree(path)
 			except:
 				print("Unable to remove folder:\n\n"+path)
+				if sublime.platform() == 'windows':
+					try:
+						shutil.rmtree(path)
+					except:
+						# raise error in case we were unable to delete.
+						if os.path.exists(path):
+							shutil.rmtree(path)
+						else:
+							pass
 
 	def is_enabled(self, paths = []):
 		return SideBarSelection(paths).len() > 0 and SideBarSelection(paths).hasProjectDirectories() == False
@@ -1241,7 +1274,7 @@ class SideBarProjectItemAddCommand(sublime_plugin.WindowCommand):
 			project.add(item.path())
 
 	def is_enabled(self, paths = []):
-		return SideBarSelection(paths).hasDirectories()
+		return SideBarSelection(paths).hasDirectories() and SideBarSelection(paths).hasProjectDirectories() == False
 
 class SideBarProjectItemRemoveFolderCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = []):
@@ -1262,7 +1295,41 @@ class SideBarProjectItemExcludeCommand(sublime_plugin.WindowCommand):
 				project.excludeFile(item.path(), item.pathRelativeFromProject())
 
 	def is_enabled(self, paths = []):
-		return SideBarSelection(paths).len() > 0
+		return SideBarSelection(paths).len() > 0 and SideBarSelection(paths).hasProjectDirectories() == False
+
+class SideBarProjectItemExcludeFromIndexCommand(sublime_plugin.WindowCommand):
+	def run(self, paths = [], type = 'item'):
+		Preferences = sublime.load_settings("Preferences.sublime-settings")
+		excluded = Preferences.get("index_exclude_patterns", [])
+		for item in self.items(paths, type):
+			excluded.append(item)
+		excluded = list(set(excluded))
+		Preferences.set("index_exclude_patterns", excluded);
+		sublime.save_settings("Preferences.sublime-settings");
+
+	def is_visible(self, paths = [], type = 'item'):
+		return len(self.items(paths, type)) > 0
+
+	def description(self, paths = [], type = 'item'):
+		items = self.items(paths, type)
+		return 'Exclude From the Index "'+(",".join(items))+'"'
+
+	def items(self, paths = [], type = 'item'):
+		items = []
+		if type == 'item':
+			for item in SideBarSelection(paths).getSelectedItems():
+				if item.isDirectory():
+					items.append(item.path()+'*')
+				else:
+					items.append(item.path())
+		elif type == 'extension':
+			for item in SideBarSelection(paths).getSelectedFiles():
+				items.append('*'+item.extension())
+		elif type == 'file':
+			for item in SideBarSelection(paths).getSelectedFiles():
+				items.append(item.name())
+		items = list(set(items))
+		return items
 
 class SideBarDonateCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = []):
