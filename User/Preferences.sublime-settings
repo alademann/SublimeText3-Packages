@@ -87,13 +87,13 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Makefile",
-		"Vintage",
+		"Anaconda",
 		"EditorConfig",
+		"SublimeGit",
+		"Makefile",
 		"SFTP",
 		"RestructuredText",
-		"SublimeGit",
-		"Anaconda"
+		"Vintage"
 	],
 	"indent_guide_options":
 	[
