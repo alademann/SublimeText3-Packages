@@ -87,13 +87,12 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Anaconda",
 		"EditorConfig",
-		"SublimeGit",
-		"Makefile",
 		"SFTP",
+		"Vintage",
 		"RestructuredText",
-		"Vintage"
+		"SublimeGit",
+		"Makefile"
 	],
 	"indent_guide_options":
 	[
@@ -106,7 +105,6 @@
 	"reveal-on-activate": true,
 	"rulers":
 	[
-		80,
 		120
 	],
 	"shift_tab_unindent": true,
