@@ -131,7 +131,7 @@ class OpenInclude(sublime_plugin.TextCommand):
                 continue
 
             # remove quotes
-            path = re.sub(r'^("|\')|("|\')$', '', path)
+            path = path.strip(r'"\'<>')  # re.sub(r'^("|\'|<)|("|\'|>)$', '', path) 
 
             # remove :row:col
             path = re.sub('(\:[0-9]*)+$', '', path).strip()
@@ -147,11 +147,11 @@ class OpenInclude(sublime_plugin.TextCommand):
                     if not opened:
                         maybe_path = os.path.dirname(maybe_path)
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + path)
+
                         
                     # relative to view in static/_includes directory
                     if not opened:
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + "./static/_includes/" + path)
-
                     if opened:
                         break
 
@@ -178,7 +178,6 @@ class OpenInclude(sublime_plugin.TextCommand):
 
     def create_path_relative_to_folder(self, window, view, maybe_path, path):
         maybe_path_tpm = self.resolve_relative(maybe_path, path)
-        print("Trying to open " + maybe_path_tpm)
         return self.try_open(window, maybe_path_tpm)
 
     # try opening the resouce
