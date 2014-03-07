@@ -30,6 +30,8 @@
                 <string>#4d4d4d99</string>
                 <key>activeGuide</key>
                 <string>#4d4d4dB3</string>
+                <!-- <key>stackGuide</key>
+                <string>#4d4d4dB3</string> -->
                 
                 <key>bracketsForeground</key>
                 <string>#F8F8F2A5</string>

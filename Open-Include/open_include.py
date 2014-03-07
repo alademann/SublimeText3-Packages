@@ -35,7 +35,6 @@ class OpenInclude(sublime_plugin.TextCommand):
 
             # between quotes
             syntax = self.view.scope_name(region.begin())
-            
             if re.search(r"(parameter\.url|string\.quoted\.(double|single))", syntax):
                 file_to_open = view.substr(view.extract_scope(region.begin()))
                 opened = self.resolve_path(window, view, file_to_open)
@@ -77,7 +76,7 @@ class OpenInclude(sublime_plugin.TextCommand):
 
                 # split by spaces and tabs
                 if not opened:
-                    words = re.sub(r"\s+", "\n", expanded_lines)  #expanded_lines.replace('\t', '\n').replace(' ', '\n')
+                    words = re.sub(r"\s+", "\n", expanded_lines)  # expanded_lines.replace('\t', '\n').replace(' ', '\n'))
                     opened = self.resolve_path(window, view, words)
 
             if opened:
@@ -87,7 +86,7 @@ class OpenInclude(sublime_plugin.TextCommand):
         if not something_opened:
             # This rarely helps and only creates a huge load of overload
             # self.resolve_path(window, view, view.substr(sublime.Region(0, view.size())).replace('\t', '\n'))
-            sublime.status_message("Unable to find file in the current selection")
+            sublime.status_message("Unable to find a file in the current selection")
 
     def expand_paths_with_extensions(self, window, view, paths):
 
@@ -103,9 +102,9 @@ class OpenInclude(sublime_plugin.TextCommand):
                 continue
             for extension in extensions:
                 subs = path.replace('\\', '/').split('/')
+                subs[-1] = re.sub('("|\')', '', subs[-1]);
                 subs[-1] = extension.get('prefix', '') + subs[-1] + extension.get('extension', '')
                 path_add.append(os.path.join(*subs))
-                
         return paths + path_add
 
     # resolve the path of these sources and send to try_open
