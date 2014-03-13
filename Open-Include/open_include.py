@@ -11,7 +11,8 @@ try:
 except:
     from Edit import Edit as Edit
 
-BINARY = re.compile('\.(apng|png|jpg|gif|jpeg|bmp|psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$', re.I)
+BINARY = re.compile('\.(psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$', re.I)
+IMAGE = re.compile('\.(apng|png|jpg|gif|jpeg|bmp)$', re.I)
 
 # global settings container
 s = None
@@ -131,7 +132,7 @@ class OpenInclude(sublime_plugin.TextCommand):
                 continue
 
             # remove quotes
-            path = path.strip(r'"\'<>')  # re.sub(r'^("|\'|<)|("|\'|>)$', '', path) 
+            path = path.strip(r'"\'<>')  # re.sub(r'^("|\'|<)|("|\'|>)$', '', path)
 
             # remove :row:col
             path = re.sub('(\:[0-9]*)+$', '', path).strip()
@@ -147,11 +148,11 @@ class OpenInclude(sublime_plugin.TextCommand):
                     if not opened:
                         maybe_path = os.path.dirname(maybe_path)
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + path)
-
                         
                     # relative to view in static/_includes directory
                     if not opened:
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + "./static/_includes/" + path)
+
                     if opened:
                         break
 
@@ -197,12 +198,13 @@ class OpenInclude(sublime_plugin.TextCommand):
                 threading.Thread(target=self.read_url, args=(maybe_path,)).start()
 
         elif os.path.isfile(maybe_path):
-            if BINARY.search(maybe_path):
-                # Binary file, open with associated application
+            if IMAGE.search(maybe_path):
+                window.open_file(maybe_path) 
+            elif BINARY.search(maybe_path):
                 try:
                     import desktop
                 except:
-                    from .desktop import desktop
+                    from . import desktop
                 desktop.open(maybe_path)
             else:
                 # Open within ST
