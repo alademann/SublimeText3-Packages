@@ -9,6 +9,9 @@
   //{ "keys": ["super+shift+alt+up"], "command": "sftp_sync_up" },
   // end sftp keystrokes
 
+  { "keys": ["ctrl+alt+up"], "command": "select_lines", "args": {"forward": false} },
+  { "keys": ["ctrl+alt+down"], "command": "select_lines", "args": {"forward": true} },
+
   // Sublime TODO
   {
     "keys": ["super+alt+t"],
@@ -30,7 +33,7 @@
   { "keys": ["super+shift+,"], "command": "insert_snippet", "args": {"block": false, "name": "Packages/User/html_code-angle-brackets.sublime-snippet"} },
 
   // scss snippets
-  { "keys": ["alt+s"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-string-interpolation.sublime-snippet"} },  
+  { "keys": ["alt+s"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-string-interpolation.sublime-snippet"} },
 
   // comment snippets
   { "keys": ["super+/"], "command": "toggle_comment", "args": { "block": false } },

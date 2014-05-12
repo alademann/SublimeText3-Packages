@@ -10,14 +10,19 @@ import tempfile
 from fnmatch import fnmatch
 import codecs
 
+if sublime.platform() == "windows":
+    from subprocess import Popen
+
+
 class FileDiffMenuCommand(sublime_plugin.TextCommand):
     CLIPBOARD = 'Diff file with Clipboard'
     SELECTIONS = 'Diff Selections'
     SAVED = 'Diff file with Saved'
-    FILE = 'Diff file with File in Project…'
-    TAB = 'Diff file with Open Tab…'
+    FILE = u'Diff file with File in Project…'
+    TAB = u'Diff file with Open Tab…'
+    PREVIOUS = 'Diff file with Previous window'
 
-    FILE_DIFFS = [CLIPBOARD, SAVED, FILE, TAB]
+    FILE_DIFFS = [CLIPBOARD, SAVED, FILE, TAB, PREVIOUS]
 
     def run(self, edit, cmd=None):
         menu_items = self.FILE_DIFFS[:]
@@ -26,14 +31,14 @@ class FileDiffMenuCommand(sublime_plugin.TextCommand):
         if len(non_empty_regions) == 2:
             menu_items.insert(1, self.SELECTIONS)
         elif len(non_empty_regions):
-            menu_items = [f.replace(u'Diff file', u'Diff selection') for f in menu_items]
-            saved = saved.replace(u'Diff file', u'Diff selection')
+            menu_items = [f.replace('Diff file', 'Diff selection') for f in menu_items]
+            saved = saved.replace('Diff file', 'Diff selection')
 
         if not (self.view.file_name() and self.view.is_dirty()):
             menu_items.remove(saved)
 
         def on_done(index):
-            restored_menu_items = [f.replace(u'Diff selection', u'Diff file') for f in menu_items]
+            restored_menu_items = [f.replace('Diff selection', 'Diff file') for f in menu_items]
             if index == -1:
                 return
             elif restored_menu_items[index] == self.CLIPBOARD:
@@ -46,6 +51,8 @@ class FileDiffMenuCommand(sublime_plugin.TextCommand):
                 self.view.run_command('file_diff_file', {'cmd': cmd})
             elif restored_menu_items[index] == self.TAB:
                 self.view.run_command('file_diff_tab', {'cmd': cmd})
+            elif restored_menu_items[index] == self.PREVIOUS:
+                self.view.run_command('file_diff_previous', {'cmd': cmd})
         self.view.window().show_quick_panel(menu_items, on_done)
 
 
@@ -70,6 +77,11 @@ class FileDiffCommand(sublime_plugin.TextCommand):
         if file_name is None:
             file_name = default_name
         content = [line.replace("\r\n", "\n").replace("\r", "\n") for line in content]
+
+        trim_trailing_white_space_before_diff = self.settings().get('trim_trailing_white_space_before_diff', False)
+        if trim_trailing_white_space_before_diff:
+            content = [line.rstrip() for line in content]
+
         return (content, file_name)
 
     def run_diff(self, a, b, from_file, to_file, **options):
@@ -122,10 +134,37 @@ class FileDiffCommand(sublime_plugin.TextCommand):
                 with codecs.open(to_file, encoding='utf-8', mode='w+') as tmp_file:
                     tmp_file.write(b)
 
+            trim_trailing_white_space_before_diff = self.settings().get('trim_trailing_white_space_before_diff', False)
+            if trim_trailing_white_space_before_diff:
+                def trim_trailing_white_space(file_name):
+                    trim_lines = []
+                    modified = False
+                    with codecs.open(file_name, encoding='utf-8', mode='r') as f:
+                        lines = f.readlines()
+                        lines = [line.replace("\n", "").replace("\r", "") for line in lines]
+                        for line in lines:
+                            trim_line = line.rstrip()
+                            trim_lines.append(trim_line)
+                            if trim_line != line:
+                                modified = True
+                    if modified:
+                        tmp_file = tempfile.NamedTemporaryFile(delete=False)
+                        file_name = tmp_file.name
+                        tmp_file.close()
+                        with codecs.open(file_name, encoding='utf-8', mode='w+') as f:
+                            f.writelines('\n'.join(trim_lines))
+                    return file_name
+
+                from_file = trim_trailing_white_space(from_file)
+                to_file = trim_trailing_white_space(to_file)
+
             if os.path.exists(from_file):
-                external_command = [c.replace(u'$file1', from_file) for c in external_command]
-                external_command = [c.replace(u'$file2', to_file) for c in external_command]
-                self.view.window().run_command("exec", {"cmd": external_command})
+                external_command = [c.replace('$file1', from_file) for c in external_command]
+                external_command = [c.replace('$file2', to_file) for c in external_command]
+                if sublime.platform() == "windows":
+                    Popen(external_command)
+                else:
+                    self.view.window().run_command("exec", {"cmd": external_command})
         except Exception as e:
             # some basic logging here, since we are cluttering the /tmp folder
             sublime.status_message(str(e))
@@ -151,11 +190,19 @@ class FileDiffDummy1Command(sublime_plugin.TextCommand):
 
 class FileDiffClipboardCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
+        from_file = self.view.file_name()
+        for region in self.view.sel():
+            if not region.empty():
+                from_file += ' (Selection)'
+                break
         clipboard = sublime.get_clipboard()
         self.run_diff(self.diff_content(), clipboard,
-            from_file=self.view.file_name(),
+            from_file=from_file,
             to_file='(clipboard)',
             **kwargs)
+
+    def is_visible(self):
+        return sublime.get_clipboard()
 
 
 class FileDiffSelectionsCommand(FileDiffCommand):
@@ -188,34 +235,40 @@ class FileDiffSelectionsCommand(FileDiffCommand):
         # trim off indent
         indent = self.trim_indent(first_selection.splitlines())
         if indent:
-            first_selection = u"\n".join(line[len(indent):] for line in first_selection.splitlines())
+            first_selection = "\n".join(line[len(indent):] for line in first_selection.splitlines())
 
         # trim off indent
         indent = self.trim_indent(second_selection.splitlines())
         if indent:
-            second_selection = u"\n".join(line[len(indent):] for line in second_selection.splitlines())
+            second_selection = "\n".join(line[len(indent):] for line in second_selection.splitlines())
 
         self.run_diff(first_selection, second_selection,
             from_file='first selection',
             to_file='second selection',
             **kwargs)
 
+    def is_visible(self):
+        return len(self.view.sel()) > 1
+
 
 class FileDiffSavedCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
         self.run_diff(self.read_file(self.view.file_name()), self.diff_content(),
             from_file=self.view.file_name(),
-            to_file=self.view.file_name() + u' (Unsaved)',
+            to_file=self.view.file_name() + ' (Unsaved)',
             **kwargs)
+
+    def is_visible(self):
+        return self.view.file_name() and self.view.is_dirty()
 
 
 class FileDiffFileCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
         common = None
         folders = self.view.window().folders()
-        files = self.find_files(folders)
+        files = self.find_files(folders, [])
         for folder in folders:
-            if common == None:
+            if common is None:
                 common = folder
             else:
                 common_len = len(common)
@@ -225,9 +278,9 @@ class FileDiffFileCommand(FileDiffCommand):
 
         my_file = self.view.file_name()
         # filter out my_file
-        files = [file for file in files if file != my_file]
+        files = [f for f in files if f != my_file]
         # shorten names using common length
-        file_picker = [file[len(common):] for file in files]
+        file_picker = [f[len(common):] for f in files]
 
         def on_done(index):
             if index > -1:
@@ -249,15 +302,15 @@ class FileDiffFileCommand(FileDiffCommand):
             if not os.path.isdir(folder):
                 continue
 
-            for file in os.listdir(folder):
-                fullpath = os.path.join(folder, file)
+            for f in os.listdir(folder):
+                fullpath = os.path.join(folder, f)
                 if os.path.isdir(fullpath):
                     # excluded folder?
-                    if not len([True for pattern in folder_exclude_patterns if fnmatch(file, pattern)]):
+                    if not len([True for pattern in folder_exclude_patterns if fnmatch(f, pattern)]):
                         self.find_files([fullpath], ret)
                 else:
                     # excluded file?
-                    if not len([True for pattern in file_exclude_patterns if fnmatch(file, pattern)]):
+                    if not len([True for pattern in file_exclude_patterns if fnmatch(f, pattern)]):
                         ret.append(fullpath)
                 if len(ret) >= max_files:
                     sublime.status_message('Too many files to include all of them in this list')
@@ -294,5 +347,60 @@ class FileDiffTabCommand(FileDiffCommand):
         if len(files) == 1:
             on_done(0)
         else:
-            menu_items = [os.path.basename(f) for f in files]
+            if self.settings().get('expand_full_file_name_in_tab', False):
+                menu_items = [[os.path.basename(f),f] for f in files]
+            else:
+                menu_items = [os.path.basename(f) for f in files]
             sublime.set_timeout(lambda: self.view.window().show_quick_panel(menu_items, on_done), 1)
+
+    def is_visible(self):
+        return len(self.view.window().views()) > 1
+
+
+previous_view = current_view = None
+
+class FileDiffPreviousCommand(FileDiffCommand):
+    def run(self, edit, **kwargs):
+        if previous_view:
+            previous_view_content = previous_view.substr(sublime.Region(0, previous_view.size()))
+            previous_view_name = ''
+            if previous_view.file_name():
+                previous_view_name = previous_view.file_name()
+            elif previous_view.name():
+                previous_view_name = previous_view.name()
+            else:
+                previous_view_name = 'untitled (Previous)'
+
+            view_name = ''
+            if self.view.file_name():
+                view_name = self.view.file_name()
+            elif self.view.name():
+                view_name = self.view.name()
+            else:
+                view_name = 'untitled (Current)'
+
+            self.run_diff(previous_view_content, self.diff_content(),
+                from_file=previous_view_name,
+                to_file=view_name,
+                **kwargs)
+
+    def is_visible(self):
+        return previous_view
+
+def record_current_view(view):
+    global previous_view
+    global current_view
+    previous_view = current_view
+    current_view = view
+
+class FileDiffListener(sublime_plugin.EventListener):
+    def on_activated(self, view):
+        try:
+            # Prevent 'show_quick_panel()' of 'FileDiffs Menu' from being recorded
+            viewids = [v.id() for v in view.window().views()]
+            if view.id() not in viewids:
+                return
+            if current_view is None or view.id() != current_view.id():
+                record_current_view(view)
+        except AttributeError:
+            pass

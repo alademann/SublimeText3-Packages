@@ -39,7 +39,9 @@ Add External Diff Tool *(optional)*
 
 1. Preferences > Package Settings > FileDiffs > Settings - Default
 
-2. Uncomment one of the examples or write you own command to open external diff tool.
+2. Uncomment one of the examples or write your own command to open external diff tool.
+
+   This command *may* need to be a full path (e.g. `/usr/local/bin/ksdiff`), if the command isn't in your `PATH`.
 
 
 Commands
@@ -58,3 +60,15 @@ The rest of the commands do not need to be bound (accessible from the menu):
 `file_diff_file`: Shows the diff of the current file or selection(s) and a file that is in the current project.
 
 `file_diff_tab`: Shows the diff of the current file or selection(s) and an open file (aka a file that has a tab).
+
+`file_diff_previous`: Shows the diff of the current file or selection(s) and the previous activated file.
+
+Contributors
+------------
+
+Thanks to:
+
+- **Sebastian Pape** for adding support for using an external diff tool
+- **Starli0n** for merging the ST2 and ST3 branches into one branch,
+- and for adding the "Diff file with previous" feature
+- **dnsmkl** for helping with diffing temporary files

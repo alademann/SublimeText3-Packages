@@ -32,7 +32,7 @@
                 <string>#4d4d4dB3</string>
                 <!-- <key>stackGuide</key>
                 <string>#4d4d4dB3</string> -->
-                
+
                 <key>bracketsForeground</key>
                 <string>#F8F8F2A5</string>
                 <key>bracketsOptions</key>
@@ -118,7 +118,7 @@
 			<key>name</key>
 			<string>Variable, String Link, Regular Expression, Tag Name, GitGutter deleted</string>
 			<key>scope</key>
-			<string>variable, support.other.variable, string.other.link, string.regexp, entity.name.tag, meta.tag, declaration.tag, markup.deleted.git_gutter</string>
+			<string>variable, variable.other, variable.other.name, support.other.variable, string.other.link, string.regexp, entity.name.tag, meta.tag, declaration.tag, markup.deleted.git_gutter</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -162,12 +162,12 @@
 			</dict>
 		</dict>
 		<!-- END CSS Selectors -->
-		
+
 		<dict>
 			<key>name</key>
 			<string>Variable Definition</string>
 			<key>scope</key>
-			<string>variable.other.definition, support.other.variable.definition</string>
+			<string>variable.other.definition, variable.other.name.definition, support.other.variable.definition</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

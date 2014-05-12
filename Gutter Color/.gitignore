@@ -1,0 +1,4 @@
+icons/*.png
+icons/
+*.pyc
+.cache/
