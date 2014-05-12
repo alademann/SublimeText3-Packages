@@ -35,8 +35,7 @@ class OpenInclude(sublime_plugin.TextCommand):
             opened = False
 
             # between quotes
-            syntax = self.view.scope_name(region.begin())
-            if re.search(r"(parameter\.url|string\.quoted\.(double|single))", syntax):
+            if view.score_selector(region.begin(), "parameter.url, string.quoted"):
                 file_to_open = view.substr(view.extract_scope(region.begin()))
                 opened = self.resolve_path(window, view, file_to_open)
 
@@ -132,7 +131,7 @@ class OpenInclude(sublime_plugin.TextCommand):
                 continue
 
             # remove quotes
-            path = path.strip(r'"\'<>')  # re.sub(r'^("|\'|<)|("|\'|>)$', '', path)
+            path = path.strip('"\'<>')  # re.sub(r'^("|\'|<)|("|\'|>)$', '', path)
 
             # remove :row:col
             path = re.sub('(\:[0-9]*)+$', '', path).strip()
@@ -148,11 +147,11 @@ class OpenInclude(sublime_plugin.TextCommand):
                     if not opened:
                         maybe_path = os.path.dirname(maybe_path)
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + path)
+
                         
                     # relative to view in static/_includes directory
                     if not opened:
                         opened = self.create_path_relative_to_folder(window, view, maybe_path, new_path_prefix + "./static/_includes/" + path)
-
                     if opened:
                         break
 
@@ -199,7 +198,7 @@ class OpenInclude(sublime_plugin.TextCommand):
 
         elif os.path.isfile(maybe_path):
             if IMAGE.search(maybe_path):
-                window.open_file(maybe_path) 
+                window.open_file(maybe_path)
             elif BINARY.search(maybe_path):
                 try:
                     import desktop
