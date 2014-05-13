@@ -26,7 +26,7 @@
 	],
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
-	"color_scheme": "Packages/User/Tomorrow-Night.tmTheme",
+	"color_scheme": "Packages/User/Tomorrow-Night-Soda.tmTheme",
 	"detect_slow_plugins": false,
 	"ensure_newline_at_eof_on_save": false,
 	"fade_fold_buttons": false,
@@ -87,14 +87,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SFTP",
-		"Makefile",
-		"Vintage",
-		"RestructuredText",
-		"SublimeGit",
 		"SHS-Bourbon-Neat",
 		"SHS-Bourbon",
-		"JavaScript"
+		"SublimeGit",
+		"RestructuredText",
+		"JavaScript",
+		"Makefile",
+		"SFTP",
+		"Vintage"
 	],
 	"indent_guide_options":
 	[

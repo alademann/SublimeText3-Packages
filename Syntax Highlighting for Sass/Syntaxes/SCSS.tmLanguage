@@ -84,7 +84,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#variable</string>
+					<string>#variable-library</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -538,6 +538,18 @@
 					<key>include</key>
 					<string>#single-quoted</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#operator</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function-content</string>
+				</dict>
 			</array>
 		</dict>
 		<key>numeric</key>
@@ -550,16 +562,16 @@
 		<key>operator</key>
 		<dict>
 			<key>match</key>
-			<string>\+|\s-\s|\s-(?=\$)|(?&lt;=\()-(?=\$)|\s-(?=\()|\*|/|%|=|!|&lt;|&gt;|~</string>
+			<string>\+|\s-\s|\s-(?=\$)|(?&lt;=\()-(?=\$)|\s-(?=\()|\*|/|\s%\s|\s%(?=\$)|=|!|&lt;|&gt;|~</string>
 			<key>name</key>
 			<string>keyword.operator.sass</string>
 		</dict>
 		<key>placeholder-selector</key>
 		<dict>
 			<key>begin</key>
-			<string>%(?!\d)</string>
+			<string>(?!\d)%(?!\d)</string>
 			<key>end</key>
-			<string>$\n?|\s|(?=;|{)</string>
+			<string>$\n?|\s|(?=;|{|\))</string>
 			<key>name</key>
 			<string>entity.other.attribute-name.placeholder-selector.sass</string>
 		</dict>
@@ -680,24 +692,14 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>variable.other.root</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>variable.other.name.definition</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
-					<string>meta.property-list.css.sass</string>
+					<string>variable.other.root.definition</string>
 				</dict>
 			</dict>
 			<key>end</key>
 			<string>\s*|\t*</string>
 			<key>name</key>
 			<string>meta.set.variable</string>
-			<key>patterns</key>
+			<!-- <key>patterns</key>
 			<array>
 				<dict>
 					<key>include</key>
@@ -751,7 +753,7 @@
 					<key>include</key>
 					<string>$self</string>
 				</dict>
-			</array>
+			</array> -->
 		</dict>
 	</dict>
 	<key>scopeName</key>

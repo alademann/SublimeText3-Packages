@@ -167,7 +167,7 @@
 			<key>name</key>
 			<string>Variable Definition</string>
 			<key>scope</key>
-			<string>variable.other.definition, variable.other.name.definition, support.other.variable.definition</string>
+			<string>variable.other.root, support.other.variable.definition</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
