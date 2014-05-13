@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+width: auto
+
+]]></content>
+	<tabTrigger>w:a</tabTrigger>
+	<scope>source.sass - meta.property-list - support.function.name.sass.library - variable.other.root</scope>
+	<description>width:auto</description>
+</snippet>

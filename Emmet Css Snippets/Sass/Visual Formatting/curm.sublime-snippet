@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+cursor: move
+
+]]></content>
+	<tabTrigger>cur:m</tabTrigger>
+	<scope>source.sass - meta.property-list - support.function.name.sass.library - variable.other.root</scope>
+	<description>cursor:move</description>
+</snippet>

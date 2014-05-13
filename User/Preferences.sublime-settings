@@ -26,7 +26,7 @@
 	],
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
-	"color_scheme": "Packages/User/Tomorrow-Night-Soda.tmTheme",
+	"color_scheme": "Packages/User/Tomorrow-Night.tmTheme",
 	"detect_slow_plugins": false,
 	"ensure_newline_at_eof_on_save": false,
 	"fade_fold_buttons": false,
@@ -87,13 +87,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Vintage",
 		"SFTP",
-		"SHS-Bourbon",
 		"Makefile",
-		"SHS-Bourbon-Neat",
+		"Vintage",
+		"RestructuredText",
 		"SublimeGit",
-		"RestructuredText"
+		"SHS-Bourbon-Neat",
+		"SHS-Bourbon",
+		"JavaScript"
 	],
 	"indent_guide_options":
 	[
@@ -166,5 +167,5 @@
 	"trim_trailing_white_space_on_save": true,
 	"use_simple_full_screen": true,
 	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?",
+	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
 }

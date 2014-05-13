@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+clear: left
+
+]]></content>
+	<tabTrigger>cl:l</tabTrigger>
+	<scope>source.sass - meta.property-list - support.function.name.sass.library - variable.other.root</scope>
+	<description>clear:left</description>
+</snippet>

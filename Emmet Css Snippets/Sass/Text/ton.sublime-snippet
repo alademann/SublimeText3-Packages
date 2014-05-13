@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+text-outline: none
+
+]]></content>
+	<tabTrigger>to:n</tabTrigger>
+	<scope>source.sass - meta.property-list - support.function.name.sass.library - variable.other.root</scope>
+	<description>text-outline:none</description>
+</snippet>

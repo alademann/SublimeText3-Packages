@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+$1:before
+	content: "$2"
+	${3:/* style */}
+]]></content>
+	<tabTrigger>be</tabTrigger>
+	<scope>source.sass - meta.property-list - support.function.name.sass.library - variable.other.root</scope>
+	<description>:before</description>
+</snippet>
