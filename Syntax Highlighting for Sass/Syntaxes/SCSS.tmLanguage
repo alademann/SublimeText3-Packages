@@ -134,6 +134,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#variable-library</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#variable-root</string>
 		</dict>
 		<dict>
@@ -155,6 +159,12 @@
 		<dict>
 			<key>include</key>
 			<string>#dotdotdot</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=$)[a-zA-Z0-9_-](\s*|\t*)\:+</string>
+			<key>name</key>
+			<string>support.variable.name.sass.library, variable.other.library, variable.in.project</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -302,6 +312,10 @@
 				<dict>
 					<key>include</key>
 					<string>#variable</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#variable-root</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -628,19 +642,116 @@
 			<key>name</key>
 			<string>keyword.other.unit.css.sass</string>
 		</dict>
-		<key>variable-root</key>
+		<key>variable-library</key>
 		<dict>
 			<key>match</key>
 			<string>\$[a-zA-Z0-9_-]+</string>
 			<key>name</key>
-			<string>variable.other.root</string>
+			<string>variable.other.library</string>
 		</dict>
 		<key>variable</key>
 		<dict>
-			<key>match</key>
-			<string>\$[a-zA-Z0-9_-]+</string>
+			<key>begin</key>
+			<string>(\w|\d|\t*|\s*)(\$)([a-zA-Z0-9_-]+\b)\s*</string>
+			<key>captures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>variable.other</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>variable.other.name</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\s*(?=(\;|\,|\:|\s*|\}))</string>
 			<key>name</key>
-			<string>variable.other.value</string>
+			<string>variable.other</string>
+		</dict>
+		<key>variable-root</key>
+		<dict>
+			<key>begin</key>
+			<string>(\s*|\t*)(\$[a-zA-Z0-9_-]+\b)(\s*|\t*)(\:)(\s*|\t*)</string>
+			<key>captures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>variable.other.root</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>variable.other.name.definition</string>
+				</dict>
+				<key>5</key>
+				<dict>
+					<key>name</key>
+					<string>meta.property-list.css.sass</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\s*|\t*</string>
+			<key>name</key>
+			<string>meta.set.variable</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#variable</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#single-quoted</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#double-quoted</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#numeric</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#operator</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function-content</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#unit</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#rgb-value</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#flag</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comma</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#interpolation</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>$self</string>
+				</dict>
+			</array>
 		</dict>
 	</dict>
 	<key>scopeName</key>
