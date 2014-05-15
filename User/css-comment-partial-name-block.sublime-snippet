@@ -1,8 +1,8 @@
 <snippet>
   <content><![CDATA[//----------------------------------------------------
 
-//+    PARTIAL:  $TM_FILENAME
-//+    PARENT:   ${1:parent}.scss
+//  PARTIAL:  $TM_FILENAME
+//  PARENT:   ${1:parent}.scss
 
 //----------------------------------------------------
 

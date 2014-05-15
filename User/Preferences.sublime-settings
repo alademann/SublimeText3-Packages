@@ -27,7 +27,7 @@
 	"bold_folder_labels": true,
 	"caret_style": "smooth",
 	"color_scheme": "Packages/User/Tomorrow-Night-Soda.tmTheme",
-	"detect_slow_plugins": false,
+	"detect_slow_plugins": true,
 	"ensure_newline_at_eof_on_save": false,
 	"fade_fold_buttons": false,
 	"fallback_encoding": "UTF-8",
@@ -87,14 +87,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"Makefile",
-		"SFTP",
 		"SublimeGit",
+		"SFTP",
 		"RestructuredText",
-		"SHS-Bourbon-Neat",
-		"SHS-Bourbon",
+		"Makefile",
+		"Vintage",
 		"JavaScript",
-		"Vintage"
+		"SHS-Bourbon",
+		"SHS-Bourbon-Neat"
 	],
 	"indent_guide_options":
 	[
@@ -108,7 +108,7 @@
 	"reveal-on-activate": true,
 	"shift_tab_unindent": true,
 	"soda_classic_tabs": false,
-	"soda_folder_icons": false,
+	"soda_folder_icons": true,
 	"tab_size": 4,
 	"theme": "Soda Dark.sublime-theme",
 	"todo":
