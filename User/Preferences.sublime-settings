@@ -87,13 +87,13 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SHS-Bourbon-Neat",
-		"SHS-Bourbon",
-		"SublimeGit",
-		"RestructuredText",
-		"JavaScript",
 		"Makefile",
 		"SFTP",
+		"SublimeGit",
+		"RestructuredText",
+		"SHS-Bourbon-Neat",
+		"SHS-Bourbon",
+		"JavaScript",
 		"Vintage"
 	],
 	"indent_guide_options":
