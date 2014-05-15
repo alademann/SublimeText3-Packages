@@ -55,13 +55,6 @@
         "attributes": ["selected"],
         "layer0.texture": "Theme - Soda/Soda Dark/tab-active.png"
     },
-    // Tab dirty state (close button hidden)
-    {
-        "class": "tab_control",
-        "settings": ["!show_tab_close_buttons"],
-        "attributes": ["dirty"],
-        "content_margin": [12, 3, 7, 3]
-    },
 
 //
 // TABS (CLASSIC)
@@ -224,6 +217,12 @@
         "class": "tab_label",
         "attributes": ["transient"],
         "font.italic": true
+    },
+    {
+        "class": "tab_label",
+        "settings": ["highlight_modified_tabs"],
+        "parents": [{"class": "tab_control", "attributes": ["dirty"]}],
+        "fg": [120, 170, 250]
     },
 
 //
