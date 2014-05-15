@@ -1,7 +1,10 @@
 <snippet>
   <content><![CDATA[
+
+
+//
 // ${1:$SELECTION}
-// -------------------------
+//
 ]]>
   </content>
 </snippet>
