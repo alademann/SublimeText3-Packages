@@ -88,13 +88,13 @@
 	"ignored_packages":
 	[
 		"Vintage",
+		"SHS-Bourbon",
+		"SHS-Bourbon-Neat",
+		"JavaScript",
 		"SFTP",
 		"Makefile",
 		"RestructuredText",
-		"JavaScript",
-		"SHS-Bourbon",
-		"SublimeGit",
-		"SHS-Bourbon-Neat"
+		"SublimeGit"
 	],
 	"indent_guide_options":
 	[
