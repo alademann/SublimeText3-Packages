@@ -34,15 +34,17 @@ class OpenInclude(sublime_plugin.TextCommand):
         for region in view.sel():
             opened = False
 
+            # find in files panel
+            if not opened and 'Find Results.hidden-tmLanguage' in view.settings().get('syntax'):
+            	opened = OpenIncludeFindInFileGoto().run(view);
+
             # between quotes
-            if view.score_selector(region.begin(), "parameter.url, string.quoted"):
+            if not opened and view.score_selector(region.begin(), "parameter.url, string.quoted"):
                 file_to_open = view.substr(view.extract_scope(region.begin()))
                 opened = self.resolve_path(window, view, file_to_open)
 
-                if not opened:
-                    opened = self.resolve_path(window, view, file_to_open)
-                    if opened:
-                        break
+                if opened:
+                    break
 
                 if not opened and s.get('create_if_not_exists') and view.file_name():
                     file_name = view.substr(view.extract_scope(region.begin())).replace("'", '').replace('"', '')
@@ -54,6 +56,11 @@ class OpenInclude(sublime_plugin.TextCommand):
                         pass
                     window.open_file(path)
                     opened = True
+
+            # word
+            if not opened:
+                file_to_open = view.substr(view.word(region)).strip()
+                opened = self.resolve_path(window, view, file_to_open)
 
             # selected text
             if not opened:
@@ -84,9 +91,9 @@ class OpenInclude(sublime_plugin.TextCommand):
 
         # Nothing in a selected region could be opened
         if not something_opened:
-            # This rarely helps and only creates a huge load of overload
-            # self.resolve_path(window, view, view.substr(sublime.Region(0, view.size())).replace('\t', '\n'))
-            sublime.status_message("Unable to find a file in the current selection")
+            opened = self.resolve_path(window, view, view.substr(sublime.Region(0, view.size())).replace('\t', '\n'))
+            if not opened:
+            	sublime.status_message("Unable to find a file in the current selection")
 
     def expand_paths_with_extensions(self, window, view, paths):
 
@@ -263,6 +270,39 @@ class OpenInclude(sublime_plugin.TextCommand):
                 view.settings().set('syntax', 'Packages/JavaScript/JSON.tmLanguage')
             elif content_type == 'text/xml' or content_type == 'application/xml':
                 view.settings().set('syntax', 'Packages/XML/XML.tmLanguage')
+
+class OpenIncludeFindInFileGoto():
+    def run(self, view):
+        line_no = self.get_line_no(view)
+        file_name = self.get_file(view)
+        if line_no is not None and file_name is not None:
+            file_loc = "%s:%s" % (file_name, line_no)
+            view.window().open_file(file_loc, sublime.ENCODED_POSITION)
+            return True
+        elif file_name is not None:
+            view.window().open_file(file_name)
+            return True
+        return False
+
+    def get_line_no(self, view):
+        if len(view.sel()) == 1:
+            line_text = view.substr(view.line(view.sel()[0]))
+            match = re.match(r"\s*(\d+).+", line_text)
+            if match:
+                return match.group(1)
+        return None
+
+    def get_file(self, view):
+        if len(view.sel()) == 1:
+            line = view.line(view.sel()[0])
+            while line.begin() > 0:
+                line_text = view.substr(line)
+                match = re.match(r"^(.+)\:$", line_text)
+                if match:
+                    if os.path.exists(match.group(1)):
+                        return match.group(1)
+                line = view.line(line.begin() - 1)
+        return None
 
 if int(sublime.version()) < 3000:
     plugin_loaded()
