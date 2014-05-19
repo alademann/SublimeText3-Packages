@@ -568,16 +568,16 @@
 		<key>operator</key>
 		<dict>
 			<key>match</key>
-			<string>\+|\s-\s|\s-(?=\$)|(?&lt;=\()-(?=\$)|\s-(?=\()|\*|/|\s%\s|\s%(?=\$)|=|!|&lt;|&gt;|~</string>
+			<string>\+|\s-\s|\s-(?=\$)|(?&lt;=\()-(?=\$)|\s-(?=\()|\*|/|%|=|!|&lt;|&gt;|~</string>
 			<key>name</key>
 			<string>keyword.operator.sass</string>
 		</dict>
 		<key>placeholder-selector</key>
 		<dict>
 			<key>begin</key>
-			<string>(?!\d)%(?!\d)</string>
+			<string>(?&lt;!\d)%(?!\d)</string>
 			<key>end</key>
-			<string>$\n?|\s|(?=;|{|\))</string>
+			<string>$\n?|\s|(?=;|{)</string>
 			<key>name</key>
 			<string>entity.other.attribute-name.placeholder-selector.sass</string>
 		</dict>
