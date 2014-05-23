@@ -87,14 +87,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
+		"JavaScript",
+		"SublimeGit",
+		"Makefile",
 		"Vintage",
 		"SHS-Bourbon",
-		"SHS-Bourbon-Neat",
-		"JavaScript",
-		"SFTP",
-		"Makefile",
 		"RestructuredText",
-		"SublimeGit"
+		"SFTP",
+		"SHS-Bourbon-Neat"
 	],
 	"indent_guide_options":
 	[
