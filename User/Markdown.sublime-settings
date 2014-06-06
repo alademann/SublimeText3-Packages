@@ -2,5 +2,10 @@
 	"extensions":
 	[
 		"md"
-	]
+	],
+    "color_scheme": "Packages/Predawn/predawn-markdown.tmTheme",
+    "draw_centered": true,
+    "font_size": 15,
+    "word_wrap": true,
+    "wrap_width": 80,
 }

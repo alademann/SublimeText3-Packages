@@ -5,9 +5,9 @@ import encodings
 import re
 
 try:
-    from GitGutter import git_helper
-    from GitGutter.view_collection import ViewCollection
-except ImportError:
+    from . import git_helper
+    from .view_collection import ViewCollection
+except (ImportError, ValueError):
     import git_helper
     from view_collection import ViewCollection
 
