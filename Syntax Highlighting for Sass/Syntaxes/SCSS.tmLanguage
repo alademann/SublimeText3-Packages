@@ -705,7 +705,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>(^|\w*|\s*|\t*)(\$[a-zA-Z0-9_-]+(\b|(\s*|\t*)\:))(\s*|\t*)</string>
+			<string>(^|\w*|\s*|\t*|\(*)(\$[a-zA-Z0-9_-]+(\s*|\t*))(\:)(\s*|\t*)</string>
 			<key>name</key>
 			<string>meta.set.variable</string>
 			<!-- <key>patterns</key>
