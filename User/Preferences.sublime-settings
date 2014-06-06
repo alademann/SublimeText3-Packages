@@ -24,10 +24,12 @@
 		"*.ai",
 		"*.svg"
 	],
-	"bold_folder_labels": true,
-	"caret_style": "smooth",
-	"color_scheme": "Packages/User/Tomorrow-Night-Soda.tmTheme",
+	"caret_extra_width": 1,
+	"caret_style": "phase",
+	"close_windows_when_empty": false,
+	"color_scheme": "Packages/User/Predawn/predawn.tmTheme",
 	"detect_slow_plugins": true,
+	"draw_minimap_border": true,
 	"ensure_newline_at_eof_on_save": false,
 	"fade_fold_buttons": false,
 	"fallback_encoding": "UTF-8",
@@ -74,27 +76,26 @@
 		".hg",
 		"CVS",
 		".sass-cache",
-		".externalToolBuilders",
-		"bower_components",
-		"node_modules"
+		".externalToolBuilders"
 	],
 	"font_options":
 	[
-		"subpixel_antialias"
+		"no_round"
 	],
 	"font_size": 14.0,
 	"gpu_window_buffer": true,
+	"highlight_line": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"JavaScript",
-		"SublimeGit",
-		"Makefile",
-		"Vintage",
-		"SHS-Bourbon",
-		"RestructuredText",
 		"SFTP",
-		"SHS-Bourbon-Neat"
+		"SHS-Bourbon",
+		"SHS-Bourbon-Neat",
+		"Vintage",
+		"RestructuredText",
+		"Makefile",
+		"JavaScript",
+		"SublimeGit"
 	],
 	"indent_guide_options":
 	[
@@ -103,13 +104,16 @@
 	"index_files": true,
 	"match_brackets_angle": true,
 	"match_selection": false,
+	"match_tags": false,
 	"open_files_in_new_window": false,
 	"preview_on_click": false,
 	"reveal-on-activate": true,
+	"scroll_speed": 5.0,
 	"shift_tab_unindent": true,
-	"soda_classic_tabs": false,
+	"sidebar_default": true,
 	"tab_size": 4,
-	"theme": "Soda Dark 3.sublime-theme",
+	"tabs_medium": true,
+	"theme": "predawn.sublime-theme",
 	"todo":
 	{
 		"case_sensitive": true,
@@ -166,5 +170,6 @@
 	"trim_trailing_white_space_on_save": true,
 	"use_simple_full_screen": true,
 	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
+	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?",
+	"word_wrap": false
 }

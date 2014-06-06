@@ -1,0 +1,1 @@
+1.0.3 should actually fix the issues on ST2. Thanks for your patience. Sorry.
