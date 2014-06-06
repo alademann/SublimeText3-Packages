@@ -1,7 +1,6 @@
 {
 	"extensions":
 	[
-		"js",
 		"coffee",
 		"js.liquid"
 	]

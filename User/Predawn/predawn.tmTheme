@@ -14,7 +14,7 @@ COLOR KEY
 #ecec89 - Yellow
 #d7d777 - Dark Yellow
 #c5b0ea - Purple
-#e4acd6 - Pink
+#e38a78 - Pink
 #8ddede - Blue
 #75baba - Dark Blue
 #62c0ff - Neon Blue (use sparingly)
@@ -88,11 +88,22 @@ COLOR KEY
 			<key>name</key>
 			<string>Comment</string>
 			<key>scope</key>
-			<string>comment, comment.line.em</string>
+			<string>comment, comment.block, punctuation.definition.comment</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
 				<string>#777777</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Double Slash Comment</string>
+			<key>scope</key>
+			<string>comment.line</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#585858</string>
 			</dict>
 		</dict>
 		<dict>
@@ -108,9 +119,20 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Punctuation tags</string>
+			<string>Punctuation / Delimeters</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.entry.yaml, punctuation.separator.key-value.yaml</string>
+			<string>punctuation</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#999999</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Punctuation tags / braces / delimiters</string>
+			<key>scope</key>
+			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value.yaml, meta.brace, meta.delimiter</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -154,7 +176,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Entity / Class / Symbol</string>
 			<key>scope</key>
-			<string>entity, entity.name.filename, entity.other.inherited-class, support.type, support.class, constant.other.symbol</string>
+			<string>entity, entity.other.inherited-class, entity.name.filename, support.type, support.class, meta.class, constant.other.symbol</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -210,7 +232,7 @@ COLOR KEY
 			<key>name</key>
 			<string>String</string>
 			<key>scope</key>
-			<string>string</string>
+			<string>string, punctuation.definition.string</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -628,17 +650,6 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>CSS @at-rule</string>
-			<key>scope</key>
-			<string>meta.preprocessor.at-rule keyword.control.at-rule</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#f5b285</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
 			<string>CSS strings and urls</string>
 			<key>scope</key>
 			<string>source.css string.quoted.single, source.css string.quoted.double, source.css variable.parameter</string>
@@ -663,17 +674,6 @@ COLOR KEY
 		<!--
 			SASS
 		-->
-		<dict>
-			<key>name</key>
-			<string>Sass Comment ("double dash")</string>
-			<key>scope</key>
-			<string>comment.line.css</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#585858</string>
-			</dict>
-		</dict>
 		<dict>
 			<key>name</key>
 			<string>Sass @at-rule</string>

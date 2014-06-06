@@ -38,6 +38,22 @@
 					<key>name</key>
 					<string>support.class.js</string>
 				</dict>
+			</dict>
+			<key>comment</key>
+			<string>match any capitalized word as a Class</string>
+			<key>match</key>
+			<string>\W[A-Z]+[a-z]*</string>
+			<key>name</key>
+			<string>meta.class.js</string>
+		</dict>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>support.class.js</string>
+				</dict>
 				<key>2</key>
 				<dict>
 					<key>name</key>
@@ -635,7 +651,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>!|\$|%|&amp;|\*|\-\-|\-|\+\+|\+|~|===|==|=|!=|!==|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|&gt;|!|&amp;&amp;|\|\||\?\:|\*=|(?&lt;!\()/=|%=|\+=|\-=|&amp;=|\^=|\b(in|instanceof|new|delete|typeof|void)\b</string>
+			<string>!|\$|%|&amp;|\*|\-\-|\-|\+\+|\+|~|===|==|=|!=|!==|&lt;=|&gt;=|&lt;&lt;=|&gt;&gt;=|&gt;&gt;&gt;=|&lt;&gt;|&lt;|&gt;|!|&amp;&amp;|\|\||\?|\s\:\s|\*=|(?&lt;!\()/=|%=|\+=|\-=|&amp;=|\^=|\b(in|instanceof|new|delete|typeof|void)\b</string>
 			<key>name</key>
 			<string>keyword.operator.js</string>
 		</dict>
@@ -714,7 +730,9 @@
 			<key>name</key>
 			<string>meta.brace.square.js</string>
 		</dict>
+
 	</array>
+
 	<key>scopeName</key>
 	<string>source.js</string>
 	<key>uuid</key>
