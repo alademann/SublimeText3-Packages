@@ -102,7 +102,6 @@
             "min-zoom",
             "user-zoom",
             "orientation",
-            "position",
             "-webkit-flex-direction",
             "-moz-flex-direction",
             "-ms-flex-direction",
