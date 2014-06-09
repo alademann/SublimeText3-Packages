@@ -120,17 +120,6 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Punctuation / Delimeters</string>
-			<key>scope</key>
-			<string>punctuation</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#999999</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
 			<string>Punctuation tags / braces / delimiters</string>
 			<key>scope</key>
 			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace, meta.delimiter</string>
@@ -182,6 +171,17 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Char entities</string>
+			<key>scope</key>
+			<string>constant.character.entity, punctuation.definition.entity</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#F18260</string>
 			</dict>
 		</dict>
 		<dict>
@@ -766,17 +766,6 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#F49D62</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>HTML char entities</string>
-			<key>scope</key>
-			<string>constant.character.entity.html</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#F18260</string>
 			</dict>
 		</dict>
 		<dict>
