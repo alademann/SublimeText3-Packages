@@ -20,7 +20,7 @@
 			<key>end</key>
 			<string>\*/</string>
 			<key>name</key>
-			<string>comment.block.sass</string>
+			<string>comment.block.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -437,7 +437,7 @@
 			<key>match</key>
 			<string>\band\b|\bor\b|,</string>
 			<key>name</key>
-			<string>punctuation.comma.sass</string>
+			<string>punctuation.comma.css.sass</string>
 		</dict>
 		<key>comment-tag</key>
 		<dict>
@@ -446,14 +446,14 @@
 			<key>end</key>
 			<string>(?=}})</string>
 			<key>name</key>
-			<string>comment.tag.sass</string>
+			<string>comment.tag.css.sass</string>
 		</dict>
 		<key>dotdotdot</key>
 		<dict>
 			<key>match</key>
 			<string>\.\.\.</string>
 			<key>name</key>
-			<string>variable.other</string>
+			<string>variable.other.css.sass</string>
 		</dict>
 		<key>double-slash</key>
 		<dict>
@@ -462,7 +462,7 @@
 			<key>end</key>
 			<string>$\n?</string>
 			<key>name</key>
-			<string>comment.line.sass</string>
+			<string>comment.line.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -602,7 +602,7 @@
 			<key>end</key>
 			<string>}</string>
 			<key>name</key>
-			<string>support.function.interpolation.sass</string>
+			<string>support.function.interpolation.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
