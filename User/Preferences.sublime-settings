@@ -89,14 +89,14 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SFTP",
-		"SHS-Bourbon",
-		"SHS-Bourbon-Neat",
-		"Vintage",
 		"RestructuredText",
 		"Makefile",
+		"SHS-Bourbon-Neat",
+		"SublimeGit",
 		"JavaScript",
-		"SublimeGit"
+		"SHS-Bourbon",
+		"SFTP",
+		"Vintage"
 	],
 	"indent_guide_options":
 	[
@@ -171,6 +171,5 @@
 	"trim_trailing_white_space_on_save": true,
 	"use_simple_full_screen": true,
 	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?",
-	"word_wrap": false
+	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
 }
