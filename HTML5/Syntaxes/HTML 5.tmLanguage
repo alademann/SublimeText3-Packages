@@ -551,6 +551,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#yaml</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#php</string>
 				</dict>
 				<dict>
@@ -741,6 +745,22 @@
 				<dict>
 					<key>include</key>
 					<string>#entities</string>
+				</dict>
+			</array>
+		</dict>
+		<key>yaml</key>
+		<dict>
+			<key>begin</key>
+			<string>---</string>
+			<key>end</key>
+			<string>---</string>
+			<key>name</key>
+			<string>string.unquoted.block.yaml</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>source.yaml</string>
 				</dict>
 			</array>
 		</dict>

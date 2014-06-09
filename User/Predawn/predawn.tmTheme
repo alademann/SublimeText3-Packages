@@ -17,7 +17,7 @@ COLOR KEY
 #c5b0ea - Purple
 #e38a78 - Pink
 #8ddede - Blue
-#75baba - Dark Blue
+#92bfbf - Dark Blue
 #62c0ff - Neon Blue (use sparingly)
 #bddcdc - Light Blue
 #b4d388 - Green
@@ -682,6 +682,45 @@ COLOR KEY
 				<string>#F18260</string>
 			</dict>
 		</dict>
+
+
+		<!--
+			JSON
+		-->
+		<dict>
+			<key>name</key>
+			<string>JSON property-key</string>
+			<key>scope</key>
+			<string>meta.structure.dictionary.json string</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#ECEC89</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>JSON property-value</string>
+			<key>scope</key>
+			<string>meta.structure.dictionary.value.json string</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#b4d388</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>JSON punctuation</string>
+			<key>scope</key>
+			<string>punctuation.definition.dictionary</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#92BFBF</string>
+			</dict>
+		</dict>
+
 
 		<!--
 			SASS

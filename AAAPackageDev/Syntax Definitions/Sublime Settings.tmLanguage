@@ -30,11 +30,21 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
+					<string>string.quoted.double</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
 					<string>keyword.other.name.sublime-settings</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>string.quoted.double</string>
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>"([a-z0-9_.*-]+)"\s*?:</string>
+			<string>(")([a-z0-9_.*-]+)(")\s*?(:)</string>
 		</dict>
 		<dict>
 			<key>include</key>
