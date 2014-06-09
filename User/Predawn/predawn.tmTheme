@@ -122,7 +122,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation tags / braces / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace, meta.delimiter</string>
+			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace.js, meta.delimiter.js</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

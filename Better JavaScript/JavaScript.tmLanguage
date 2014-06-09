@@ -33,7 +33,7 @@
 		<dict>
 			<key>captures</key>
 			<dict>
-				<key>1</key>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>support.class.js</string>
@@ -42,7 +42,7 @@
 			<key>comment</key>
 			<string>match any capitalized word as a Class</string>
 			<key>match</key>
-			<string>\W[A-Z]+[a-z]*</string>
+			<string>(?&lt;!["'])\b([A-Z]+[a-z]+)\b(?!["'])</string>
 			<key>name</key>
 			<string>meta.class.js</string>
 		</dict>
