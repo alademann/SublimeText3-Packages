@@ -68,6 +68,7 @@
 		"*.wpr",
 		"*.git"
 	],
+	"findreplace_small": true,
 	"fold_buttons": true,
 	"folder_exclude_patterns":
 	[

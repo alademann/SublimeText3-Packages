@@ -13,6 +13,7 @@ COLOR KEY
 #f5b285 - Light Orange
 #ecec89 - Yellow
 #d7d777 - Dark Yellow
+#c3c391 - Muted Yellow
 #c5b0ea - Purple
 #e38a78 - Pink
 #8ddede - Blue
@@ -132,7 +133,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation tags / braces / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value.yaml, meta.brace, meta.delimiter</string>
+			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace, meta.delimiter</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -575,7 +576,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS tag-name</string>
 			<key>scope</key>
-			<string>entity.other.attribute-name.tag.css, entity.name.tag.css</string>
+			<string>entity.other.attribute-name.tag.css, entity.name.tag.css, entity.name.tag.wildcard.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -586,7 +587,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS#id</string>
 			<key>scope</key>
-			<string>entity.other.attribute-name.id.css</string>
+			<string>entity.other.attribute-name.id.css, entity.name.tag.reference.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -608,7 +609,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS property-name: psuedos and attribute values</string>
 			<key>scope</key>
-			<string>entity.other.attribute-name.pseudo-element.css, entity.other.attribute-name.pseudo-class.css, entity.other.attribute-name.attribute.css</string>
+			<string>entity.other.attribute-name.pseudo-element.css, entity.other.attribute-name.pseudo-class.css, entity.other.attribute-name.attribute.css, entity.other.attribute-selector.css, support.type.property-name.css, meta.attribute-selector.css, meta.property-name.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -619,7 +620,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS property-value;</string>
 			<key>scope</key>
-			<string>support.constant.property-value.css</string>
+			<string>support.constant.property-value.css, meta.property-list meta.property-value.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -630,7 +631,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS additional-constants</string>
 			<key>scope</key>
-			<string>support.constant.css, constant.css</string>
+			<string>support.constant.css, constant.css, meta.property-value support.constant.named-color.css, meta.property-value constant</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -641,7 +642,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS !important / !default keywords</string>
 			<key>scope</key>
-			<string>keyword.other.important.css</string>
+			<string>keyword.other.important.css, keyword.other.default.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -652,11 +653,22 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS strings and urls</string>
 			<key>scope</key>
-			<string>source.css string.quoted.single, source.css string.quoted.double, source.css variable.parameter</string>
+			<string>string.quoted.single.css, string.quoted.double.css, variable.parameter.css, variable.parameter.url.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#c3c391</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>CSS attribute name strings</string>
+			<key>scope</key>
+			<string>entity.other.attribute-selector.css string.quoted.double.css, entity.other.attribute-selector.css string.quoted.single.css, string.unquoted.attribute-value.css</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#bddcdc</string>
 			</dict>
 		</dict>
 		<dict>
@@ -678,7 +690,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass @at-rule</string>
 			<key>scope</key>
-			<string>keyword.control.at-rule.css</string>
+			<string>keyword.control.at-rule.css, meta.preprocessor.at-rule keyword.control.at-rule</string>
 			<key>settings</key>
 			<dict>
 				<!--
