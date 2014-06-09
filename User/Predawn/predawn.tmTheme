@@ -14,7 +14,7 @@ COLOR KEY
 #ecec89 - Yellow
 #d7d777 - Dark Yellow
 #c3c391 - Muted Yellow
-#c5b0ea - Purple
+#eeb0df - Purple
 #e38a78 - Pink
 #8ddede - Blue
 #92bfbf - Dark Blue
@@ -233,7 +233,7 @@ COLOR KEY
 			<key>name</key>
 			<string>String</string>
 			<key>scope</key>
-			<string>string, punctuation.definition.string</string>
+			<string>string, string.unquoted, punctuation.definition.string</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -788,6 +788,33 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#8ddede</string>
+			</dict>
+		</dict>
+
+
+		<!--
+			Ruby
+		-->
+		<dict>
+			<key>name</key>
+			<string>Ruby Methods</string>
+			<key>scope</key>
+			<string>keyword.other.special-method.ruby</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#62c0ff</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Liquid Ruby Unquoted Strings</string>
+			<key>scope</key>
+			<string>source.ruby.embedded.html string.unquoted.liquid.ruby</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#BDDCDC</string>
 			</dict>
 		</dict>
 

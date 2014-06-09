@@ -2231,13 +2231,13 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>(%|&amp;|\*\*|\*|\+|\-|/)</string>
+			<string>\s+(%|&amp;|\*\*|\*|\+|\-|/)\s+</string>
 			<key>name</key>
 			<string>keyword.operator.arithmetic.ruby</string>
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>=</string>
+			<string>\s+=\s+</string>
 			<key>name</key>
 			<string>keyword.operator.assignment.ruby</string>
 		</dict>

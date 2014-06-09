@@ -38,6 +38,20 @@
 			</array>
 		</dict>
 		<dict>
+			<key>captures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.special-method.ruby</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>({%)\s*(include)\s(([a-zA-Z0-9_\-\/]+)(\.)(\w+))\s*((\w+)(\=)(['"])?(\w+)(['"])?\s*)*(%})</string>
+			<key>name</key>
+			<string>source.liquid.tags.embedded.include.html</string>
+		</dict>
+		<dict>
 			<key>begin</key>
 			<string>{{</string>
 			<key>end</key>

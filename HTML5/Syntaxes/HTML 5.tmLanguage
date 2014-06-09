@@ -557,10 +557,10 @@
 					<key>include</key>
 					<string>#php</string>
 				</dict>
-				<dict>
+				<!-- <dict>
 					<key>include</key>
 					<string>#smarty</string>
-				</dict>
+				</dict> -->
 				<dict>
 					<key>include</key>
 					<string>#python</string>
@@ -727,24 +727,16 @@
 		<key>liquid_ruby</key>
 		<dict>
 			<key>begin</key>
-			<string>{% include</string>
+			<string>{%</string>
 			<key>end</key>
 			<string>-?(\w|%})</string>
 			<key>name</key>
-			<string>string.quoted.double.liquid.include.html</string>
+			<string>punctuation.section.embedded.liquid.ruby.html</string>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>include</key>
-					<string>source.ruby</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#embedded-code</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#entities</string>
+					<string>text.html.liquid</string>
 				</dict>
 			</array>
 		</dict>
@@ -764,7 +756,7 @@
 				</dict>
 			</array>
 		</dict>
-		<key>smarty</key>
+		<!-- <key>smarty</key>
 		<dict>
 			<key>patterns</key>
 			<array>
@@ -805,7 +797,7 @@
 					</array>
 				</dict>
 			</array>
-		</dict>
+		</dict> -->
 		<key>string-double-quoted</key>
 		<dict>
 			<key>begin</key>
