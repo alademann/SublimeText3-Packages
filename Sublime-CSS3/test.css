@@ -1,0 +1,428 @@
+.button {
+    display: table-column;
+    display: table-row-group;
+    display: table-cell;
+    display: table-row;
+    display: table-header-group;
+    display: table-footer-group;
+    display: table-column-group;
+    display: inline-table;
+    display: table-caption;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    -webkit-transform: translateZ(0);
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-left-radius: 5px;
+    border-image: none;
+    background: -webkit-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
+    background: -moz-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
+    background: -ms-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
+    background: linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
+    -webkit-box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
+    -moz-box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
+    box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
+}
+.background {
+    background-size: cover;
+    background-size: contain;
+    background-attachment: fixed, scroll, local;
+}
+
+input:placeholder, input::-webkit-input-placeholder, input::-moz-placeholder, input::placeholder,
+input::selection, input::-moz-selection,
+input::-webkit-search-cancel-button,
+input::-webkit-search-decoration,
+input::-moz-focus-inner,
+input::-ms-browse,
+input::-ms-check,
+input::-ms-clear,
+input::-ms-expand,
+input::-ms-fill,
+input::-ms-fill-lower,
+input::-ms-fill-upper,
+input::-ms-reveal,
+input::-ms-thumb,
+input::-ms-ticks-after,
+input::-ms-ticks-before,
+input::-ms-tooltip,
+input::-ms-track,
+input::-ms-value {
+    position: absolute;
+
+    text-overflow: ellipsis;
+}
+.button-name {
+    -webkit-mask-image: -webkit-linear-gradient(left, #000 0, #000 80%, rgba(0,0,0,0) 100%);
+}
+
+.transition-test {
+    transition: 0;
+    transition-delay: 0;
+    transition-timing-function: 0;
+    transition-duration: 0;
+    transition-property: 0;
+}
+.transform-test {
+    transform: rotate(30deg);
+    transform-origin: 100% 100%;
+    transform-origin-y: 1;
+    transform-origin-x: 1;
+}
+.perspective-test {
+    perspective: 500px;
+    perspective-origin: 50% 50%;
+}
+.image-set {
+    background-image: -webkit-image-set( url('logo.png') 1x, url('logo@2x.png') 2x);
+}
+.smoothing-test {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+.unset-test {
+    all: unset;
+    all: initial;
+    all: inherit;
+}
+
+.flex-test {
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -ms-inline-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    display: flex;
+    flex-direction: column;
+    flex-direction: row;
+
+    justify-content: flex-start;
+    flex-wrap: wrap-reverse;
+    flex-flow: row wrap;
+    flex: 2 0 0;
+    -moz-box-direction: normal;
+    -moz-box-pack: start;
+    -moz-box-orient: horizontal;
+    -moz-box-align: start;
+    -ms-flex-pack: start;
+    -ms-flex-line-pack: stretch;
+    -ms-flex-align: start;
+    -webkit-align-items: flex-end;
+    -webkit-align-content: stretch;
+    -webkit-align-self: flex-start;
+    -webkit-flex: 2 0 0;
+    -webkit-flex-wrap: wrap;
+    -webkit-flex-flow: row wrap;
+    -webkit-flex-direction: column;
+    -webkit-flex-direction: column-reverse;
+    -webkit-flex-direction: row;
+    -webkit-flex-direction: row-reverse;
+    -webkit-justify-content: flex-start;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: start;
+    -webkit-box-align: start;
+    align-content: stretch;
+    align-self: flex-start;
+    align-items: flex-end;
+
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-box-flex: 0;
+    -moz-box-flex: 0;
+    -ms-flex-item-align: auto;
+}
+keygen,main,math,menuitem,picture,source,svg,template,track {
+    /**/
+}
+
+.weird-or-rare {
+    font-effect: 1;
+    font-emphasize: 1;
+    font-emphasize-position: 1;
+    font-emphasize-style: 1;
+    outline-offset: 1;
+    text-emphasis: 1;
+    text-emphasis-color: 1;
+    text-emphasis-style: 1;
+    text-emphasis-position: 1;
+    -webkit-text-align-last: 1;
+    -moz-text-align-last: 1;
+    -ms-text-align-last: 1;
+    text-align-last: 1;
+    -moz-tab-size: 1;
+    -o-tab-size: 1;
+    tab-size: 1;
+    -ms-writing-mode: rtl;
+    -ms-word-break: 1;
+    word-break: 1;
+}
+
+/* http://www.w3.org/TR/css3-values/ */
+.css3-units {
+    width: 1.0vw;
+    width: 2.7vh;
+    width: 3vmin;
+    width: 4vmax;
+    transform: rotate(0.25turn);
+    transition: 0.2ms all;
+    width: calc(100px - 1px);
+    width: calc(100% + 3px);
+    width: calc(100%/3 - 2*1em - 2*1px);
+}
+@media (min-resolution: 50dppx){}
+
+@-webkit-keyframes name-animation, name-animation2{}
+@-moz-keyframes name-animation, name-animation2{}
+@-o-keyframes name-animation, name-animation2{}
+@keyframes name-animation, name-animation2{}
+
+/* next @-rules should be colored
+*/@media{}@font-face{}@keyframes t{}
+@media(min-resolution: 50dppx)
+{}
+@keyframes newlinetest
+{
+    from { text-align: center; }
+    to { text-align: center; }
+}
+
+/*deprecated*/
+:root {
+    var-c: #06c;
+    var-main-color: #06c;
+    var-MAIN-COLOR: red;
+    var-accent-background: linear-gradient(to top, var(--main-color), white);
+}
+/*new syntax*/
+:root {
+    --main-color: #c06;
+    --accent-background: linear-gradient(to top, var(--main-color), white);
+}
+#foo h1 {
+    var-gap: 20; /*deprecated*/
+    --gap: 20;
+    margin-top: calc(var(--gap) * 1px);
+    color: var(--theme-colour-1);
+    margin: var(--spacing) calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) / 2) 0;
+    border-bottom: 1px dotted var(--theme-colour-3);
+    margin: 0 0 calc(var(--flow-space, 0) * 1rem) 0;
+    padding: 0 calc(var(--foo, red, blue) * .5rem);
+}
+
+/* http://www.w3.org/TR/selectors4/#overview */
+:not(.active, .visible),
+:matches(.active, .visible),
+
+:dir(ltr),
+:lang(zh, *-hant),
+
+:any-link,
+:local-link,
+:local-link(1),
+:scope,
+
+:current(p, li, dt, dd),
+:past,
+:future,
+
+:indeterminate,
+:default,
+:in-range, :out-of-range,
+:required, :optional,
+:read-only, :read-write,
+
+/* missing from level 3 */
+:empty
+:only-child
+:first-of-type,
+:nth-of-type,
+:last-of-type,
+:nth-last-of-type(2),
+:only-of-type,
+
+:nth-match(.active),
+:nth-last-match(.active),
+
+:column(),
+:nth-column(1),
+:nth-last-column(2),
+
+:valid-drop-target,
+:active-drop-target,
+/* association by 'for' attribute */
+label:matches(:hover, :focus) /for/ input,
+/* association by containment */
+label:matches(:hover, :focus):not([for]) input,
+ul! li:hover,
+col.selected || td,
+:placeholder-shown,
+:user-error {}
+
+/* http://tabatkins.github.io/specs/css-will-change/ */
+.will-change {
+    will-change: scroll-position;
+    will-change: contents;
+    will-change: opacity;
+}
+
+.animation-and-easing {
+    animation: ease, ease-in-out, ease-in, ease-out;
+    animation-fill-mode: forwards, both, backwards, none;
+    animation-iteration-count: infinite;
+    animation-direction: alternate, alternate-reverse, reverse;
+    animation-play-state: paused, running;
+    animation-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1),
+        step-start, step-end, steps(start, end);
+}
+
+.new-ellipsis {
+    -webkit-line-clamp: 3;
+    overflow-wrap: break-word;
+}
+
+.animatable-properties {
+    transition-property:
+        all,
+        background,
+        background-color,
+        background-image,
+        background-position,
+        background-size,
+        border,
+        border-color,
+        border-radius,
+        border-spacing,
+        border-bottom,
+        border-left,
+        border-right,
+        border-top,
+        border-bottom-left-radius,
+        border-radius,
+        border-width,
+        border-bottom-color,
+        border-left-color,
+        border-right-color,
+        border-top-color,
+        border-bottom-width,
+        border-left-width,
+        border-right-width,
+        border-top-width,
+        bottom,
+        box-shadow,
+        clip,
+        color,
+        crop,
+        font,
+        font-size-adjust,
+        font-size,
+        font-stretch,
+        font-weight,
+        height,
+        left,
+        letter-spacing,
+        line-height,
+        margin-bottom,
+        margin-left,
+        margin-right,
+        margin-top,
+        margin,
+        max-height,
+        max-lines,
+        max-width,
+        min-height,
+        min-width,
+        offset-after,
+        offset-before,
+        offset-end,
+        offset-start,
+        opacity,
+        outline-color,
+        outline-offset,
+        outline-width,
+        padding-bottom,
+        padding-left,
+        padding-right,
+        padding-top,
+        padding,
+        right,
+        text-decoration-color,
+        text-emphasis-color,
+        text-indent,
+        text-shadow,
+        text-size-adjust,
+        top,
+        vertical-align,
+        visibility,
+        width,
+        word-spacing,
+        z-index,
+        zoom,
+        columns,
+        column-count,
+        column-gap,
+        column-rule,
+        column-rule-color,
+        column-rule-width,
+        column-width,
+        flex,
+        flex-grow,
+        flex-shrink,
+        flex-basis,
+        order,
+        perspective,
+        perspective-origin,
+        transform,
+        transform-origin,
+        fill,
+        fill-opacity,
+        flood-color,
+        lighting-color,
+        marker-offset,
+        stop-color,
+        stop-opacity,
+        stroke,
+        stroke-dasharray,
+        stroke-dashoffset,
+        stroke-miterlimit,
+        stroke-opacity,
+        stroke-width,
+        viewport-fill,
+        viewport-fill-opacity;
+}
+
+/* http://www.w3.org/TR/css-shapes-1/ */
+.css-shapes {
+    shape-outside: url('path/to/image-with-shape.png');
+    shape-outside: polygon(0 0, 100% 100%, 0 100%);
+    shape-outside: inset(50% 50% 50% 50%);
+    shape-outside: inset(0 round 100px) margin-box;
+    shape-outside: ellipse(nonzero, farthest-side at left bottom) border-box;
+    shape-outside: ellipse(evenodd, at left bottom) border-box;
+    shape-outside: circle(250px at 50% 50%) padding-box;
+    shape-outside: circle(closest-side at center) content-box;
+    shape-image-threshold: 0.1;
+    shape-margin: 10px;
+}

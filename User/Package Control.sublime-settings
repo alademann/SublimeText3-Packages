@@ -43,6 +43,7 @@
 		"SFTP",
 		"Shell Command",
 		"SideBarEnhancements",
+		"Sublime-CSS3",
 		"SublimeGit",
 		"sublimelint",
 		"SyncedSideBar",
@@ -50,5 +51,9 @@
 		"Theme - Soda",
 		"Twitter Recess",
 		"Vintage"
+	],
+	"repositories":
+	[
+		"https://github.com/i-akhmadullin/Sublime-CSS3"
 	]
 }
