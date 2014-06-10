@@ -561,6 +561,10 @@
 			<key>include</key>
 			<string>#numeric</string>
 		</dict>
+		<dict>
+			<key>include</key>
+			<string>source.js</string>
+		</dict>
 	</array>
 	<key>repository</key>
 	<dict>
