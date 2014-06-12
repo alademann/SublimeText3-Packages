@@ -8,9 +8,12 @@
 
 	"hide_open_with_entries_when_there_are_no_applicable": false,
 
-	"confirm_before_deleting": false,
+	"confirm_before_deleting": true,
 
 	"new_files_relative_to_project_root": false,
+
+	"auto_add_folders_for_opened_files_when_project_is_empty": true,
+	"auto_add_folders_for_opened_files": false,
 
 	"disabled_menuitem_edit": false,
 	"disabled_menuitem_open_run": false,
@@ -24,7 +27,7 @@
 	"disabled_menuitem_empty": true,
 
 	//if installed in a default location maybe this works.
-	"default_browser": "chrome", //one of this list: firefox, chrome, canary, chromium, opera, safari
+	"default_browser": "", //one of this list: firefox, chrome, canary, chromium, opera, safari
 
 	"portable_browser": "", // for example:  C:/Program Files (x86)/Nightly/firefox.exe
 
