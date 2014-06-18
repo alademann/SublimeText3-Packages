@@ -51,14 +51,14 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>\$[a-zA-Z0-9_-]+(?=:)</string>
+			<string>(\w|\s|\t)*(\$[a-zA-Z0-9_-])+(?=:)</string>
 			<key>end</key>
 			<string>(?=;|\)\s*\{|\)\n\)|@)</string>
 			<key>name</key>
 			<string>sass-script-maps</string>
 			<key>captures</key>
 			<dict>
-				<key>0</key>
+				<key>1</key>
 				<dict>
 					<key>name</key>
 					<string>variable.other</string>
@@ -431,7 +431,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>[a-z-]+((?=:|#{))</string>
+			<string>[a-z-_\d]+((?=:|#{))</string>
 			<key>name</key>
 			<string>support.type.property-name.css.sass</string>
 		</dict>
