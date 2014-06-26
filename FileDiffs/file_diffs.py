@@ -6,6 +6,7 @@ import sublime
 import sublime_plugin
 import difflib
 import tempfile
+import subprocess
 
 from fnmatch import fnmatch
 import codecs
@@ -60,16 +61,16 @@ class FileDiffCommand(sublime_plugin.TextCommand):
     def settings(self):
         return sublime.load_settings('FileDiffs.sublime-settings')
 
-    def diff_content(self):
+    def diff_content(self, view):
         content = ''
 
-        for region in self.view.sel():
+        for region in view.sel():
             if region.empty():
                 continue
-            content += self.view.substr(region)
+            content += view.substr(region)
 
         if not content:
-            content = self.view.substr(sublime.Region(0, self.view.size()))
+            content = view.substr(sublime.Region(0, view.size()))
         return content
 
     def prep_content(self, ab, file_name, default_name):
@@ -99,14 +100,14 @@ class FileDiffCommand(sublime_plugin.TextCommand):
             open_in_sublime = self.settings().get('open_in_sublime', not external_command)
 
             if external_command:
-                self.diff_with_external(external_command, a, b, from_file, to_file)
+                self.diff_with_external(external_command, a, b, from_file, to_file, **options)
 
             if open_in_sublime:
                 # fix diffs
                 diffs = map(lambda line: (line and line[-1] == "\n") and line or line + "\n", diffs)
                 self.diff_in_sublime(diffs)
 
-    def diff_with_external(self, external_command, a, b, from_file=None, to_file=None):
+    def diff_with_external(self, external_command, a, b, from_file=None, to_file=None, **options):
         try:
             try:
                 from_file_exists = os.path.exists(from_file)
@@ -164,7 +165,18 @@ class FileDiffCommand(sublime_plugin.TextCommand):
                 if sublime.platform() == "windows":
                     Popen(external_command)
                 else:
-                    self.view.window().run_command("exec", {"cmd": external_command})
+                    subprocess.Popen(external_command)
+
+                apply_tempfile_changes_after_diff_tool = self.settings().get('apply_tempfile_changes_after_diff_tool', False)
+                post_diff_tool = options.get('post_diff_tool')
+                if apply_tempfile_changes_after_diff_tool and post_diff_tool is not None and (not from_file_exists or not to_file_exists):
+                    if from_file_exists:
+                        from_file = None
+                    if to_file_exists:
+                        to_file = None
+                    # Use a dialog to block st and wait for the closing of the diff tool
+                    if sublime.ok_cancel_dialog("Apply changes from tempfile after external diff tool execution?"):
+                        post_diff_tool(from_file, to_file)
         except Exception as e:
             # some basic logging here, since we are cluttering the /tmp folder
             sublime.status_message(str(e))
@@ -182,6 +194,37 @@ class FileDiffCommand(sublime_plugin.TextCommand):
             content = f.read()
         return content
 
+    def get_file_name(self, view, default_name):
+        file_name = ''
+        if view.file_name():
+            file_name = view.file_name()
+        elif view.name():
+            file_name = view.name()
+        else:
+            file_name = default_name
+        return file_name
+
+    def get_content_from_file(self, file_name):
+        with codecs.open(file_name, encoding='utf-8', mode='r') as f:
+            lines = f.readlines()
+            lines = [line.replace("\r\n", "\n").replace("\r", "\n") for line in lines]
+            content = ''.join(lines)
+            return content
+
+    def update_view(self, view, edit, tmp_file):
+        if tmp_file:
+            non_empty_regions = [region for region in view.sel() if not region.empty()]
+            nb_non_empty_regions = len(non_empty_regions)
+            region = None
+            if nb_non_empty_regions == 0:
+                region = sublime.Region(0, view.size())
+            elif nb_non_empty_regions == 1:
+                region = non_empty_regions[0]
+            else:
+                sublime.status_message('Cannot update multiselection')
+                return
+            view.replace(edit, region, self.get_content_from_file(tmp_file))
+
 
 class FileDiffDummy1Command(sublime_plugin.TextCommand):
     def run(self, edit, content):
@@ -190,19 +233,24 @@ class FileDiffDummy1Command(sublime_plugin.TextCommand):
 
 class FileDiffClipboardCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
-        from_file = self.view.file_name()
+        from_file = self.get_file_name(self.view, 'untitled')
         for region in self.view.sel():
             if not region.empty():
                 from_file += ' (Selection)'
                 break
         clipboard = sublime.get_clipboard()
-        self.run_diff(self.diff_content(), clipboard,
+        def on_post_diff_tool(from_file, to_file):
+            self.update_view(self.view, edit, from_file)
+            sublime.set_clipboard(self.get_content_from_file(to_file))
+
+        kwargs.update({'post_diff_tool': on_post_diff_tool})
+        self.run_diff(self.diff_content(self.view), clipboard,
             from_file=from_file,
             to_file='(clipboard)',
             **kwargs)
 
     def is_visible(self):
-        return sublime.get_clipboard()
+        return sublime.get_clipboard() != ''
 
 
 class FileDiffSelectionsCommand(FileDiffCommand):
@@ -253,7 +301,11 @@ class FileDiffSelectionsCommand(FileDiffCommand):
 
 class FileDiffSavedCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
-        self.run_diff(self.read_file(self.view.file_name()), self.diff_content(),
+        def on_post_diff_tool(from_file, to_file):
+            self.update_view(self.view, edit, to_file)
+
+        kwargs.update({'post_diff_tool': on_post_diff_tool})
+        self.run_diff(self.read_file(self.view.file_name()), self.diff_content(self.view),
             from_file=self.view.file_name(),
             to_file=self.view.file_name() + ' (Unsaved)',
             **kwargs)
@@ -284,7 +336,7 @@ class FileDiffFileCommand(FileDiffCommand):
 
         def on_done(index):
             if index > -1:
-                self.run_diff(self.diff_content(), self.read_file(files[index]),
+                self.run_diff(self.diff_content(self.view), self.read_file(files[index]),
                     from_file=self.view.file_name(),
                     to_file=files[index],
                     **kwargs)
@@ -323,6 +375,7 @@ class FileDiffTabCommand(FileDiffCommand):
         my_id = self.view.id()
         files = []
         contents = []
+        views = []
         untitled_count = 1
         for v in self.view.window().views():
             if v.id() != my_id:
@@ -336,10 +389,16 @@ class FileDiffTabCommand(FileDiffCommand):
                     untitled_count += 1
 
                 contents.append(this_content)
+                views.append(v)
 
         def on_done(index):
             if index > -1:
-                self.run_diff(self.diff_content(), contents[index],
+                def on_post_diff_tool(from_file, to_file):
+                    self.update_view(self.view, edit, from_file)
+                    self.update_view(views[index], edit, to_file)
+
+                kwargs.update({'post_diff_tool': on_post_diff_tool})
+                self.run_diff(self.diff_content(self.view), contents[index],
                     from_file=self.view.file_name(),
                     to_file=files[index],
                     **kwargs)
@@ -362,30 +421,18 @@ previous_view = current_view = None
 class FileDiffPreviousCommand(FileDiffCommand):
     def run(self, edit, **kwargs):
         if previous_view:
-            previous_view_content = previous_view.substr(sublime.Region(0, previous_view.size()))
-            previous_view_name = ''
-            if previous_view.file_name():
-                previous_view_name = previous_view.file_name()
-            elif previous_view.name():
-                previous_view_name = previous_view.name()
-            else:
-                previous_view_name = 'untitled (Previous)'
+            def on_post_diff_tool(from_file, to_file):
+                self.update_view(previous_view, edit, from_file)
+                self.update_view(current_view, edit, to_file)
 
-            view_name = ''
-            if self.view.file_name():
-                view_name = self.view.file_name()
-            elif self.view.name():
-                view_name = self.view.name()
-            else:
-                view_name = 'untitled (Current)'
-
-            self.run_diff(previous_view_content, self.diff_content(),
-                from_file=previous_view_name,
-                to_file=view_name,
+            kwargs.update({'post_diff_tool': on_post_diff_tool})
+            self.run_diff(self.diff_content(previous_view), self.diff_content(self.view),
+                from_file=self.get_file_name(previous_view, 'untitled (Previous)'),
+                to_file=self.get_file_name(self.view, 'untitled (Current)'),
                 **kwargs)
 
     def is_visible(self):
-        return previous_view
+        return previous_view is not None
 
 def record_current_view(view):
     global previous_view
