@@ -116,57 +116,6 @@
 	"tab_size": 4,
 	"tabs_medium": true,
 	"theme": "predawn.sublime-theme",
-	"todo":
-	{
-		"case_sensitive": true,
-		"file_exclude_patterns":
-		[
-			"*.pyc",
-			"*.pyo",
-			"*.po",
-			"*.exe",
-			"*.dll",
-			"*.obj",
-			"*.o",
-			"*.a",
-			"*.lib",
-			"*.so",
-			"*.dylib",
-			"*.ncb",
-			"*.sdf",
-			"*.suo",
-			"*.pdb",
-			"*.idb",
-			".DS_Store",
-			"*.class",
-			"*.psd",
-			"*.db",
-			"*.sublime-workspace",
-			"*.project",
-			"*.sassc",
-			"*.scssc",
-			"*.mo",
-			"*.lock",
-			"*.tmp",
-			"*.template",
-			"*.wpr",
-			"*.git"
-		],
-		"folder_exclude_patterns":
-		[
-			".sass-cache",
-			".externalToolBuilders",
-			".cache"
-		],
-		"patterns":
-		{
-			"BUG": "BUG[\\s]*?:+(?P<bug>.*)$",
-			"CHANGED": "CHANGED[\\s]*?:+(?P<changed>\\S.*)$",
-			"NOTE": "NOTE[\\s]*?:+(?P<note>.*)$",
-			"TODO": "TODO[\\s]*?:+(?P<todo>.*)$"
-		},
-		"result_title": "TODO Results"
-	},
 	"translate_tabs_to_spaces": true,
 	"trim_automatic_white_space": true,
 	"trim_trailing_white_space_on_save": true,
