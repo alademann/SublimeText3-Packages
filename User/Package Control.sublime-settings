@@ -4,8 +4,10 @@
 	[
 		"AAAPackageDev",
 		"Abacus",
+		"Alignment",
 		"All Autocomplete",
 		"AngularJS",
+		"ApacheConf.tmLanguage",
 		"AutoFileName",
 		"Better JavaScript",
 		"Case Conversion",
@@ -53,6 +55,8 @@
 		"SyncedSideBar",
 		"Syntax Highlighting for Sass",
 		"Theme - Soda",
+		"Todo",
+		"TodoReview",
 		"Twitter Recess",
 		"Vintage"
 	],

@@ -65,8 +65,7 @@
 		"*.lock",
 		"*.tmp",
 		"*.template",
-		"*.wpr",
-		"*.git"
+		"*.wpr"
 	],
 	"findreplace_small": true,
 	"fold_buttons": true,
@@ -89,15 +88,16 @@
 	"highlight_modified_tabs": true,
 	"ignored_packages":
 	[
-		"SHS-Bourbon",
-		"SFTP",
-		"SHS-Bourbon-Neat",
-		"Vintage",
 		"JavaScript",
-		"Makefile",
+		"SHS-Bourbon",
+		"Vintage",
+		"SHS-Bourbon-Neat",
 		"SublimeGit",
 		"RestructuredText",
-		"PHP"
+		"Makefile",
+		"SFTP",
+		"PHP",
+		"Alignment"
 	],
 	"indent_guide_options":
 	[
