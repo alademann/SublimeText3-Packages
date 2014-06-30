@@ -31,12 +31,7 @@
     -moz-border-radius-bottomleft: 5px;
     border-bottom-left-radius: 5px;
     border-image: none;
-    background: -webkit-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
-    background: -moz-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
-    background: -ms-linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
     background: linear-gradient(#eaf2f6 0, #e0ebf1 25%, #cfdeea 50%, #b8cfdb 75%, #a8c6d8 100%);
-    -webkit-box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
-    -moz-box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
     box-shadow: inset 0 1px 2px rgba(20, 60, 75, .7), 0 1px 0 rgba(255, 255, 255, .65);
 }
 .background {
@@ -45,7 +40,8 @@
     background-attachment: fixed, scroll, local;
 }
 
-input:placeholder, input::-webkit-input-placeholder, input::-moz-placeholder, input::placeholder,
+input:placeholder, input::-webkit-input-placeholder,
+input::-moz-placeholder, input::placeholder,
 input::selection, input::-moz-selection,
 input::-webkit-search-cancel-button,
 input::-webkit-search-decoration,
@@ -167,15 +163,9 @@ keygen,main,math,menuitem,picture,source,svg,template,track {
     text-emphasis-color: 1;
     text-emphasis-style: 1;
     text-emphasis-position: 1;
-    -webkit-text-align-last: 1;
-    -moz-text-align-last: 1;
-    -ms-text-align-last: 1;
     text-align-last: 1;
-    -moz-tab-size: 1;
-    -o-tab-size: 1;
     tab-size: 1;
     -ms-writing-mode: rtl;
-    -ms-word-break: 1;
     word-break: 1;
 }
 
@@ -192,6 +182,10 @@ keygen,main,math,menuitem,picture,source,svg,template,track {
     width: calc(100%/3 - 2*1em - 2*1px);
 }
 @media (min-resolution: 50dppx){}
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-device-pixel-ratio: 2),
+       (min--moz-device-pixel-ratio: 2),
+       (min-resolution: 2dppx){}
 
 @-webkit-keyframes name-animation, name-animation2{}
 @-moz-keyframes name-animation, name-animation2{}
@@ -281,11 +275,9 @@ col.selected || td,
 :placeholder-shown,
 :user-error {}
 
-/* http://tabatkins.github.io/specs/css-will-change/ */
+/* http://dev.w3.org/csswg/css-will-change/ */
 .will-change {
-    will-change: scroll-position;
-    will-change: contents;
-    will-change: opacity;
+    will-change: scroll-position, contents, opacity;
 }
 
 .animation-and-easing {
@@ -415,14 +407,49 @@ col.selected || td,
 
 /* http://www.w3.org/TR/css-shapes-1/ */
 .css-shapes {
-    shape-outside: url('path/to/image-with-shape.png');
-    shape-outside: polygon(0 0, 100% 100%, 0 100%);
-    shape-outside: inset(50% 50% 50% 50%);
-    shape-outside: inset(0 round 100px) margin-box;
-    shape-outside: ellipse(nonzero, farthest-side at left bottom) border-box;
-    shape-outside: ellipse(evenodd, at left bottom) border-box;
-    shape-outside: circle(250px at 50% 50%) padding-box;
-    shape-outside: circle(closest-side at center) content-box;
+    shape-outside:
+        url('path/to/image-with-shape.png'),
+        polygon(0 0, 100% 100%, 0 100%),
+        inset(50% 50% 50% 50%),
+        inset(0 round 100px) margin-box,
+        ellipse(nonzero, farthest-side at left bottom) border-box,
+        ellipse(evenodd, at left bottom) border-box,
+        circle(250px at 50% 50%) padding-box,
+        circle(closest-side at center) content-box;
     shape-image-threshold: 0.1;
     shape-margin: 10px;
+}
+
+/* http://www.w3.org/TR/compositing-1/ */
+.compositing {
+    mix-blend-mode: color-burn, color-dodge, color,
+        darken, difference, exclusion,
+        hard-light,hue, lighten, multiply,
+        overlay, saturation, screen, soft-light;
+    background-blend-mode: luminosity;
+    isolation: isolate;
+}
+
+/* http://www.w3.org/TR/css-masking/ */
+.css-masking {
+    clip-path: fill-box, stroke-box, view-box;
+    clip-rule: nonzero, evenodd;
+
+    mask: url(resources.svg#mask2);
+    mask-border-mode: luminance;
+    mask-border-outset: 0;
+    mask-border-repeat: stretch;
+    mask-border-slice: 0;
+    mask-border-source: url(mask.png);
+    mask-border-width: auto;
+    mask-border: 25 fill round;
+    mask-clip: no-clip;
+    mask-composite: add, exclude, intersect, subtract;
+    mask-image: url(resources.svg#mask2);
+    mask-mode: alpha;
+    mask-origin: view-box;
+    mask-position: 100% 100%;
+    mask-repeat: round space;
+    mask-size: border-box;
+    mask-type: luminance;
 }
