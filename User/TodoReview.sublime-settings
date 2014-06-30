@@ -4,7 +4,7 @@
         "BUG": "BUG[\\s]*?:+(?P<bug>.*)$",
         "CHANGED": "CHANGED[\\s]*?:+(?P<changed>\\S.*)$",
         "NOTE": "NOTE[\\s]*?:+(?P<note>.*)$",
-        "TODO": "TODO[\\s]*?:+(?P<todo>.*)$"
+        "TODO": "@*(todo|TODO)[\\s]*:*(?P<todo>.*)$"
     },
     "exclude_files": [
         "*.pyc",
