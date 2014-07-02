@@ -759,7 +759,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass @warn message</string>
 			<key>scope</key>
-			<string>string.quoted.warn.css, meta.preprocessor.at-rule string.quoted.warn</string>
+			<string>string.quoted.double.warn.css, meta.preprocessor.at-rule string.quoted.double.warn</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

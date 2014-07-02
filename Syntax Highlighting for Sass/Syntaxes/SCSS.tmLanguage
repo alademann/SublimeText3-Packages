@@ -221,7 +221,7 @@
 			<key>match</key>
 			<string>@warn</string>
 			<key>name</key>
-			<string>keyword.control.at-rule.warn.css.sass</string>
+			<string>keyword.control.at-rule.warn.css.sass  invalid.css.sass</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -495,22 +495,6 @@
 				</dict>
 			</array>
 		</dict>
-		<key>warning-message</key>
-		<dict>
-			<key>begin</key>
-			<string>(?&lt;=@warn)\s+('|")</string>
-			<key>end</key>
-			<string>('|")</string>
-			<key>name</key>
-			<string>string.quoted.warn.css.sass</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#quoted-interpolation</string>
-				</dict>
-			</array>
-		</dict>
 		<key>double-quoted</key>
 		<dict>
 			<key>begin</key>
@@ -535,6 +519,22 @@
 			<string>'</string>
 			<key>name</key>
 			<string>string.quoted.single.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#quoted-interpolation</string>
+				</dict>
+			</array>
+		</dict>
+		<key>warning-message</key>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;=@warn)\s+"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>name</key>
+			<string>string.quoted.double.warn.css.sass invalid.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
