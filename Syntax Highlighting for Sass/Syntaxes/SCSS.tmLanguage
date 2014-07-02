@@ -35,6 +35,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#warning-message</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#double-quoted</string>
 		</dict>
 		<dict>
@@ -212,6 +216,12 @@
 			<string>(?&lt;=@import)\s[a-zA-Z0-9_/.*-]+</string>
 			<key>name</key>
 			<string>string.quoted.double.css.sass</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>@warn</string>
+			<key>name</key>
+			<string>keyword.control.at-rule.warn.css.sass</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -485,6 +495,22 @@
 				</dict>
 			</array>
 		</dict>
+		<key>warning-message</key>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;=@warn)\s+('|")</string>
+			<key>end</key>
+			<string>('|")</string>
+			<key>name</key>
+			<string>string.quoted.warn.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#quoted-interpolation</string>
+				</dict>
+			</array>
+		</dict>
 		<key>double-quoted</key>
 		<dict>
 			<key>begin</key>
@@ -493,6 +519,22 @@
 			<string>"</string>
 			<key>name</key>
 			<string>string.quoted.double.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#quoted-interpolation</string>
+				</dict>
+			</array>
+		</dict>
+		<key>single-quoted</key>
+		<dict>
+			<key>begin</key>
+			<string>'</string>
+			<key>end</key>
+			<string>'</string>
+			<key>name</key>
+			<string>string.quoted.single.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -553,6 +595,10 @@
 				<dict>
 					<key>include</key>
 					<string>#comma</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#warning-message</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -654,22 +700,6 @@
 			<string>(#)([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b</string>
 			<key>name</key>
 			<string>constant.other.color.rgb-value.css.sass</string>
-		</dict>
-		<key>single-quoted</key>
-		<dict>
-			<key>begin</key>
-			<string>'</string>
-			<key>end</key>
-			<string>'</string>
-			<key>name</key>
-			<string>string.quoted.single.css.sass</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#quoted-interpolation</string>
-				</dict>
-			</array>
 		</dict>
 		<key>unit</key>
 		<dict>

@@ -744,6 +744,30 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>Sass @warn</string>
+			<key>scope</key>
+			<string>keyword.control.at-rule.warn.css, meta.preprocessor.at-rule keyword.control.at-rule.warn</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#cf5340</string>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sass @warn message</string>
+			<key>scope</key>
+			<string>string.quoted.warn.css, meta.preprocessor.at-rule string.quoted.warn</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#cf5340</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>Sass variable declaration</string>
 			<key>scope</key>
 			<string>variable.other.root.definition.css, support.other.variable.definition.css</string>
