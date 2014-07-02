@@ -2,9 +2,11 @@
     "case_sensitive": true,
     "patterns": {
         "BUG": "BUG[\\s]*?:+(?P<bug>.*)$",
-        "CHANGED": "CHANGED[\\s]*?:+(?P<changed>\\S.*)$",
+        "TODO": "@*(todo|TODO)[\\s]*:*(?P<todo>.*)$",
+        // track github-style checkbox lists
+        "TODOMD": "(\\+|\\-|\\*)\\s+\\[\\s\\](?P<todomd>.*)$",
         "NOTE": "NOTE[\\s]*?:+(?P<note>.*)$",
-        "TODO": "@*(todo|TODO)[\\s]*:*(?P<todo>.*)$"
+        "CHANGED": "CHANGED[\\s]*?:+(?P<changed>\\S.*)$"
     },
     "exclude_files": [
         "*.pyc",
