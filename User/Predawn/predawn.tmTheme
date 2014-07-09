@@ -98,6 +98,17 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>Doc Comment</string>
+			<key>scope</key>
+			<string>comment.block.documentation, comment.line.documentation</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#999999</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>Double Slash Comment</string>
 			<key>scope</key>
 			<string>comment.line</string>
