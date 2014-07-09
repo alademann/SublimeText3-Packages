@@ -27,6 +27,14 @@
 					<key>include</key>
 					<string>#comment-tag</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-documentation</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#double-slash</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -443,6 +451,15 @@
 			<string>(?=}})</string>
 			<key>name</key>
 			<string>comment.tag.sass</string>
+		</dict>
+		<key>comment-documentation</key>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;=/\*\*)</string>
+			<key>end</key>
+			<string>(?=\*/)</string>
+			<key>name</key>
+			<string>comment.block.documentation.sass</string>
 		</dict>
 		<key>dotdotdot</key>
 		<dict>
