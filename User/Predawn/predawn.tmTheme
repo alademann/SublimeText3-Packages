@@ -770,7 +770,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass variable declaration</string>
 			<key>scope</key>
-			<string>variable.other.root.definition.css, support.other.variable.definition.css</string>
+			<string>variable.other.root, support.other.variable.definition.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

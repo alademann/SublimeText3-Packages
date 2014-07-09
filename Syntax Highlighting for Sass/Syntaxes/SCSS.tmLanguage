@@ -20,7 +20,7 @@
 			<key>end</key>
 			<string>\*/</string>
 			<key>name</key>
-			<string>comment.block.css.sass</string>
+			<string>comment.block.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -55,14 +55,14 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(\w|\s|\t)*(\$[a-zA-Z0-9_-])+(?=:)</string>
+			<string>\$[a-zA-Z0-9_-]+(?=:)</string>
 			<key>end</key>
 			<string>(?=;|\)\s*\{|\)\n\)|@)</string>
 			<key>name</key>
 			<string>sass-script-maps</string>
 			<key>captures</key>
 			<dict>
-				<key>1</key>
+				<key>0</key>
 				<dict>
 					<key>name</key>
 					<string>variable.other</string>
@@ -88,7 +88,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#variable-library</string>
+					<string>#variable</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -138,10 +138,6 @@
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#variable-library</string>
-		</dict>
-		<dict>
-			<key>include</key>
 			<string>#variable-root</string>
 		</dict>
 		<dict>
@@ -163,12 +159,6 @@
 		<dict>
 			<key>include</key>
 			<string>#dotdotdot</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>(?&lt;=$)[a-zA-Z0-9_-](\s*|\t*)\:+</string>
-			<key>name</key>
-			<string>support.variable.name.sass.library, variable.other.library, variable.in.project</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -270,43 +260,29 @@
 			</array>
 		</dict>
 		<dict>
-			<key>captures</key>
-			<dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.other.attribute-name.attribute.css.sass</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.operator.css.sass</string>
-				</dict>
-				<key>4</key>
-				<dict>
-					<key>name</key>
-					<string>string.unquoted.attribute-value.css.sass</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
-					<string>string.quoted.double.attribute-value.css.sass</string>
-				</dict>
-				<key>6</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.begin.css.sass</string>
-				</dict>
-				<key>7</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.end.css.sass</string>
-				</dict>
-			</dict>
-			<key>match</key>
-			<string>(?i)(\[)\s*(-?[_a-z\\[[:^ascii:]]][_a-z0-9\-\\[[:^ascii:]]]*)(?:\s*([~|^$*]?=)\s*(?:(-?[_a-z\\[[:^ascii:]]][_a-z0-9\-\\[[:^ascii:]]]*)|((?&gt;(['"])(?:[^\\]|\\.)*?(\6)))))?\s*(\])</string>
+			<key>begin</key>
+			<string>\[</string>
+			<key>end</key>
+			<string>\]</string>
 			<key>name</key>
-			<string>meta.attribute-selector.css</string>
+			<string>entity.other.attribute-selector.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#double-quoted</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#single-quoted</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\^|\$|\*|~</string>
+					<key>name</key>
+					<string>keyword.other.regex.sass</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
 			<key>match</key>
@@ -342,10 +318,6 @@
 				<dict>
 					<key>include</key>
 					<string>#variable</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#variable-root</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -441,7 +413,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>[a-z\-_\d]+((?=:|#{))</string>
+			<string>[a-z-]+((?=:|#{))</string>
 			<key>name</key>
 			<string>support.type.property-name.css.sass</string>
 		</dict>
@@ -461,7 +433,7 @@
 			<key>match</key>
 			<string>\band\b|\bor\b|,</string>
 			<key>name</key>
-			<string>punctuation.comma.css.sass</string>
+			<string>comment.punctuation.comma.sass</string>
 		</dict>
 		<key>comment-tag</key>
 		<dict>
@@ -470,14 +442,14 @@
 			<key>end</key>
 			<string>(?=}})</string>
 			<key>name</key>
-			<string>comment.tag.css.sass</string>
+			<string>comment.tag.sass</string>
 		</dict>
 		<key>dotdotdot</key>
 		<dict>
 			<key>match</key>
 			<string>\.\.\.</string>
 			<key>name</key>
-			<string>variable.other.css.sass</string>
+			<string>variable.other</string>
 		</dict>
 		<key>double-slash</key>
 		<dict>
@@ -486,7 +458,7 @@
 			<key>end</key>
 			<string>$\n?</string>
 			<key>name</key>
-			<string>comment.line.css.sass</string>
+			<string>comment.line.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -511,22 +483,22 @@
 				</dict>
 			</array>
 		</dict>
-		<key>single-quoted</key>
+		<key>flag</key>
 		<dict>
-			<key>begin</key>
-			<string>'</string>
-			<key>end</key>
-			<string>'</string>
+			<key>match</key>
+			<string>!(important|default|optional|global)</string>
 			<key>name</key>
-			<string>string.quoted.single.css.sass</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#quoted-interpolation</string>
-				</dict>
-			</array>
+			<string>keyword.other.important.css.sass</string>
 		</dict>
+		<key>function</key>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=[\s|\(|,])(?!url|format|attr)[a-zA-Z0-9_-][\w-]*(?=\()</string>
+			<key>name</key>
+			<string>support.function.name.sass</string>
+		</dict>
+		<key>function-content</key>
+		<dict>
 		<key>warning-message</key>
 		<dict>
 			<key>begin</key>
@@ -543,22 +515,6 @@
 				</dict>
 			</array>
 		</dict>
-		<key>flag</key>
-		<dict>
-			<key>match</key>
-			<string>!(important|default|optional|global)</string>
-			<key>name</key>
-			<string>keyword.other.important.css.sass</string>
-		</dict>
-		<key>function</key>
-		<dict>
-			<key>match</key>
-			<string>(?&lt;=[\s|\(|,])(?!url|format|attr)[a-zA-Z0-9_-][\w-]*(?=\()</string>
-			<key>name</key>
-			<string>support.function.name.css.sass</string>
-		</dict>
-		<key>function-content</key>
-		<dict>
 			<key>begin</key>
 			<string>(?&lt;=url\(|format\(|attr\()</string>
 			<key>end</key>
@@ -573,7 +529,7 @@
 			<key>end</key>
 			<string>}</string>
 			<key>name</key>
-			<string>support.function.interpolation.css.sass</string>
+			<string>support.function.interpolation.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -608,20 +564,12 @@
 					<key>include</key>
 					<string>#single-quoted</string>
 				</dict>
-				<dict>
-					<key>include</key>
-					<string>#function</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#function-content</string>
-				</dict>
 			</array>
 		</dict>
 		<key>numeric</key>
 		<dict>
 			<key>match</key>
-			<string>(-|\.)?(?&lt;!\w)[0-9]+(\.[0-9]+)?</string>
+			<string>(-|\.)?[0-9]+(\.[0-9]+)?</string>
 			<key>name</key>
 			<string>constant.numeric.css.sass</string>
 		</dict>
@@ -630,7 +578,7 @@
 			<key>match</key>
 			<string>\+|\s-\s|\s-(?=\$)|(?&lt;=\()-(?=\$)|\s-(?=\()|\*|/|%|=|!|&lt;|&gt;|~</string>
 			<key>name</key>
-			<string>keyword.operator.css.sass</string>
+			<string>keyword.operator.sass</string>
 		</dict>
 		<key>placeholder-selector</key>
 		<dict>
@@ -639,7 +587,7 @@
 			<key>end</key>
 			<string>$\n?|\s|(?=;|{)</string>
 			<key>name</key>
-			<string>entity.other.attribute-name.placeholder-selector.css.sass</string>
+			<string>entity.other.attribute-name.placeholder-selector.sass</string>
 		</dict>
 		<key>property-value</key>
 		<dict>
@@ -662,7 +610,7 @@
 			<key>end</key>
 			<string>}</string>
 			<key>name</key>
-			<string>support.function.interpolation.css.sass</string>
+			<string>support.function.interpolation.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -701,6 +649,22 @@
 			<key>name</key>
 			<string>constant.other.color.rgb-value.css.sass</string>
 		</dict>
+		<key>single-quoted</key>
+		<dict>
+			<key>begin</key>
+			<string>'</string>
+			<key>end</key>
+			<string>'</string>
+			<key>name</key>
+			<string>string.quoted.single.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#quoted-interpolation</string>
+				</dict>
+			</array>
+		</dict>
 		<key>unit</key>
 		<dict>
 			<key>match</key>
@@ -708,105 +672,19 @@
 			<key>name</key>
 			<string>keyword.other.unit.css.sass</string>
 		</dict>
-		<key>variable-library</key>
+		<key>variable-root</key>
 		<dict>
 			<key>match</key>
 			<string>\$[a-zA-Z0-9_-]+</string>
 			<key>name</key>
-			<string>variable.other.library.css.sass</string>
+			<string>variable.other.root</string>
 		</dict>
 		<key>variable</key>
 		<dict>
-			<key>begin</key>
-			<string>(\w|\d|\t*|\s*)(\$)([a-zA-Z0-9_-]+\b)\s*</string>
-			<key>captures</key>
-			<dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>variable.other.css.sass</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>variable.other.name.css.sass</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>\s*(?=(\;|\,|\:|\s*|\}))</string>
-			<key>name</key>
-			<string>variable.other.css.sass</string>
-		</dict>
-		<key>variable-root</key>
-		<dict>
-
-			<key>captures</key>
-			<dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>variable.other.root.definition.css.sass</string>
-				</dict>
-			</dict>
 			<key>match</key>
-			<string>(^|\w*|\s*|\t*|\(*)(\$[a-zA-Z0-9_-]+(\s*|\t*))(\:)(\s*|\t*)</string>
+			<string>\$[a-zA-Z0-9_-]+</string>
 			<key>name</key>
-			<string>meta.set.variable</string>
-			<!-- <key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#variable</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#single-quoted</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#double-quoted</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#numeric</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#operator</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#function</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#function-content</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#unit</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#rgb-value</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#flag</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#comma</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#interpolation</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>$self</string>
-				</dict>
-			</array> -->
+			<string>variable.other.value</string>
 		</dict>
 	</dict>
 	<key>scopeName</key>

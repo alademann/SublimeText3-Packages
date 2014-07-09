@@ -5,17 +5,13 @@
 	<key>name</key>
 	<string>Goto Symbol in Project</string>
 	<key>scope</key>
-	<string>entity.name.tag.css.sass.symbol, entity.other.attribute-name, comment.tag.sass, variable.in.project, meta.set.variable</string>
+	<string>entity.name.tag.css.sass.symbol, entity.other.attribute-name, comment.tag.sass</string>
 	<key>settings</key>
 	<dict>
 		<key>showInSymbolList</key>
 		<integer>1</integer>
-		<key>symbolTransformation</key>
-		<string>s/^//</string>
 		<key>showInIndexedSymbolList</key>
 		<integer>1</integer>
-		<key>symbolIndexTransformation</key>
-		<string>s/\.([A-Za-z0-9_~]+)/$1/;</string>
 	</dict>
 	<key>uuid</key>
 	<string>71B52B90-82BB-11E2-9E96-0800200C9A66</string>
