@@ -71,6 +71,8 @@ def getParser(view):
         return JsdocsRust(viewSettings)
     elif sourceLang == 'ts':
         return JsdocsTypescript(viewSettings)
+    elif sourceLang == 'scss':
+        return JsdocsScss(viewSettings)
     return JsdocsJavascript(viewSettings)
 
 
@@ -615,6 +617,79 @@ class JsdocsJavascript(JsdocsParser):
             return "Array"
         if val[0] == '{':
             return "Object"
+        if val == 'true' or val == 'false':
+            returnVal = 'Bool' if shortPrimitives else 'Boolean'
+            return returnVal.lower() if lowerPrimitives else returnVal
+        if re.match('RegExp\\b|\\/[^\\/]', val):
+            return 'RegExp'
+        if val[:4] == 'new ':
+            res = re.search('new (' + self.settings['fnIdentifier'] + ')', val)
+            return res and res.group(1) or None
+        return None
+
+class JsdocsScss(JsdocsParser):
+    def setupSettings(self):
+        identifier = '[a-zA-Z_$][a-zA-Z_$0-9]*'
+        self.settings = {
+            # curly brackets around the type information
+            "curlyTypes": True,
+            'typeInfo': True,
+            "typeTag": self.viewSettings.get('jsdocs_override_js_var') or "type",
+            # technically, they can contain all sorts of unicode, but w/e
+            "varIdentifier": identifier,
+            "fnIdentifier":  identifier,
+            "fnOpener": r'(function|mixin)(?:\s+' + identifier + r')?\s*\(',
+            "commentCloser": " */",
+            "bool": "Bool",
+            "function": "Function"
+        }
+
+    def parseFunction(self, line):
+        res = re.search(
+            #   fnName = function,  fnName : function
+            r'(?:(?P<name1>' + self.settings['varIdentifier'] + r')\s*[:=]\s*)?'
+            + 'function'
+            # function fnName
+            + r'(?:\s+(?P<name2>' + self.settings['fnIdentifier'] + '))?'
+            # (arg1, arg2)
+            + r'\s*\(\s*(?P<args>.*)\)',
+            line
+        )
+        if not res:
+            return None
+
+        # grab the name out of "name1 = function name2(foo)" preferring name1
+        name = res.group('name1') or res.group('name2') or ''
+        args = res.group('args')
+
+        return (name, args, None)
+
+    def parseVar(self, line):
+        res = re.search(
+            #   var foo = blah,
+            #       foo = blah;
+            #   baz.foo = blah;
+            #   baz = {
+            #        foo : blah
+            #   }
+
+            '(?P<name>' + self.settings['varIdentifier'] + ')\s*[=:]\s*(?P<val>.*?)(?:[;,]|$)',
+            line
+        )
+        if not res:
+            return None
+
+        return (res.group('name'), res.group('val').strip())
+
+    def guessTypeFromValue(self, val):
+        lowerPrimitives = self.viewSettings.get('jsdocs_lower_case_primitives') or False
+        shortPrimitives = self.viewSettings.get('jsdocs_short_primitives') or False
+        if is_numeric(val):
+            return "number" if lowerPrimitives else "Number"
+        if val[0] == '"' or val[0] == "'":
+            return "string" if lowerPrimitives else "String"
+        if val[0] == '(':
+            return "Map"
         if val == 'true' or val == 'false':
             returnVal = 'Bool' if shortPrimitives else 'Boolean'
             return returnVal.lower() if lowerPrimitives else returnVal
