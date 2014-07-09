@@ -3,7 +3,7 @@
 */
 {
     /*
-        Sets the default opener for html files
+        Sets the default opener for HTML files
 
         default - Use the system default HTML viewer
         other - Set a full path to any executable. ex: /Applications/Google Chrome Canary.app or /Applications/Firefox.app
@@ -11,49 +11,57 @@
     "browser": "default",
 
     /*
-        Sets the parser used for build markdown to html.
+        Sets the parser used for building markdown to HTML.
 
-        NOTE: The parser setting is not for the preview commands now. 
-        The preivew have sperated commands for each parser markdown.
+        NOTE: The parser setting is not for the preview commands now.
+        The previews have separate commands for each parser markdown.
 
-        Warning for github API : if you have a ST2 linux build, Python is not built with SSL so it may not work
+        Warning for github API: if you have a ST2 linux build, Python is not built with SSL so it may not work
 
         default - The current default parser is python-markdown parser.
-        markdown - Use the buildin python-markdown parser
-        markdown2 - (Deprecated) Use the builtin python-markdown2 parser.
-        github - User github API to convert markdown, so you can use GitHub flavored Markdown, see http://github.github.com/github-flavored-markdown/
+        markdown - Use the built-in python-markdown parser
+        github - Use the github API to convert markdown, so you can use GitHub flavored Markdown, see http://github.github.com/github-flavored-markdown/
     */
     "parser": "default",
 
     /*
-       Enable or not mathjax support.
+        Enable or not mathjax support.
     */
     "enable_mathjax": false,
 
     /*
-        Enable or not highlight.js support for syntax highlighting.
+        Pygments support for syntax highlighting.
     */
     "enable_highlight": false,
 
     /*
-        List of enabled extensions of the selected markdown parser. 
+        List of enabled extensions of the selected markdown parser.
 
         You can get the full list of extensions at:
-            * The markdown2 parser, the `default`: https://github.com/trentm/python-markdown2/wiki/Extras
             * The python markdown parser, the `markdown`: http://pythonhosted.org/Markdown/extensions/index.html
 
 
-        default - use the default set of extensions, see table latter.
+        default - use the default set of extensions, see table later.
         [ "default", "def_list", ... ] - a list of extensions. Use "default" to include the default extensions.
-        
+
          Parser     | "default" Values
         ------------|---------------------------
-         default    | ["footnotes", "toc", "fenced-code-blocks", "cuddled-lists" ]
-         markdown   | ["extra", "toc"]
-         github     | extensions values are not used.
+         default    | ["extra", "github", "toc", "headerid", "meta", "sane_lists", "smarty", "wikilinks"]
+         markdown   | ["extra", "github", "toc", "headerid", "meta", "sane_lists", "smarty", "wikilinks"]
+         github     | extension's values are not used.
 
     */
     "enabled_extensions": "default",
+
+    /*
+        Enabled parsers for the parser "select parser" command
+        Available parsers: markdown, github
+
+        When there are more than one parser in the list, Sublime will prompt
+        via the quick panel for which one to use.  If there is only one, it
+        will automatically run that parser.
+    */
+    "enabed_parsers": ["markdown", "github"],
 
     /*
         Default mode for the github Markdown parser : markdown (documents) or gfm (comments)
@@ -62,7 +70,7 @@
     "github_mode": "markdown",
 
     /*
-        Uses an OAuth token to when parsing markdown with GitHub API. To create one for Markdown Preview, see https://help.github.com/articles/creating-an-oauth-token-for-command-line-use.
+        Uses an OAuth token when parsing markdown with GitHub API. To create one for Markdown Preview, see https://help.github.com/articles/creating-an-oauth-token-for-command-line-use.
     */
     // "github_oauth_token": "secret",
 
@@ -90,7 +98,7 @@
         {{ BODY }} - would be replaced by HTML converted from markdown
 
         By setting "skip_default_stylesheet" to true you can use the styles only in your HTML
-        templat. In most case you should turn this setting on to have a full featured design.
+        template. In most cases you should turn this setting on to have a full-featured design.
 
         Refer to 'customized-template-sample.html' as a show case.
     */
@@ -113,19 +121,60 @@
     "markdown_filetypes": [".md", ".markdown", ".mdown"],
 
     /*
-        Sets a custom temporary folder for MarkdownPreview-generated html files. Useful if you're
-        using LiveReload and don't want to use the OS default. The directory will be created if not
-        exists. Relative path is supportted, and is checked against `os.path.isabs`, see doc:
-        http://docs.python.org/3/library/os.path.html#os.path.isabs
+        Sets a custom temporary folder for MarkdownPreview-generated HTML files. Useful if you're
+        using LiveReload and don't want to use the OS default. The directory will be created if it
+        doesn't exist. Relative paths are supported, and are checked against `os.path.isabs`, see
+        doc: http://docs.python.org/3/library/os.path.html#os.path.isabs
 
         Examples: /tmp/custom_folder   (Linux/OSX - absolute path)
-                  C:/TEMP/MYNOTES
-                  C:\\TEMP\\MYNOTES    (Windows - absolute path, forward slash or escaped back slash)
-                  build                (All OS - relative path, current dir)
-                  ../build             (Linux/OSX - relative path, in parent dir)
-                  ..\\build            (Windows - relative path, in parent dir)
+                    C:/TEMP/MYNOTES
+                    C:\\TEMP\\MYNOTES    (Windows - absolute path, forward slash or escaped back slash)
+                    build                (All OS - relative path, current dir)
+                    ../build             (Linux/OSX - relative path, in parent dir)
+                    ..\\build            (Windows - relative path, in parent dir)
     */
     // "path_tempfile": "/tmp/my_notes",
+
+    /*
+        Sets how image paths are handled.
+        Setting is a string value: (absolute | base64 | none)
+            absolute: converts relative local paths to absolute
+            base64: coverts the local file to base64 and embeds it in the HTML
+            none: does nothing
+    */
+    "image_path_conversion": "absolute",
+
+    /*
+        Sets how file paths are handled.
+        Setting is a string value: (absolute | none)
+            absolute: converts relative local paths to absolute
+            none: does nothing
+    */
+    "file_path_conversions": "absolute",
+
+    /*
+        Sets how multimarkdown critic marks are handled.
+        Setting is a string value: (accept | reject | none)
+            accept: Accepts the proposed inserts and deletions (comments etc. are discarded)
+            reject: Rejects the proposed inserts and deletions (comments etc. are discarded)
+            none: does nothing
+    */
+    "strip_critic_marks": "none",
+
+    /*
+        Sets whether highlight JS will auto-guess raw block's syntax.
+        Alternative is to to only highlight blocks where a language has
+        been defined.
+
+        Default is True (guess).
+
+        If you manually set codehilite as an included extension in "enabled_extensions",
+        your settings will override this one.  To configure language guessing manually:
+            "enabled_extensions": [
+                "codehilite(guess_lang=False)" // <-Turn off language guessing
+            ]
+    */
+    "guess_language": true,
 
     /*
         Strips the YAML front matter header and converts title to a heading
@@ -135,8 +184,6 @@
     /* do we show the panel when build with CMD+B */
     "show_panel_on_build": true,
 
-    /* do we include the CSS in when outputing HTML into a new sublime view ? */
+    /* do we include the CSS when outputting HTML into a new sublime view ? */
     "embed_css_for_sublime_output": true
 }
-
-
