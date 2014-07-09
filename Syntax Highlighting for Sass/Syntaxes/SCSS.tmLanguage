@@ -690,7 +690,7 @@
 		<key>reserved-words</key>
 		<dict>
 			<key>match</key>
-			<string>\b(false|from|in|not|null|through|to|true)\b</string>
+			<string>\b(?!\-)(false|from|in|not|null|through|to|true)(?!\-)\b</string>
 			<key>name</key>
 			<string>support.type.property-name.css.sass</string>
 		</dict>
