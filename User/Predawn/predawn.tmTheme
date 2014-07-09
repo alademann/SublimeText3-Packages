@@ -693,6 +693,17 @@ COLOR KEY
 				<string>#F18260</string>
 			</dict>
 		</dict>
+		<dict>
+			<key>name</key>
+			<string>CSS key-value separator</string>
+			<key>scope</key>
+			<string>punctuation.separator.key-value.css</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#ebebeb</string>
+			</dict>
+		</dict>
 
 
 		<!--
@@ -781,7 +792,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass variable declaration</string>
 			<key>scope</key>
-			<string>variable.other.root, support.other.variable.definition.css</string>
+			<string>variable.other.indexed.declaration</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

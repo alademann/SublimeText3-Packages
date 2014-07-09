@@ -62,10 +62,25 @@
 			<string>#placeholder-selector</string>
 		</dict>
 		<dict>
-			<key>match</key>
-			<string>\$[a-zA-Z0-9_-]+\:</string>
+			<key>begin</key>
+			<string>(\$[a-zA-Z0-9_-]+)(\:)</string>
+			<key>end</key>
+			<string>\s|\n|,|\)|;|[a-zA-Z0-9_-]</string>
 			<key>name</key>
 			<string>variable.other.indexed.declaration</string>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>variable.other</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.separator.key-value.css.sass</string>
+				</dict>
+			</dict>
 		</dict>
 		<dict>
 			<key>begin</key>
