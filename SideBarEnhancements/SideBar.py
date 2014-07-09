@@ -131,7 +131,7 @@ class SideBarEditCommand(sublime_plugin.WindowCommand):
 class SideBarOpenCommand(sublime_plugin.WindowCommand):
 	def run(self, paths = []):
 		for item in SideBarSelection(paths).getSelectedItems():
-			item.open()
+			item.open(s.get('use_powershell', True))
 
 	def is_enabled(self, paths = []):
 		return SideBarSelection(paths).len() > 0
@@ -1535,6 +1535,23 @@ class SideBarOpenInBrowserCommand(sublime_plugin.WindowCommand):
 
 					,'%PROGRAMFILES%\\Mozilla Firefox\\firefox.exe'
 					,'%PROGRAMFILES(X86)%\\Mozilla Firefox\\firefox.exe'
+
+					,'firefox'
+					,'firefox.exe'
+				])
+				commands = ['-new-tab', url]
+		elif browser == 'aurora':
+			if sublime.platform() == 'osx':
+				items.extend(['open'])
+				commands = ['-a', '/Applications/FirefoxAurora.app', url]
+			else:
+				if s.get('portable_browser') != '':
+					items.extend([s.get('portable_browser')])
+				items.extend([
+					'/usr/bin/aurora'
+
+					,'%PROGRAMFILES%\\Aurora\\firefox.exe'
+					,'%PROGRAMFILES(X86)%\\Aurora\\firefox.exe'
 
 					,'firefox'
 					,'firefox.exe'

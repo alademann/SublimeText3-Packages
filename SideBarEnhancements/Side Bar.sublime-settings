@@ -24,10 +24,12 @@
 	"disabled_menuitem_empty": true,
 
 	//if installed in a default location maybe this works.
-	"default_browser": "", //one of this list: firefox, chrome, canary, chromium, opera, safari
+	"default_browser": "", //one of this list: firefox, aurora, chrome, canary, chromium, opera, safari
 
 	"portable_browser": "", // for example:  C:/Program Files (x86)/Nightly/firefox.exe
 
-	"disable_send_to_trash": false
+	"disable_send_to_trash": false,
+
+	"use_powershell": true
 
 }
