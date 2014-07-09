@@ -427,12 +427,6 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(\$|jQuery)\b</string>
-			<key>name</key>
-			<string>support.class.js.jquery</string>
-		</dict>
-		<dict>
-			<key>match</key>
 			<string>(?&lt;=\.)(length|selector|context)\b</string>
 			<key>name</key>
 			<string>support.constant.js.jquery</string>
