@@ -1,5 +1,5 @@
 {
-	"scope": "source.sass - meta.property-list - support.function.name.sass.library - variable.other.root, source.scss - meta.property-list - support.function.name.sass.library - variable.other.root",
+	"scope": "source.sass - meta.property-list - comment.line - comment.block - support.function.name.sass.library - variable.other.root, source.scss - meta.property-list - comment.line - comment.block - support.function.name.sass.library - variable.other.root",
 
 	"completions": [
 		"color: ",

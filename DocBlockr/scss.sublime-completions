@@ -1,5 +1,5 @@
 {
-  "scope": "source.scss comment.block.documentation.css.sass",
+  "scope": "source.sass - variable.other - support.function.name.sass.library, source.scss - variable.other - support.function.name.sass.library",
   "completions":
   [
     { "trigger" : "@access",        "contents": "@access ${1:[private|public]}"},
