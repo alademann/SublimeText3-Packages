@@ -17,7 +17,7 @@
     { "trigger" : "@requires",      "contents": "@requires {${1:[function|mixin|variable]}} ${2:[entity-name]}"},
     { "trigger" : "@return",        "contents": "@return {${1:[type]}} ${2:- ${3:[Optional description]}}" },
     { "trigger" : "@returns",       "contents": "@returns {${1:[type]}} ${2:- ${3:[Optional description]}}" },
-    { "trigger" : "@see",           "contents": "@see ${1:[description]}"},
+    { "trigger" : "@see",           "contents": "@see {${1:[function|mixin|variable]}} ${2:[entity-name]}"},
     { "trigger" : "@since",         "contents": "@since `${1:[version]}`"},
     { "trigger" : "@throw",         "contents": "@throw if ${1:[this condition is met]}"},
     { "trigger" : "@throws",        "contents": "@throws if ${1:[this condition is met]}"},
