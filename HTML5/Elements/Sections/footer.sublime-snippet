@@ -2,7 +2,7 @@
 	<content><![CDATA[<footer>
 	$1
 </footer>$0]]></content>
-	<tabTrigger>footer</tabTrigger>
+	<tabTrigger> footer</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;footer&gt;</description>
 </snippet>

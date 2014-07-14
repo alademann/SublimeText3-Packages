@@ -9,7 +9,7 @@
 	${12:<p><a href="$6">${13:Download this video file.}</a></p>}
 	</object>
 </video>$0]]></content>
-	<tabTrigger>video</tabTrigger>
+	<tabTrigger> video</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;video&gt; with legacy object</description>
 </snippet>

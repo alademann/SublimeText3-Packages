@@ -1,0 +1,7 @@
+<snippet>
+	<content><![CDATA[<label${1: for="$2"}>$3</label>
+input$0]]></content>
+	<tabTrigger>&lt;label</tabTrigger>
+	<scope>source.php,text.html</scope>
+	<description>&lt;label&gt;</description>
+</snippet>

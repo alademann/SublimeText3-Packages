@@ -4,7 +4,7 @@
 	<param name="autoplay" value="${6:false}">
 	<param name="autoStart" value="${7:0}">
 </object>$0]]></content>
-	<tabTrigger>object</tabTrigger>
+	<tabTrigger> object</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;object&gt;</description>
 </snippet>

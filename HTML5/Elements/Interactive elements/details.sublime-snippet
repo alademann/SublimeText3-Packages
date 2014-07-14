@@ -3,7 +3,7 @@
 	<summary>${1:title or explanatory caption}</summary>
 	$2
 </details>$0]]></content>
-	<tabTrigger>details</tabTrigger>
+	<tabTrigger> details</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;details&gt;</description>
 </snippet>

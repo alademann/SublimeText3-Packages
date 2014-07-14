@@ -3,7 +3,7 @@
 	${1:<figcaption>${2:explanatory caption}</figcaption>}
 	$3
 </figure>$0]]></content>
-	<tabTrigger>figure</tabTrigger>
+	<tabTrigger> figure</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;figure&gt;</description>
 </snippet>

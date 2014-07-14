@@ -4,7 +4,7 @@
 			<li><a href="$2" title="$3">$3</a></li>
 		</ul>}
 </nav>$0]]></content>
-	<tabTrigger>nav</tabTrigger>
+	<tabTrigger> nav</tabTrigger>
 	<scope>source.php,text.html</scope>
 	<description>&lt;nav&gt;</description>
 </snippet>
