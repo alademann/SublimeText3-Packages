@@ -14,6 +14,10 @@
     // searching for a file
     "auto_extension" : [
         {
+            "extension": ".scss",
+            "prefix"   : "_"
+        },
+        {
             "extension": "",
             "prefix"   : "./static/_includes/"
         }
