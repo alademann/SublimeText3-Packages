@@ -47,7 +47,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>({%)\s*(include)\s(([a-zA-Z0-9_\-\/]+)(\.)(\w+))\s*((\w+)(\=)(['"])?(\w+)(['"])?\s*)*(%})</string>
+			<string>({%)\s*((indent_)*include)\s(([a-zA-Z0-9_\-\/]+)(\.)(\w+))\s*((\w+)(\=)(['"])?(\w+)(['"])?\s*)*(%})</string>
 			<key>name</key>
 			<string>source.liquid.tags.embedded.include.html</string>
 		</dict>

@@ -202,7 +202,7 @@
 			<key>comment</key>
 			<string>everything being a reserved word, not a value and needing a 'end' is a..</string>
 			<key>match</key>
-			<string>(?&lt;!\.)\b(BEGIN|begin|case|class|else|elsif|END|end|endif|ensure|for|if|in|module|rescue|then|unless|until|when|while)\b(?![?!])</string>
+			<string>(?&lt;!\.)\b(BEGIN|begin|case|class|else|elsif|END|end|endif|endfor|ensure|for|if|in|module|rescue|then|unless|endunless|until|when|while)\b(?![?!])</string>
 			<key>name</key>
 			<string>keyword.control.ruby</string>
 		</dict>
@@ -240,6 +240,12 @@
 		</dict>
 		<dict>
 			<key>match</key>
+			<string>(?=\.)(index|length|size|index0|rindex|rindex0|first|last)\b</string>
+			<key>name</key>
+			<string>entity.name.ruby</string>
+		</dict>
+		<dict>
+			<key>match</key>
 			<string>\b(nil|true|false)\b(?![?!])</string>
 			<key>name</key>
 			<string>constant.language.ruby</string>
@@ -254,7 +260,7 @@
 			<key>comment</key>
 			<string> everything being a method but having a special function is a..</string>
 			<key>match</key>
-			<string>\b(initialize|new|loop|include|extend|raise|attr_reader|attr_writer|attr_accessor|attr|catch|throw|private|module_function|public|protected)\b(?![?!])</string>
+			<string>\b(initialize|new|loop|include|indent_include|stripped_include|assign|capture|endcapture|extend|raise|attr_reader|attr_writer|attr_accessor|attr|catch|throw|private|module_function|public|protected|forloop)\b(?![?!])</string>
 			<key>name</key>
 			<string>keyword.other.special-method.ruby</string>
 		</dict>
@@ -557,6 +563,12 @@
 			<string>/=</string>
 			<key>name</key>
 			<string>keyword.operator.assignment.augmented.ruby</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>[a-zA-Z_-]+(?=\=)</string>
+			<key>name</key>
+			<string>variable.other.ruby</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -2237,7 +2249,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\s+=\s+</string>
+			<string>\s*=\s*</string>
 			<key>name</key>
 			<string>keyword.operator.assignment.ruby</string>
 		</dict>

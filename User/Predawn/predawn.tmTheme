@@ -89,7 +89,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Comment</string>
 			<key>scope</key>
-			<string>comment, comment.block, punctuation.definition.comment</string>
+			<string>comment, comment.block, punctuation.definition.comment, punctuation.separator.escape.ruby</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -188,7 +188,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Char entities</string>
 			<key>scope</key>
-			<string>constant.character.entity, punctuation.definition.entity</string>
+			<string>constant.character.entity, punctuation.definition.entity, entity.name.ruby</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -936,9 +936,9 @@ COLOR KEY
 		-->
 		<dict>
 			<key>name</key>
-			<string>Ruby Methods</string>
+			<string>Ruby Keywords</string>
 			<key>scope</key>
-			<string>keyword.other.special-method.ruby</string>
+			<string>keyword.other.special-method.ruby, keyword.control.ruby</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

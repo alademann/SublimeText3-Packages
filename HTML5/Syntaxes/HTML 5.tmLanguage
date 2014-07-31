@@ -649,6 +649,12 @@
 					<string>comment.block.erb</string>
 				</dict>
 				<dict>
+					<key>match</key>
+					<string>(?!\})\\</string>
+					<key>name</key>
+					<string>punctuation.separator.escape.ruby</string>
+				</dict>
+				<dict>
 					<key>begin</key>
 					<string>(&lt;|{)(%|{)+(?!(&gt;|}))=?</string>
 					<key>captures</key>
