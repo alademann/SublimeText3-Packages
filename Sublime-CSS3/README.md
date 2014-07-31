@@ -227,11 +227,14 @@ progid:DXImageTransform.Microsoft.Shadow
 
 :placeholder-shown
 :user-error
+
+dialog::backdrop
 ```
 
 #### At-rules
 ```
 @keyframes (without keyframe selectors atm)
+@custom-media (custom media queries)
 ```
 
 #### Tags
