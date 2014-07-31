@@ -5,9 +5,9 @@
         "children":
         [
             {
-                "id": "css_comb",
-                "caption": "Sort via CSScomb",
-                "command": "css_sorter"
+                "id": "css_comb_js",
+                "caption": "Run CSScomb JS",
+                "command": "css_comb"
             }
         ]
     },
@@ -24,13 +24,13 @@
                 "children":
                 [
                     {
-                        "caption": "CSScomb",
+                        "caption": "CSScomb JS",
                         "children":
                         [
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/CSScomb/README.md"
+                                    "file": "${packages}/CSScomb JS/README.md"
                                 },
                                 "caption": "README"
                             },
@@ -38,22 +38,22 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/CSScomb/CSScomb.sublime-settings"
+                                    "file": "${packages}/CSScomb JS/CSScomb JS.sublime-settings"
                                 },
-                                "caption": "Sort Order – Default"
+                                "caption": "Settings – Default"
                             },
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/User/CSScomb.sublime-settings"
+                                    "file": "${packages}/User/CSScomb JS.sublime-settings"
                                 },
-                                "caption": "Sort Order – User"
+                                "caption": "Settings – User"
                             },
                             { "caption": "-" },
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/CSScomb/Default.sublime-keymap"
+                                    "file": "${packages}/CSScomb JS/Default.sublime-keymap"
                                 },
                                 "caption": "Key Bindings – Default"
                             },

@@ -1,0 +1,7 @@
+{
+    // If you want to use custom config, put file named `.csscomb.json` to the
+    // project's root or your HOME directory. If for some reason you would like
+    // to set custom path to configuration file, paste it here.
+    // For example, "/Users/csscomb/project/config/csscomb.json"
+    "custom_config_path": "/Users/aaronlademann/workspaces/wf/web-skin/sass/.csscomb.json"
+}

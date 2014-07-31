@@ -1,97 +1,120 @@
 # coding: utf-8
 
-import sys
+import os
+import platform
 import sublime
 import sublime_plugin
-import subprocess
-import json
-from os import path, name
+from subprocess import Popen, PIPE
 
-__file__ = path.normpath(path.abspath(__file__))
-__path__ = path.dirname(__file__)
-libs_path = path.join(__path__, 'libs')
-csscomb_path = path.join(libs_path, 'call_string.php')
-is_python3 = sys.version_info[0] > 2
+# monkeypatch `Region` to be iterable
+sublime.Region.totuple = lambda self: (self.a, self.b)
+sublime.Region.__iter__ = lambda self: self.totuple().__iter__()
 
+COMB_PATH = os.path.join(sublime.packages_path(), os.path.dirname(os.path.realpath(__file__)), 'csscomb.js')
 
-def to_unicode_or_bust(obj, encoding='utf-8'):
-    if isinstance(obj, basestring):
-        if not isinstance(obj, unicode):
-            obj = unicode(obj, encoding)
-    return obj
-
-
-class CssSorter(sublime_plugin.TextCommand):
-
-    def __init__(self, view):
-        self.view = view
-        self.startupinfo = None
-        self.error = False
-        if name == 'nt':
-            self.startupinfo = subprocess.STARTUPINFO()
-            self.startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            self.startupinfo.wShowWindow = subprocess.SW_HIDE
-
+class CssCombCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        self.check_php_on_path()
-
-        self.sortorder = False
-        self.order_settings = sublime.load_settings('CSScomb.sublime-settings')
-        if self.order_settings.has('custom_sort_order') and self.order_settings.get('custom_sort_order') is True:
-            self.sortorder = json.dumps(self.order_settings.get('sort_order'))
-            sublime.status_message('Sorting with custom sort order...')
-        else:
-            self.sortorder = ''
-
-        selections = self.get_selections()
-
-        for sel in selections:
-            selbody = self.view.substr(sel)
-
-            if is_python3:
-                selbody = str(selbody)
-            else:
-                selbody = selbody.encode('utf-8')
-
-            myprocess = subprocess.Popen(['php', csscomb_path, selbody, self.sortorder], shell=False, stdout=subprocess.PIPE, startupinfo=self.startupinfo)
-            (sout, serr) = myprocess.communicate()
-            myprocess.wait()
-
-            if serr:
-                sublime.error_message(self.status)
-                return
-            elif sout is None:
-                sublime.error_message('There was an error sorting CSS.')
-                return
-
-            if is_python3:
-                result = str(sout, encoding='utf-8')
-            else:
-                result = to_unicode_or_bust(sout)
-
-            self.view.replace(edit, sel, result)
-
-        sublime.status_message('Successfully sorted')
-
-    def get_selections(self):
-        selections = self.view.sel()
-
-        # check if the user has any actual selections
-        has_selections = False
-        for region in selections:
-            if region.empty() is False:
-                has_selections = True
-
-        # if not, add the entire file as a selection
-        if not has_selections:
-            full_region = sublime.Region(0, self.view.size())
-            selections.add(full_region)
-
-        return selections
-
-    def check_php_on_path(self):
-        try:
-            subprocess.call(['php', '-v'], shell=False, startupinfo=self.startupinfo)
-        except (OSError):
-            sublime.error_message('Plugin unable to find php on computer.\nCSScomb needs PHP to function properly.\n\nPlease make sure you have installed PHP\nand it is available in your PATH:\n\nhttp://php.net/downloads.php')
+        syntax = self.get_syntax()
+        if not syntax:
             return
+
+        config_path = self.get_setting('custom_config_path')
+        if not config_path and self.view.file_name() != None:
+            config_path = self.get_config_path()
+
+        if not self.has_selection():
+            region = sublime.Region(0, self.view.size())
+            originalBuffer = self.view.substr(region)
+            combed = self.comb(originalBuffer, syntax, config_path)
+            if combed:
+                self.view.replace(edit, region, combed)
+            return
+        for region in self.view.sel():
+            if region.empty():
+                continue
+            originalBuffer = self.view.substr(region)
+            combed = self.comb(originalBuffer, syntax, config_path)
+            if combed:
+                self.view.replace(edit, region, combed)
+
+    def comb(self, css, syntax, config_path):
+        try:
+            p = Popen(['node', COMB_PATH] + [syntax, config_path],
+                stdout=PIPE, stdin=PIPE, stderr=PIPE,
+                env=self.get_env(), shell=self.is_windows())
+        except OSError:
+            raise Exception("Couldn't find Node.js. Make sure it's in your " +
+                            '$PATH by running `node -v` in your command-line.')
+        stdout, stderr = p.communicate(input=css.encode('utf-8'))
+        if stdout:
+            return stdout.decode('utf-8')
+        else:
+            sublime.error_message('CSScomb error:\n%s' % stderr.decode('utf-8'))
+
+    def get_config_path(self, config_path=''):
+        if not config_path:
+            config_path = os.path.dirname(self.view.file_name()) + '/.csscomb.json'
+
+        if os.path.exists(config_path):
+            return config_path
+
+        parent_dir = os.path.dirname(config_path)
+        if os.path.dirname(config_path) in (os.path.expanduser('~'),
+                                            os.path.dirname(parent_dir)):
+            return ''
+
+        config_path = os.path.dirname(os.path.dirname(config_path)) + '/.csscomb.json'
+        return self.get_config_path(config_path)
+
+    def get_env(self):
+        env = None
+        if self.is_osx():
+            env = os.environ.copy()
+            env['PATH'] += ':/usr/local/bin'
+        return env
+
+    def get_setting(self, key):
+        settings = self.view.settings().get('CSScomb JS')
+        if settings is None:
+            settings = sublime.load_settings('CSScomb JS.sublime-settings')
+        return settings.get(key)
+
+    def get_syntax(self):
+        if self.is_css():
+            return 'css'
+        if self.is_scss():
+            return 'scss'
+        if self.is_less():
+            return 'less'
+        if self.is_unsaved_buffer_without_syntax():
+            return 'css'
+        return False
+
+    def has_selection(self):
+        for sel in self.view.sel():
+            start, end = sel
+            if start != end:
+                return True
+        return False
+
+    def is_osx(self):
+        return platform.system() == 'Darwin'
+
+    def is_windows(self):
+        return platform.system() == 'Windows'
+
+    def is_unsaved_buffer_without_syntax(self):
+        return self.view.file_name() == None and self.is_plaintext() == True
+
+    def is_plaintext(self):
+        return self.view.settings().get('syntax').endswith('/Plain text.tmLanguage')
+
+    def is_css(self):
+        return self.view.settings().get('syntax').endswith('/CSS.tmLanguage')
+
+    def is_scss(self):
+        return self.view.settings().get('syntax').endswith('/SCSS.tmLanguage')
+
+    def is_less(self):
+        return self.view.settings().get('syntax').endswith('/LESS.tmLanguage')
+
