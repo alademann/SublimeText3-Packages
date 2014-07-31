@@ -8,3 +8,4 @@
 *.sublime-license
 *.bak
 /User/Gist.sublime-settings
+node_modules
