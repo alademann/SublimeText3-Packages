@@ -100,7 +100,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Doc Comment</string>
 			<key>scope</key>
-			<string>comment.block.documentation, comment.line.documentation</string>
+			<string>comment.block.documentation, comment.line.documentation, comment.block.liquid.ruby</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
