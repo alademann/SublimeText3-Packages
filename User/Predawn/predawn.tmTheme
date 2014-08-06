@@ -772,7 +772,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#cf5340</string>
+				<string>#ed710b</string>
 				<key>fontStyle</key>
 				<string>bold</string>
 			</dict>
@@ -782,6 +782,30 @@ COLOR KEY
 			<string>Sass @warn message</string>
 			<key>scope</key>
 			<string>string.quoted.double.warn.css, meta.preprocessor.at-rule string.quoted.double.warn</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#ed710b</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sass @error</string>
+			<key>scope</key>
+			<string>keyword.control.at-rule.error.css, meta.preprocessor.at-rule keyword.control.at-rule.error</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#cf5340</string>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sass @error message</string>
+			<key>scope</key>
+			<string>string.quoted.double.error.css, meta.preprocessor.at-rule string.quoted.double.error</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

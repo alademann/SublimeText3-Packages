@@ -47,6 +47,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#error-message</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#double-quoted</string>
 		</dict>
 		<dict>
@@ -240,7 +244,13 @@
 			<key>match</key>
 			<string>@warn</string>
 			<key>name</key>
-			<string>keyword.control.at-rule.warn.css.sass  invalid.css.sass</string>
+			<string>keyword.control.at-rule.warn.css.sass</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>@error</string>
+			<key>name</key>
+			<string>keyword.control.at-rule.error.css.sass  invalid.css.sass</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -528,7 +538,23 @@
 			<key>end</key>
 			<string>"</string>
 			<key>name</key>
-			<string>string.quoted.double.warn.css.sass invalid.css.sass</string>
+			<string>string.quoted.double.warn.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#quoted-interpolation</string>
+				</dict>
+			</array>
+		</dict>
+		<key>error-message</key>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;=@error)\s+"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>name</key>
+			<string>string.quoted.double.error.css.sass invalid.css.sass</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -593,6 +619,10 @@
 				<dict>
 					<key>include</key>
 					<string>#warning-message</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#error-message</string>
 				</dict>
 				<dict>
 					<key>include</key>
