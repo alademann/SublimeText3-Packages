@@ -1,0 +1,14 @@
+<snippet>
+  <content><![CDATA[
+/**
+ * ${1:$SELECTION}
+ * ---
+ ${2:* @type ${3:type}}
+ ${4:* @since ${5:version}}
+ ${6:* @deprecated ${7:deprecation message (optional)}}
+ ${8:* @todo ${9:Nothing. It's awesome.}}
+ */
+]]>
+  </content>
+  <tabTrigger>sassdoc-var</tabTrigger>
+</snippet>
