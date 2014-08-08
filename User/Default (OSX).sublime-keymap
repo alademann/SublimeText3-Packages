@@ -42,11 +42,9 @@
 
   { "keys": ["super+shift+."], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-order-comments.sublime-snippet"} },
 
-  { "keys": ["alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-comment-block.sublime-snippet"} },
-
-  { "keys": ["super+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-comment-block.sublime-snippet"} },
-
-  { "keys": ["super+alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/scss-comment-big-block.sublime-snippet"} },
+  { "keys": ["super+alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass-comment-1.sublime-snippet"} },
+  { "keys": ["super+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass-comment-2.sublime-snippet"} },
+  { "keys": ["alt+shift+/"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/sass-comment-3.sublime-snippet"} },
 
   { "keys": ["alt+space"], "command": "insert_snippet", "args": {"block": true, "name": "Packages/User/css-comment-partial-name-block.sublime-snippet"} },
 

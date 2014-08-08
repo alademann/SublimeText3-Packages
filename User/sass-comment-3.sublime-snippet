@@ -1,0 +1,7 @@
+<snippet>
+  <content><![CDATA[
+// ----- ${1:$SELECTION} ----- //
+]]>
+  </content>
+  <tabTrigger>sass-comment-3</tabTrigger>
+</snippet>

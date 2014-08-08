@@ -1,0 +1,11 @@
+<snippet>
+  <content><![CDATA[
+// *************************************
+//
+//   ${1:$SELECTION}
+//
+// *************************************
+]]>
+  </content>
+  <tabTrigger>sass-comment-header</tabTrigger>
+</snippet>
