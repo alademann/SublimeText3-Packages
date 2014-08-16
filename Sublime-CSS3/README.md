@@ -44,6 +44,10 @@ flex-flow, flex-grow, flex-item-align, flex-line-pack
 flex-order, flex-pack, flex-shrink, flex-wrap
 font-effect
 font-emphasize, font-emphasize-position, font-emphasize-style
+font-feature-settings, font-kerning font-language-override
+font-stretch, font-synthesis
+font-variant-ligatures, font-variant-position, font-variant-caps
+font-variant-numeric, font-variant-alternates, font-variant-east-asian
 
 group
 grid-area
@@ -103,11 +107,13 @@ text-emphasis
 text-overflow
 text-size-adjust
 
+unicode-range
 user-select
 word-break
 
 behavior
-webkit-font-smoothing, -moz-osx-font-smoothing
+-webkit-font-smoothing, -moz-osx-font-smoothing
+-webkit-text-fill-color
 interpolation-mode
 line-clamp
 -ms-writing-mode
@@ -164,6 +170,19 @@ touch
 
 initial, unset
 
+ultra-condensed, extra-condensed, condensed, semi-condensed
+semi-expanded, expanded, extra-expanded, ultra-expanded
+common-ligatures, no-common-ligatures
+discretionary-ligatures, no-discretionary-ligatures
+historical-ligatures, no-historical-ligatures
+contextual, no-contextual
+all-small-caps, petite-caps, all-petite-caps, unicase, titling-caps
+lining-nums, oldstyle-nums, proportional-nums, tabular-nums
+diagonal-fractions, stacked-fractions, ordinal, slashed-zero
+historical-forms
+jis78, jis83, jis90, jis04, simplified, traditional
+full-width, proportional-width, ruby
+
 progid:DXImageTransform.Microsoft.Alpha, alpha
 progid:DXImageTransform.Microsoft.Blur
 progid:DXImageTransform.Microsoft.dropshadow
@@ -192,6 +211,7 @@ progid:DXImageTransform.Microsoft.Shadow
 ::-webkit-search-cancel-button
 ::-webkit-search-decoration
 ::selection, ::-moz-selection
+dialog::backdrop
 ```
 
 #### Pseudo classes
@@ -227,8 +247,7 @@ progid:DXImageTransform.Microsoft.Shadow
 
 :placeholder-shown
 :user-error
-
-dialog::backdrop
+:-webkit-autofill
 ```
 
 #### At-rules
@@ -245,6 +264,11 @@ keygen, main, math, menuitem, picture, source, svg, template, track
 #### Units
 ```
 vw,vh,vmin,vmax,turn,ms,dppx
+```
+
+#### Unicode-range
+```
+U+416, U+400-4ff, U+4??
 ```
 
 #### Custom Properties for Cascading Variables
