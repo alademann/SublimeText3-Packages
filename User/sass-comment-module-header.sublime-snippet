@@ -1,0 +1,23 @@
+<snippet>
+  <content><![CDATA[
+// *************************************
+//
+\$module: ${1:add-${2:api}-module}('${3:$SELECTION}');${4:
+//
+//   ${5:Description}}
+//${6:
+//   DEPENDENCIES:
+//
+    @import '${7:path/to/dependedency}';${8:
+//
+//   DEPENDENCY CHECK:
+//
+    \$module-deps: ${9:module-}dependencies-met(for \$module, ${10:function} ${11:name});}
+//}
+// *************************************
+
+
+]]>
+  </content>
+  <tabTrigger>sass-module-header</tabTrigger>
+</snippet>
