@@ -82,7 +82,7 @@
         "fade": false,
         "fg": [144, 146, 147],
         "font.bold" : false,
-        "font.size" : 12
+        "font.size" : 11
     },
     {
         "class": "tab_label",
@@ -164,6 +164,11 @@
         "content_margin": [8, 8],
         "layer0.opacity": 1.0,
         "layer1.opacity": 0
+    },
+    {
+        "class": "tab_label",
+        "attributes": ["transient"],
+        "font.italic": true
     },
 
         //
@@ -379,7 +384,7 @@
         "class": "label_control",
         "parents": [{"class": "status_bar"}],
         "color": [115, 115, 115],
-        "font.bold" : false
+        "font.bold": false
     },
 
         //
@@ -391,9 +396,8 @@
     {
         "class": "tool_tip_control",
         "layer0.texture": "Predawn/assets/tooltip.png",
-        "layer0.inner_margin": [1, 1],
         "layer0.opacity": 1.0,
-        "content_margin": [10, 10]
+        "content_margin": [10, 5]
     },
         // Tooltip content
     {
@@ -435,7 +439,7 @@
         "layer0.tint": [51, 51, 51],
         "layer0.opacity": 1.0,
         "layer0.draw_center": false,
-        "layer0.inner_margin": [0, 0, 0, 0],
+        "layer0.inner_margin": 0,
         "content_margin": [0, 10, 0, 0]
     },
         // Sidebar tree
@@ -478,8 +482,7 @@
     {
         "class": "tree_row",
         "layer0.texture": "Predawn/assets/sidebar-row-selected.png",
-        "layer0.opacity": 0,
-        "layer0.inner_margin": 0
+        "layer0.opacity": 0.0
     },
         // Sidebar row selected
     {
@@ -515,21 +518,25 @@
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
         "color": [240, 240, 240]
     },
+        // Sidebar entry transient
+    {
+        "class": "sidebar_label",
+        "attributes": ["transient"],
+        "font.italic": true
+    },
         // Sidebar file close
     {
         "class": "close_button",
         "layer0.texture": "Predawn/assets/file-close.png",
-        "layer0.opacity": 0,
-        "layer0.inner_margin": 0,
+        "layer0.opacity": 0.25,
         "layer1.texture": "Predawn/assets/file-dirty.png",
         "layer1.opacity": 0,
-        "layer1.inner_margin": 0,
-        "content_margin": [12, 8]
+        "content_margin": [8, 8]
     },
     {
         "class": "close_button",
         "parents": [{"class": "tree_row", "attributes": ["hover"]}],
-        "layer0.opacity": 0.25
+        "layer0.opacity": 0.5
     },
     {
         "class": "close_button",
@@ -542,7 +549,6 @@
         "attributes": ["dirty"],
         "layer1.opacity": 1.0
     },
-
         // Sidebar file close hover
     {
         "class": "close_button",
@@ -550,13 +556,14 @@
         "layer0.opacity": 1.0,
         "layer1.opacity": 0
     },
-        // Sidebar group closed
+
+        // Sidebar Folders Closed - Replaces group triangle with folder
+
     {
         "class": "disclosure_button_control",
-        "content_margin": [12, 8],
+        "content_margin": [9, 8],
         "layer0.texture": "Predawn/assets/group-closed.png",
-        "layer0.opacity": 1.0,
-        "layer0.inner_margin": 0
+        "layer0.opacity": 1.0
     },
     {
         "class": "disclosure_button_control",
@@ -568,7 +575,9 @@
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
         "layer0.texture": "Predawn/assets/group-closed-selected.png"
     },
-        // Sidebar group open
+
+        // Sidebar Folders Open
+
     {
         "class": "disclosure_button_control",
         "attributes": ["expanded"],
@@ -585,6 +594,29 @@
         "attributes": ["expanded"],
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
         "layer0.texture": "Predawn/assets/group-open-selected.png"
+    },
+
+         // Hides Space for Default Folder Icons
+
+    {
+        "class": "icon_folder",
+        "content_margin": [0, 0],
+        "layer0.opacity": 0
+    },
+
+        // Sidebar file icons
+
+    {
+        "class": "icon_file_type",
+        // layer0.texture is filled in by code with the relevant icon name
+        "layer0.opacity": 0.6,
+        "content_margin": [8, 8]
+    },
+
+    {
+        "class": "icon_file_type",
+        "parents": [{"class": "tree_row", "attributes": ["selected"]}],
+        "layer0.opacity": 1.0
     },
 
         //

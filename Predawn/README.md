@@ -1,16 +1,36 @@
 # Predawn
 
-### A dark interface and syntax theme for Sublime Text.
+### A dark interface and syntax theme for [Sublime Text](https://sublime.wbond.net/packages/Predawn) and [Atom](https://atom.io/packages/predawn-ui).
 
 ## About
 
-Predawn is a minimal Sublime Text theme and a syntax color scheme. It was originally just a slightly tweaked version (called Flatland-Alt) of the [Flatland](https://github.com/thinkpixellab/flatland) theme, which itself is a flat reworking of [Soda](https://github.com/buymeasoda/soda-theme/). I decided to keep going with cusomization and rework the entire theme. But I owe a lot to Flatland and Soda. Thanks guys!
+Predawn is a minimal Sublime Text theme and a syntax color scheme. It was originally just a slightly tweaked version (called Flatland-Alt) of the [Flatland](https://github.com/thinkpixellab/flatland) theme, which itself is a flat reworking of [Soda](https://github.com/buymeasoda/soda-theme/). I decided to keep going with customization and rework the entire theme. But I owe a lot to Flatland and Soda. Thanks guys!
 
 ![image](screenshots/screenshot.png)
 
 [View a larger screenshot](https://raw.github.com/jamiewilson/predawn/master/screenshots/screenshot-large.png)
 
-## Installation
+## Installation for [Atom](https://atom.io/packages/predawn-ui)
+
+Search for `predawn` in the Packages section of your Atom settings tab. Install both:
+
+1. `predawn-ui`
+2. `predawn-syntax`
+
+Or from the command-line run:
+
+	apm install predawn-ui
+
+and
+
+	apm install predawn-syntax
+
+
+_Also, you can view on the repo on Atom.io at http://atom.io/packages/predawn-ui_
+
+---
+
+## Installation for [Sublime Text](https://sublime.wbond.net/packages/Predawn)
 
 ###Recommended
 For easy installation, install with [Package Control](https://sublime.wbond.net/docs).
@@ -37,6 +57,7 @@ Add or replace your current theme settings with the code below.
 	"theme": "predawn.sublime-theme",
 	"color_scheme": "Packages/Predawn/predawn.tmTheme"
 	}
+
 
 ## Tab Height Size Options
 
@@ -97,9 +118,9 @@ First, **open a markdown(.md) file**, then navigate to `Sublime Text` > `Prefere
 		"word_wrap": true,
 		"wrap_width": 80  // Sets the # of characters per line
 	}
-	
+
 ## Dock Icons
-There are also some [dock icons](/icons) for you to choose from:
+There are also some [dock icons](/dock-icons) for you to choose from:
 
 ![image](screenshots/icons.png)
 
