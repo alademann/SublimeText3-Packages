@@ -377,7 +377,8 @@
         // Button labels
     {
         "class": "label_control",
-        "parents": [{"class": "button_control"}]
+        "parents": [{"class": "button_control"}],
+        "font.bold": true
     },
         // Status bar label
     {
@@ -446,8 +447,8 @@
     {
         "class": "sidebar_tree",
         "row_padding": [15, 5],
-        "indent": 10,
-        "indent_offset": 25,
+        "indent": 15,
+        "indent_offset": 20,
         "indent_top_level": false,
         "layer0.tint": [51, 51, 51],
         "layer0.opacity": 1.0
@@ -499,13 +500,13 @@
         // Sidebar entry
     {
         "class": "sidebar_label",
-        "color": [140, 140, 140]
+        "color": [160, 160, 160]
     },
         // Sidebar folder entry
     {
         "class": "sidebar_label",
         "parents": [{"class": "tree_row", "attributes": ["expandable"]}],
-        "color": [210, 210, 210]
+        "color": [190, 190, 190]
     },
     {
         "class": "sidebar_label",
@@ -516,7 +517,7 @@
     {
         "class": "sidebar_label",
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
-        "color": [240, 240, 240]
+        "color": [255, 255, 255]
     },
         // Sidebar entry transient
     {
@@ -715,7 +716,7 @@
     },
     {
         "class": "quick_panel_path_label",
-        "fg": [75, 75, 75],
+        "fg": [145, 145, 145],
         "match_fg": [241, 130, 96],
         "selected_fg": [255, 255, 255, 255],
         "selected_match_fg": [255, 255, 255]
