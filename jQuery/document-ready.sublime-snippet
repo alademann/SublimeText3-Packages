@@ -3,6 +3,6 @@
 	$1
 });$0]]></content>
 	<tabTrigger>ready</tabTrigger>
-	<description>document.ready - $(function()</description>
+	<description>document.ready - $(function(){})</description>
 	<scope>source.js</scope>
 </snippet>

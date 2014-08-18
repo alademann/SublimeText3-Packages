@@ -3,6 +3,6 @@
 	$1
 });$0]]></content>
 	<tabTrigger>delegate</tabTrigger>
-	<description>.delegate</description>
+	<description>.delegate()</description>
 	<scope>source.js</scope>
 </snippet>

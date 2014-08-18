@@ -3,5 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>mouseup</tabTrigger>
+	<description>.mouseup()</description>
 	<scope>source.js</scope>
 </snippet>

@@ -3,6 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>blur</tabTrigger>
-	<description>.blur</description>
+	<description>.blur()</description>
 	<scope>source.js</scope>
 </snippet>

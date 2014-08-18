@@ -3,6 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>load</tabTrigger>
-	<description>.load</description>
+	<description>.load()</description>
 	<scope>source.js</scope>
 </snippet>

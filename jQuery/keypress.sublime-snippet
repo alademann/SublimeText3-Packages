@@ -3,5 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>keypress</tabTrigger>
+	<description>.keypress()</description>
 	<scope>source.js</scope>
 </snippet>

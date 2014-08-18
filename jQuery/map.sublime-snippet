@@ -3,5 +3,6 @@
 	${4:return ${5:something};}
 })]]></content>
 	<tabTrigger>map</tabTrigger>
+	<description>.map()</description>
 	<scope>source.js</scope>
 </snippet>

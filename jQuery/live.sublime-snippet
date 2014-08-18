@@ -3,5 +3,6 @@
 	${0:/* Act on the event */}
 });]]></content>
 	<tabTrigger>live</tabTrigger>
+	<description>.live()</description>
 	<scope>source.js</scope>
 </snippet>

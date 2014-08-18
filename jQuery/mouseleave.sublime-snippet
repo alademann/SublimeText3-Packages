@@ -3,5 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>mouseleave</tabTrigger>
+	<description>.mouseleave()</description>
 	<scope>source.js</scope>
 </snippet>

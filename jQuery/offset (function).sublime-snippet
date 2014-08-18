@@ -3,6 +3,6 @@
 	${1:return ${2:someObject};}
 })]]></content>
 	<tabTrigger>offset</tabTrigger>
-	<description>.offset</description>
+	<description>.offset()</description>
 	<scope>source.js</scope>
 </snippet>

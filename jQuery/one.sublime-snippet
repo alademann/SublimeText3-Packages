@@ -3,6 +3,6 @@
 	${0:/* Act on the event */}
 });]]></content>
 	<tabTrigger>one</tabTrigger>
-	<description>.one</description>
+	<description>.one()</description>
 	<scope>source.js</scope>
 </snippet>

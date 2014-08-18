@@ -3,6 +3,6 @@
 	${0:/* Act on the event */}
 \}});]]></content>
 	<tabTrigger>resize</tabTrigger>
-	<description>.resize</description>
+	<description>.resize()</description>
 	<scope>source.js</scope>
 </snippet>
