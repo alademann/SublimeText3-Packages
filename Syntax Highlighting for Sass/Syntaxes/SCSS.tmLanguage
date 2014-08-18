@@ -165,6 +165,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#hex-value</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#dotdotdot</string>
 				</dict>
 			</array>
@@ -259,25 +263,6 @@
 			<string>$\n?|\s(?!(all|braille|embossed|handheld|print|projection|screen|speech|tty|tv|if|only|not)(\s|,))|(?=;)</string>
 			<key>name</key>
 			<string>keyword.control.at-rule.css.sass</string>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>#</string>
-			<key>end</key>
-			<string>$\n?|(?=\s|,|;|\(|\)|\.|\[|{|>)</string>
-			<key>name</key>
-			<string>entity.other.attribute-name.id.css.sass</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#interpolation</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#pseudo-class</string>
-				</dict>
-			</array>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -399,6 +384,10 @@
 		<dict>
 			<key>include</key>
 			<string>#rgb-value</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#id-selector</string>
 		</dict>
 		<dict>
 			<key>include</key>
@@ -657,6 +646,26 @@
 			<key>name</key>
 			<string>entity.other.attribute-name.placeholder-selector.sass</string>
 		</dict>
+		<key>id-selector</key>
+		<dict>
+			<key>begin</key>
+			<string>#[a-zA-Z_]</string>
+			<key>end</key>
+			<string>$\n?|(?=\s|,|;|\(|\)|\.|\[|{|>)</string>
+			<key>name</key>
+			<string>entity.other.attribute-name.id.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#interpolation</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#pseudo-class</string>
+				</dict>
+			</array>
+		</dict>
 		<key>property-value</key>
 		<dict>
 			<key>match</key>
@@ -712,10 +721,23 @@
 		</dict>
 		<key>rgb-value</key>
 		<dict>
-			<key>match</key>
-			<string>(#)([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b</string>
-			<key>name</key>
-			<string>constant.other.color.rgb-value.css.sass</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.constant.css.sass</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(#)([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b</string>
+					<key>name</key>
+					<string>constant.other.color.rgb-value.css.sass</string>
+				</dict>
+			</array>
 		</dict>
 		<key>single-quoted</key>
 		<dict>
