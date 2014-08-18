@@ -1,19 +1,25 @@
 <snippet>
   <content><![CDATA[
-// *************************************
+// *************************************${2:
 //
-\$module: ${1:add-${2:api}-module}('${3:$SELECTION}');${4:
+//   ${3:Description}}${4:
 //
-//   ${5:Description}}
-//${6:
 //   DEPENDENCIES:
 //
-    @import '${7:path/to/dependedency}';${8:
+    @import '${5:path/to/dependedency}';}
+//
+//   DECLARE MODULE:
+//
+    \$module: '${1:$SELECTION}';${6:
+    \$module: add-${7:api}-module(\$module);${8:
 //
 //   DEPENDENCY CHECK:
 //
-    \$module-deps: ${9:module-}dependencies-met(for \$module, ${10:function} ${11:name});}
-//}
+    ${9:\$module-deps: module-dependencies-met(for \$module, in ${7:api},
+                                      ${10:\$another-module-name});}${11:
+    \$module-deps: dependencies-met(for \$module,
+                               ${12:var|function|mixin} ${13:name});}}}
+//
 // *************************************
 
 
