@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[<picture>
+	<source src="${1:med-res.jpg}">$2
+</picture>$0]]></content>
+	<tabTrigger>picture</tabTrigger>
+	<scope>source.php,text.html</scope>
+	<description>&lt;picture&gt;</description>
+</snippet>
