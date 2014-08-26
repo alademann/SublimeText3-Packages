@@ -8,7 +8,7 @@ Predawn is a minimal Sublime Text theme and a syntax color scheme. It was origin
 
 ![image](screenshots/screenshot.png)
 
-[View a larger screenshot](https://raw.github.com/jamiewilson/predawn/master/screenshots/screenshot-large.png)
+[View a larger screenshot](https://raw.github.com/jamiewilson/predawn/master/screenshots/screenshot.png)
 
 ## Installation for [Atom](https://atom.io/packages/predawn-ui)
 
@@ -47,17 +47,28 @@ Of course, you can always [install manually](https://github.com/jamiewilson/pred
 
 ## Activating the Theme
 
+_Note: File icons are only supported for **[DEV BUILDS 3062](http://www.sublimetext.com/3dev)+**._
+
 Open your user settings file `preferences.sublime-settings` as shown below:
 
 ![image](screenshots/activate.png)
 
-Add or replace your current theme settings with the code below.
+To activate the theme, add or replace your current theme settings with the code below.
 
 	{
-	"theme": "predawn.sublime-theme",
-	"color_scheme": "Packages/Predawn/predawn.tmTheme"
+	  "theme": "predawn.sublime-theme",
+	  "color_scheme": "Packages/Predawn/predawn.tmTheme"
 	}
 
+FOR ALL **[DEV BUILDS 3062](http://www.sublimetext.com/3dev)+** use,
+
+	{
+	    "theme": "predawn-DEV.sublime-theme",
+	    "color_scheme": "Packages/Predawn/predawn.tmTheme"
+	}
+
+
+*** IMPORTANT - MAKE SURE TO RESTART SUBLIME AFTER INSTALLING AND ACTIVATING PREDAWN ***
 
 ## Tab Height Size Options
 

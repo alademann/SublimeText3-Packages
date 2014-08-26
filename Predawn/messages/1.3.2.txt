@@ -1,0 +1,15 @@
+1.3.2 Fixes to Sidebar Icons
+
+{
+  "theme": "predawn.sublime-theme",
+  "color_scheme": "Packages/Predawn/predawn.tmTheme"
+}
+
+FOR ALL DEV BUILDS 3062+ use,
+
+{
+    "theme": "predawn-DEV.sublime-theme"
+}
+
+
+*** IMPORTANT - MAKE SURE TO RESTART SUBLIME AFTER INSTALLING AND ACTIVATING PREDAWN ***
