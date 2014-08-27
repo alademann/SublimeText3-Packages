@@ -142,6 +142,5 @@
 	"trim_automatic_white_space": true,
 	"trim_trailing_white_space_on_save": true,
 	"use_simple_full_screen": true,
-	"wide_caret": true,
-	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
+	"wide_caret": true
 }

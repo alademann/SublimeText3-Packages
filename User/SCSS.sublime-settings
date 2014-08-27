@@ -1,4 +1,5 @@
 {
+    "word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?",
 	"extensions":
 	[
 		"scss.liquid",
