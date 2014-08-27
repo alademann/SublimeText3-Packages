@@ -1,0 +1,11 @@
+<snippet>
+    <content><![CDATA[
+<fx:Declarations>
+  <!-- Place non-visual elements (e.g., services, value objects) here -->
+  $1
+</fx:Declarations>
+]]></content>
+    <tabTrigger>fxd</tabTrigger>
+    <scope>text.xml.mxml</scope>
+    <description>fx declarations</description>
+</snippet>

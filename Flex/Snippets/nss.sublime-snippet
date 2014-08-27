@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+xmlns:s="library://ns.adobe.com/flex/spark"$1
+]]></content>
+    <tabTrigger>nss</tabTrigger>
+    <scope>text.xml.mxml</scope>
+    <description>Spark namespace</description>
+</snippet>
