@@ -15,6 +15,7 @@
     { "trigger" : "@link",          "contents": "@link ${1:http://some.url} ${2:[Optional caption]}"},
     { "trigger" : "@module",        "contents": "@module ${1:[module name]}"},
     { "trigger" : "@param",         "contents": "@param {${1:[type]}} ${2:[varname]} ${3:(${4:default value})} ${5:- ${6:[Optional description]}}" },
+    { "trigger" : "@prop",          "contents": "@prop {${1:[type]}} ${2:[property-name]} ${3:(${4:default value})} ${5:- ${6:[Optional description]}}" },
     { "trigger" : "@requires",      "contents": "@requires {${1:[function|mixin|variable]}} ${2:[entity-name]}"},
     { "trigger" : "@return",        "contents": "@return {${1:[type]}} ${2:- ${3:[Optional description]}}" },
     { "trigger" : "@returns",       "contents": "@returns {${1:[type]}} ${2:- ${3:[Optional description]}}" },
