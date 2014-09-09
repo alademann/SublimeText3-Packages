@@ -144,7 +144,7 @@
           "name" : "entity.name.tag.css, keyword.control.html.elements"
         },
         {
-          "match" : "(\\.)[a-zA-Z_][a-zA-Z0-9_-]*",
+          "match" : "(\\.)-?[a-zA-Z_][a-zA-Z0-9_-]*",
           "captures" : {
             "1" : {
               "name" : "punctuation.definition.entity.css"
@@ -153,7 +153,7 @@
           "name" : "entity.other.attribute-name.class.css"
         },
         {
-          "match" : "(#)[a-zA-Z_][a-zA-Z0-9_-]*",
+          "match" : "(#)-?[a-zA-Z_][a-zA-Z0-9_-]*",
           "captures" : {
             "1" : {
               "name" : "punctuation.definition.entity.css"
@@ -239,7 +239,7 @@
           }
         },
         {
-          "match" : "(:+)(?:-(?:webkit|moz|o)-)?(after|before|selection)\\b",
+          "match" : "(:+)(?:-(?:webkit|moz|o)-)?(after|before|selection|scrollbar|placeholder|input-placeholder)\\b",
           "captures" : {
             "1" : {
               "name" : "punctuation.definition.entity.css"
@@ -388,7 +388,7 @@
         },
         {
           "begin" : "(:)\\s*",
-          "end" : "\\s*(;|(?=\\}))",
+          "end" : "\\s*(;|(?=[{}]))",
           "beginCaptures" : {
             "1" : {
               "name" : "punctuation.separator.key-value.css"
@@ -566,7 +566,7 @@
           "name" : "support.function.less"
           },
         {
-          "match" : "(\\.(?![0-9])[a-zA-Z0-9_-]+(?=\\())",
+          "match" : "([\\.#](?![0-9])[a-zA-Z0-9_-]+(?=\\())",
           "captures" : {
             "1" : {
               "name" : "entity.other.attribute-name.class.css entity.other.less.mixin"
@@ -588,8 +588,8 @@
       "name" : "meta.at-rule.css"
     },
     "less-parameters" : {
-      "begin" : "\\(",
-      "end" : "\\)",
+      "begin" : "\\(|(}\\s*,)",
+      "end" : "\\)|{",
       "patterns": [
         {
           "include" : "#color-values"

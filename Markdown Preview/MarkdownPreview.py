@@ -101,7 +101,7 @@ def load_resource(name):
             filename = os.path.join(sublime.packages_path(), INSTALLED_DIRECTORY, name)
             return load_utf8(filename)
     except:
-        print("Error while load_resource('%s')" % filename)
+        print("Error while load_resource('%s')" % name)
         traceback.print_exc()
         return ''
 
@@ -587,7 +587,9 @@ class Compiler(object):
             html += self.get_mathjax()
             html += self.get_title()
             html += '</head><body>'
+            html += '<article class="markdown-body">'
             html += body
+            html += '</article>'
             html += '</body>'
             html += '</html>'
 
