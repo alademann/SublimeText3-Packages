@@ -17,12 +17,14 @@
 		"*.otf",
 		"*.pdf",
 		"*.swf",
+		"*.fla",
 		"*.jar",
 		"*.zip",
 		"*.eps",
 		"*.psd",
 		"*.ai",
-		"*.svg"
+		"*.svg",
+		"*.graffle"
 	],
 	"bold_folder_labels": true,
 	"caret_extra_width": 1,
@@ -67,7 +69,9 @@
 		"*.lock",
 		"*.tmp",
 		"*.template",
-		"*.wpr"
+		"*.wpr",
+		"*.swc",
+		"*.swz"
 	],
 	"findreplace_small": true,
 	"fold_buttons": true,
@@ -78,7 +82,10 @@
 		".hg",
 		"CVS",
 		".sass-cache",
-		".externalToolBuilders"
+		".externalToolBuilders",
+		".settings",
+		"bin",
+		"bin-debug"
 	],
 	"font_options":
 	[
