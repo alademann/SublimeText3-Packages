@@ -1,4 +1,20 @@
 
+1.0.14 / 2014-09-08
+==================
+
+ * add css inline layout level 3 fixes #34
+
+1.0.13 / 2014-09-02
+==================
+
+ * remove unneeded keyframes wrapper
+ * get rid of patterns dir
+ * move to multiline regexes, highlight prefixes in pseudo-elements, fixes #32
+ * add highlight for -o-min-device-pixel-ratio, fix font shorthand regex
+ * Update README.md
+ * Merge pull request #33 from waffle-iron/master
+ * add waffle.io badge
+
 1.0.12 / 2014-08-14
 ==================
 
