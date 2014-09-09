@@ -9,7 +9,7 @@
     "create_if_not_exists" : false,
 
     //extensions to use
-    "use_extensions": ["", ".htm", ".html", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"],
+    // "use_extensions": ["", ".htm", ".html", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"],
     // Additionally check for these combinations of extension and prefix when
     // searching for a file
     "auto_extension" : [
@@ -20,6 +20,10 @@
         {
             "extension": "",
             "prefix"   : "./static/_includes/"
+        },
+        {
+            "extension": ".mxml",
+            "prefix"   : "./libraries/wf_global/src/"
         }
     ]
 }
