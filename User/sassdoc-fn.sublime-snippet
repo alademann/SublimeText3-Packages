@@ -1,0 +1,27 @@
+<snippet>
+  <content><![CDATA[
+/**
+ * ${1:$SELECTION}
+ * ---
+ ${2:* @access ${3:public|private}
+ *}
+ ${4:* @since ${5:version}}
+ ${6:* @group ${7:core.foo.bar}}
+ ${8:* @todo ${9:Nothing. It's awesome.}}
+ * ---
+ ${10:*
+ * @requires {${11:function|mixin|variable|external}\} ${12:requirement-name}
+ * ---}
+ ${13:*
+ * @param {${14:type | othertype}\} ${15:\$var} ${16:(${17:default value (optional))} }${18:- ${19:description (optional)}}
+ * ---}
+ ${20:*
+ * @throws if ${21:condition}
+ * ---}
+ ${22:*
+ * @returns {${23:type | othertype}\}${24: - ${25:description (optional)}}}
+ */
+]]>
+  </content>
+  <tabTrigger>sassdoc-fn</tabTrigger>
+</snippet>
