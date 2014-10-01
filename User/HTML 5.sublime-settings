@@ -1,10 +1,10 @@
 {
 	"extensions":
 	[
-		"html",
 		"swig",
-        "master",
-        "aspx",
-        "htm"
+		"master",
+		"aspx",
+		"htm",
+		"html"
 	]
 }
