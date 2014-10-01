@@ -2,6 +2,8 @@
 	"patterns": {
 		"TODO": "TODO[\\s]*?:+(?P<todo>.*)$"
 	},
+	"patterns_weight": {
+	},
 	"exclude_folders": [
 		"*.git*"
 	],
@@ -10,8 +12,10 @@
 		"*.sublime-project"
 	],
 	"case_sensitive": false,
-	"render_include_folder": false,
-	"render_spaces": 1,
+	"render_include_folder": true,
+	"render_maxspaces": 50,
+	"render_header_format": "%d - %c files in %t secs",
+	"render_header_date": "%A %m/%d/%y at %I:%M%p",
 	"navigation_forward_skip" : 10,
 	"navigation_backward_skip" : 10
 }

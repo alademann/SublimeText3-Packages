@@ -1,3 +1,27 @@
+# 3.0.1 - 9/30/14
+- Fix: Rebuild for Package Control
+
+# 3.0.0 - 9/30/14
+- Add: Syntax highlighting for report header
+- Add: Search Timer
+- Add: Use buffer if already open
+- Fix: Opening comment to line (#66)
+- Fix: Non UTF-8 Files (#64)
+- Doc: New features
+- Doc: Outlined arguments (#63)
+- Add: `patterns_weight` option (#58)
+- Add: `render_maxspaces` option (#59)
+- Del: `render_spaces` in favor of maxspaces (#59)
+- Add: `render_header_date` option
+- Add: `render_header_format` option
+- Upd: Report Header
+- Add: Refresh function (#60)
+- Upd: Changed direction arguments
+- Del: Clear keybinding
+- Del: Mousemaps
+- Upd: Refactored
+- Upd: Combined keymaps
+
 # 2.1.6 - 05/04/14
 - Fix: Documentation on clicking
 - Fix: Double click in incorrect context (#49)
