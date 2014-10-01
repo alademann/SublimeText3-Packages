@@ -8,6 +8,9 @@
     //will create the file if not exists
     "create_if_not_exists" : false,
 
+    // How many directories the plugin should go up.
+    "maximum_folder_up" : 7,
+
     //extensions to use
     // "use_extensions": ["", ".htm", ".html", ".coffee", ".hbs", ".jade", ".js", ".scss", ".sass", ".styl", ".less"],
     // Additionally check for these combinations of extension and prefix when
@@ -19,7 +22,7 @@
         },
         {
             "extension": "",
-            "prefix"   : "./static/_includes/"
+            "prefix"   : "static/_includes/"
         },
         {
             "extension": ".mxml",
