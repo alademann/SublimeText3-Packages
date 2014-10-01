@@ -1,0 +1,11 @@
+<snippet>
+  <content><![CDATA[
+/**${1:
+ * @since ${2:0.0.4}}${3:
+ * @group ${4:core.foo.bar}}${5:
+ * @link ${6:http://some.url} ${7:[Optional caption]}}
+ **/
+]]>
+  </content>
+  <tabTrigger>sassdoc-poster</tabTrigger>
+</snippet>
