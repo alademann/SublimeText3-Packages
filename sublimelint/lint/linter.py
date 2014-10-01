@@ -5,7 +5,8 @@ import shlex
 import sublime
 import traceback
 
-from .highlight import Highlight
+from .highlight import Highlight, HighlightSet
+from .util import memoize
 from . import persist
 from . import util
 
@@ -31,6 +32,7 @@ class Linter(metaclass=Tracker):
 
     errors = None
     highlight = None
+    highlights = None
     defaults = None
     lint_settings = None
 
@@ -49,7 +51,7 @@ class Linter(metaclass=Tracker):
             except:
                 persist.debug('Error compiling regex for {}'.format(self.language))
 
-        self.highlight = Highlight(scope=self.scope)
+        self.reset('')
 
     def get_cmd(self):
         cmd = self.settings.get('cmd', self._cmd)
@@ -186,11 +188,14 @@ class Linter(metaclass=Tracker):
                 if linter.settings.get('disable'):
                     continue
 
-                if not linter.selector:
+                if not linter.selector and not linter.excluded():
                     linter.reset(code, filename=filename)
                     linter.lint()
 
             for sel, linter in selectors:
+                if linter.excluded():
+                    continue
+
                 linters.append(linter)
                 if sel in sections:
                     linter.reset(code, filename=filename)
@@ -216,11 +221,22 @@ class Linter(metaclass=Tracker):
         self.filename = filename or self.filename
         self.highlight = highlight or Highlight(
             self.code, scope=self.scope, outline=self.outline)
+        self.highlights = HighlightSet()
+        self.highlights.add(self.highlight)
 
     def lint(self):
         if not (self.language and self.cmd and self.regex):
             raise NotImplementedError
 
+        output = self.run(self.cmd, self.code)
+        if not output:
+            return
+
+        persist.debug('Output:', repr(output))
+        self.mark_errors(self.find_errors(output))
+
+    @memoize
+    def excluded(self):
         excludes = self.settings.get('excludes')
         if excludes:
             try:
@@ -230,45 +246,16 @@ class Linter(metaclass=Tracker):
                     if fnmatch.fnmatch(self.filename, pattern):
                         persist.debug("skipping `{}` for pattern '{}'".format(
                             os.path.basename(self.filename), pattern))
-                        return
+                        return True
             except Exception:
                 persist.debug(traceback.format_exc())
-
-        output = self.run(self.cmd, self.code)
-        if not output:
-            return
-
-        persist.debug('Output:', repr(output))
-
-        for match, row, col, message, near in self.find_errors(output):
-            if match and row is not None:
-                if col is not None:
-                    # adjust column numbers to match the linter's tabs if necessary
-                    if self.tab_size > 1:
-                        start, end = self.highlight.full_line(row)
-                        code_line = self.code[start:end]
-                        diff = 0
-                        for i in range(len(code_line)):
-                            if code_line[i] == '\t':
-                                diff += (self.tab_size - 1)
-
-                            if col - diff <= i:
-                                col = i
-                                break
-
-                    self.highlight.range(row, col)
-                elif near:
-                    self.highlight.near(row, near)
-                else:
-                    self.highlight.line(row)
-
-                self.error(row, message)
+        return False
 
     def draw(self, prefix='lint'):
-        self.highlight.draw(self.view, prefix)
+        self.highlights.draw(self.view, prefix)
 
     def clear(self, prefix='lint'):
-        self.highlight.clear(self.view, prefix)
+        self.highlights.clear(self.view, prefix)
 
     # helper methods
 
@@ -283,8 +270,10 @@ class Linter(metaclass=Tracker):
             else:
                 return False
 
-    def error(self, line, error):
-        self.highlight.line(line)
+    def error(self, line, error, highlight=None):
+        if not highlight:
+            highlight = self.highlight
+        highlight.line(line)
 
         error = str(error)
         if line in self.errors:
@@ -303,6 +292,34 @@ class Linter(metaclass=Tracker):
         else:
             for line in output.splitlines():
                 yield self.match_error(self.regex, line.strip())
+
+    def mark_errors(self, errors, highlight=None):
+        if not highlight:
+            highlight = self.highlight
+
+        for match, row, col, message, near in errors:
+            if match and row is not None:
+                if col is not None:
+                    # adjust column numbers to match the linter's tabs if necessary
+                    if self.tab_size > 1:
+                        start, end = highlight.full_line(row)
+                        code_line = self.code[start:end]
+                        diff = 0
+                        for i in range(len(code_line)):
+                            if code_line[i] == '\t':
+                                diff += (self.tab_size - 1)
+
+                            if col - diff <= i:
+                                col = i
+                                break
+
+                    highlight.range(row, col)
+                elif near:
+                    highlight.near(row, near)
+                else:
+                    highlight.line(row)
+
+                self.error(row, message, highlight)
 
     def split_match(self, match):
         if match:

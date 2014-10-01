@@ -66,8 +66,8 @@ class SublimeLint(sublime_plugin.EventListener):
         highlights = HighlightSet()
 
         for linter in linters:
-            if linter.highlight:
-                highlights.add(linter.highlight)
+            if linter.highlights:
+                highlights.add(linter.highlights)
 
             if linter.errors:
                 errors.update(linter.errors)
@@ -173,6 +173,7 @@ class SublimeLint(sublime_plugin.EventListener):
             if os.name == 'posix' and (
                 os.stat(module.__file__).st_ino == os.stat(view.file_name()).st_ino
             ) or module.__file__ == view.file_name():
+                persist.debug("reloading module '{}'".format(name))
                 persist.modules.reload(module)
                 Linter.reload(name)
                 break
