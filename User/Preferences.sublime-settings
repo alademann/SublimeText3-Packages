@@ -2,6 +2,7 @@
 	"auto_close_tags": true,
 	"auto_complete_commit_on_tab": true,
 	"auto_complete_delay": 100,
+	"auto_complete_selector": "source - comment, source.scss, source.sass, meta.tag - punctuation.definition.tag.begin",
 	"binary_file_patterns":
 	[
 		"*.jpg",

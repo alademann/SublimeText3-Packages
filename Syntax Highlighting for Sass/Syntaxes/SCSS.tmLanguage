@@ -43,6 +43,14 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#comment-line-documentation</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#comment-line-documentation-begin-end</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#warning-message</string>
 		</dict>
 		<dict>
@@ -106,6 +114,14 @@
 				<dict>
 					<key>include</key>
 					<string>#double-slash</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-line-documentation</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-line-documentation-begin-end</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -491,7 +507,7 @@
 		<key>double-slash</key>
 		<dict>
 			<key>begin</key>
-			<string>//</string>
+			<string>//(\s|\w|\$|\\|\"|\'|\:|\,|\.|\;|\&lt;|\&gt;|\~|\!|\@|\#|\%|\^|\*|\||\+|\=|\[|\]|\{|\}|\`|\~|\?)</string>
 			<key>end</key>
 			<string>$\n?</string>
 			<key>name</key>
@@ -502,7 +518,24 @@
 					<key>include</key>
 					<string>#comment-tag</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-line-documentation</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-line-documentation-begin-end</string>
+				</dict>
 			</array>
+		</dict>
+		<key>comment-line-documentation</key>
+		<dict>
+			<key>begin</key>
+			<string>/{3,}\s*</string>
+			<key>end</key>
+			<string>$\n?</string>
+			<key>name</key>
+			<string>comment.line.documentation.sass</string>
 		</dict>
 		<key>double-quoted</key>
 		<dict>
