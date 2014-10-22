@@ -18,7 +18,7 @@
 	<array>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)((mx|fx)(:))?(Metadata|Script)(&gt;)</string>
+			<string>(&lt;)((mx|fx)(:))?(Metadata|Script)(.*)(&gt;)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>0</key>
@@ -46,7 +46,7 @@
 					<key>name</key>
 					<string>entity.name.tag.localname.xml.mxml</string>
 				</dict>
-				<key>6</key>
+				<key>7</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.definition.tag.xml.mxml</string>
@@ -99,7 +99,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)((mx|fx)(:))?(Style)(&gt;)</string>
+			<string>(&lt;)((mx|fx)(:))?(Style)(.*)(&gt;)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>0</key>
@@ -127,7 +127,7 @@
 					<key>name</key>
 					<string>entity.name.tag.localname.xml.mxml</string>
 				</dict>
-				<key>6</key>
+				<key>7</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.definition.tag.xml.mxml</string>
@@ -180,7 +180,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)((\w+)(:))?\w([^\s&gt;]+)</string>
+			<string>(&lt;)(\w+)(:)([^\s&gt;]+)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -188,17 +188,17 @@
 					<key>name</key>
 					<string>punctuation.definition.tag.xml.mxml</string>
 				</dict>
-				<key>3</key>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>entity.name.tag.namespace.xml.mxml</string>
 				</dict>
-				<key>4</key>
+				<key>3</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.separator.namespace.xml.mxml</string>
 				</dict>
-				<key>5</key>
+				<key>4</key>
 				<dict>
 					<key>name</key>
 					<string>entity.name.tag.localname.xml.mxml</string>
@@ -233,7 +233,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string> (?:([-_a-zA-Z0-9]+):)?([a-zA-Z-]+)</string>
+					<string>(?:([-_a-zA-Z0-9]+):)?([a-zA-Z-]+)</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -395,11 +395,11 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.binding.begin.mxml</string>
+					<string>punctuation.definition.binding.begin.xml.mxml</string>
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>source.actionscript.3.embedded.binding.mxml</string>
+			<string>source.actionscript.3.embedded.binding.xml.mxml</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>endCaptures</key>
@@ -407,7 +407,7 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.binding.end.mxml</string>
+					<string>punctuation.definition.binding.end.xml.mxml</string>
 				</dict>
 			</dict>
 			<key>patterns</key>

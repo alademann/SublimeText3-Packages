@@ -133,11 +133,22 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation tags / braces / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag.end, punctuation.definition.tag.begin, punctuation.definition.tag, punctuation.section.property-list.begin, punctuation.section.property-list.end, punctuation.definition.parameters, punctuation.definition.entry.yaml, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace.js, meta.delimiter.js</string>
+			<string>punctuation.definition.tag, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace.js, meta.delimiter.js, string.quoted punctuation.definition</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Namespaced Tag Name</string>
+			<key>scope</key>
+			<string>entity.name.tag.localname.xml.mxml</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#e38a78</string>
 			</dict>
 		</dict>
 		<dict>
@@ -149,6 +160,28 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#9bbd6b</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Tag Name Namespace</string>
+			<key>scope</key>
+			<string>entity.name.tag.namespace</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#d7d777</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Namespace Punctuation</string>
+			<key>scope</key>
+			<string>punctuation.separator.namespace</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
 			</dict>
 		</dict>
 		<dict>
@@ -175,9 +208,31 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Entity / Class / Symbol</string>
+			<string>Generic Support</string>
+			<key>scope</key>
+			<string>support</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Generic Entity / Class / Symbol</string>
 			<key>scope</key>
 			<string>entity, entity.other.inherited-class, entity.name.filename, support.type, support.class, meta.class, constant.other.symbol</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Filename Entity</string>
+			<key>scope</key>
+			<string>entity.name.filename</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -199,7 +254,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Keyword</string>
 			<key>scope</key>
-			<string>keyword</string>
+			<string>keyword, string.quoted keyword</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -210,7 +265,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Operator</string>
 			<key>scope</key>
-			<string>keyword.operator</string>
+			<string>keyword.operator, string.quoted keyword.operator</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -253,20 +308,9 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Support</string>
-			<key>scope</key>
-			<string>support</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#92BFBF</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
 			<string>Variable</string>
 			<key>scope</key>
-			<string>variable, variable.other, variable.other.name, support.other.variable, string.other.link, meta.tag, declaration.tag</string>
+			<string>variable, variable.other, variable.other.name, support.other.variable, string.other.link</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -295,7 +339,7 @@ COLOR KEY
 				<string>#151515</string>
 			</dict>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>name</key>
 			<string>Entity inherited-class</string>
 			<key>scope</key>
@@ -305,7 +349,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>name</key>
 			<string>String embedded-source</string>
@@ -314,10 +358,10 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#B4D388</string>
+				<string>#f5b285</string>
 			</dict>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>name</key>
 			<string>String constant</string>
 			<key>scope</key>
@@ -327,7 +371,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>name</key>
 			<string>String.regexp</string>
@@ -361,7 +405,7 @@ COLOR KEY
 				<string>#f49d62</string>
 			</dict>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>name</key>
 			<string>Support.constant</string>
 			<key>scope</key>
@@ -371,7 +415,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>name</key>
 			<string>Meta.tag.A</string>
