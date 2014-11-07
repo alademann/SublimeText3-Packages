@@ -298,13 +298,13 @@
 					<key>match</key>
 					<string>,</string>
 					<key>name</key>
-					<string>punctuation.seperator.implements.actionscript.3</string>
+					<string>punctuation.separator.implements.actionscript.3</string>
 				</dict>
 				<dict>
 					<key>match</key>
 					<string>[^\s\}]</string>
 					<key>name</key>
-					<string>invalid.illegal.expected-implements.seperator.actionscript.3</string>
+					<string>invalid.illegal.expected-implements.separator.actionscript.3</string>
 				</dict>
 			</array>
 		</dict>
@@ -763,6 +763,11 @@
 		<dict>
 			<key>captures</key>
 			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>storage.type.import.actionscript.3</string>
+				</dict>
 				<key>2</key>
 				<dict>
 					<key>name</key>
@@ -775,9 +780,9 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>(import)\s+(.*?)((;)|$)</string>
-			<key>name</key>
-			<string>storage.type.import.actionscript.3</string>
+			<string>(import)\s+(.*?)(\w+)((;)|$)</string>
+			<!-- <key>name</key>
+			<string>storage.type.import.actionscript.3</string> -->
 		</dict>
 		<key>included</key>
 		<dict>
@@ -1000,13 +1005,13 @@
 					<key>match</key>
 					<string>,</string>
 					<key>name</key>
-					<string>punctuation.seperator.extends.actionscript.3</string>
+					<string>punctuation.separator.extends.actionscript.3</string>
 				</dict>
 				<dict>
 					<key>match</key>
 					<string>[^\s\}]</string>
 					<key>name</key>
-					<string>invalid.illegal.expected-extends.seperator.actionscript.3</string>
+					<string>invalid.illegal.expected-extends.separator.actionscript.3</string>
 				</dict>
 			</array>
 		</dict>
@@ -1121,16 +1126,16 @@
 					</dict>
 					<key>end</key>
 					<string>(?x)
-							(\))
-							\s*:\s*
-							(
-								(void)
-								|
-								(\w+)
-							)</string>
+							 (\))
+							 (\s*:\s*)
+							 (
+							 	(void)
+							 	|
+							 	(\w+)
+							  )</string>
 					<key>endCaptures</key>
 					<dict>
-						<key>1</key>
+						<key>2</key>
 						<dict>
 							<key>name</key>
 							<string>punctuation.definition.parameters.end.actionscript.3</string>
@@ -1138,9 +1143,19 @@
 						<key>3</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.type.void.actionscript.3</string>
+							<string>punctuation.separator.namespace.actionscript.3</string>
 						</dict>
 						<key>4</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.type.actionscript.3</string>
+						</dict>
+						<key>5</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.type.void.actionscript.3</string>
+						</dict>
+						<key>6</key>
 						<dict>
 							<key>name</key>
 							<string>invalid.illegal.actionscript.3</string>
@@ -1235,13 +1250,13 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#list-seperator</string>
+					<string>#list-separator</string>
 				</dict>
 				<dict>
 					<key>match</key>
 					<string>:</string>
 					<key>name</key>
-					<string>punctuation.seperator.return-type.actionscript.3</string>
+					<string>punctuation.separator.return-type.actionscript.3</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -1420,7 +1435,7 @@
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>[-!%&amp;*+=/?:\|&lt;&gt;;\[\]]</string>
+					<string>[-!%&amp;*+=/?:\|&lt;&gt;\[\]]</string>
 					<key>name</key>
 					<string>keyword.operator.symbolic.actionscript.3</string>
 				</dict>
@@ -1478,10 +1493,10 @@
 				</dict>
 			</array>
 		</dict>
-		<key>list-seperator</key>
+		<key>list-separator</key>
 		<dict>
 			<key>match</key>
-			<string>,</string>
+			<string>,|:</string>
 			<key>name</key>
 			<string>punctuation.separator.actionscript.3</string>
 		</dict>
@@ -1557,7 +1572,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#list-seperator</string>
+					<string>#list-separator</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -1597,7 +1612,7 @@
     			             (public|private|protected|internal|final|dynamic|\w+)\s+           # namespace declaration
     			             ((static)\s+)?                                                     # Optional static
     			             (function)\s*                                                      # function declaration
-                             (set)\s+                                                           # set declaration
+                             ((set)\s+)?                                                        # Optional set declaration
                              (\w+)\s*                                                           # getter name, optional whitespace
     			             (\()</string>
 					<key>beginCaptures</key>
@@ -1627,12 +1642,12 @@
 							<key>name</key>
 							<string>storage.type.accessor.actionscript.3</string>
 						</dict>
-						<key>8</key>
+						<key>9</key>
 						<dict>
 							<key>name</key>
 							<string>entity.name.function.actionscript.3</string>
 						</dict>
-						<key>9</key>
+						<key>10</key>
 						<dict>
 							<key>name</key>
 							<string>punctuation.definition.parameters.begin.actionscript.3</string>
@@ -1644,7 +1659,7 @@
 					<key>end</key>
 					<string>(?x)
 							 (\))
-							 \s*:\s*
+							 (\s*:\s*)
 							 (
 							 	(void)
 							 	|
@@ -1657,12 +1672,22 @@
 							<key>name</key>
 							<string>punctuation.definition.parameters.end.actionscript.3</string>
 						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.separator.namespace.actionscript.3</string>
+						</dict>
 						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.type.actionscript.3</string>
+						</dict>
+						<key>4</key>
 						<dict>
 							<key>name</key>
 							<string>keyword.type.void.actionscript.3</string>
 						</dict>
-						<key>4</key>
+						<key>5</key>
 						<dict>
 							<key>name</key>
 							<string>invalid.illegal.actionscript.3</string>
@@ -1703,24 +1728,21 @@
     			             )?
     			             (function)
     			             \s*
-                             (get)
-                             \s+
+                             ((get)\s+)*
                              (\w+)
                              \s*
     			             (\()
-    			             \s*
-    			             (.*)?
-    			             \s*
+    			             (\s*.*\s*)?
     			             (\))
     			             \s*:\s*</string>
 					<key>beginCaptures</key>
 					<dict>
-						<key>10</key>
+						<key>11</key>
 						<dict>
 							<key>name</key>
 							<string>invalid.illegal.actionscript.3</string>
 						</dict>
-						<key>11</key>
+						<key>12</key>
 						<dict>
 							<key>name</key>
 							<string>punctuation.definition.parameters.end.actionscript.3</string>
@@ -1750,12 +1772,12 @@
 							<key>name</key>
 							<string>storage.type.accessor.actionscript.3</string>
 						</dict>
-						<key>8</key>
+						<key>9</key>
 						<dict>
 							<key>name</key>
 							<string>entity.name.function.actionscript.3</string>
 						</dict>
-						<key>9</key>
+						<key>10</key>
 						<dict>
 							<key>name</key>
 							<string>punctuation.definition.parameters.begin.actionscript.3</string>
@@ -1803,7 +1825,7 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.seperator.actionscript.3</string>
+					<string>punctuation.separator.actionscript.3</string>
 				</dict>
 				<key>4</key>
 				<dict>
@@ -1824,7 +1846,7 @@
 			<key>match</key>
 			<string>(?x)
 					 (\w+)          # paramater name
-					 \s*(\:)\s*     # type seperator
+					 \s*(\:)\s*     # type separator
 					 (
 						(\w+)
 						|
@@ -1880,7 +1902,7 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.seperator.return-type.actionscript.3</string>
+					<string>punctuation.separator.return-type.actionscript.3</string>
 				</dict>
 			</dict>
 			<key>end</key>

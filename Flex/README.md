@@ -1,4 +1,4 @@
-# Flex Sublimetext undle
+# Flex Sublimetext Bundle
 
 Flex bundle (mxml + Actionscript 3) bundle for sublimetext 2.
 

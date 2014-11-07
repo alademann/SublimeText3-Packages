@@ -15,7 +15,6 @@ COLOR KEY
 #d7d777 - Dark Yellow
 #c3c391 - Muted Yellow
 #eeb0df - Purple
-#e38a78 - Pink
 #8ddede - Blue
 #92bfbf - Dark Blue
 #62c0ff - Neon Blue (use sparingly)
@@ -133,7 +132,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation tags / braces / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.separator.key-value, punctuation.section.function.css, punctuation.terminator.rule.css, meta.brace.js, meta.delimiter.js, string.quoted punctuation.definition</string>
+			<string>punctuation.separator, punctuation.terminator, punctuation.definition.tag, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, meta.brace.js, meta.delimiter.js</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -148,7 +147,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#e38a78</string>
+				<string>#b4d388</string>
 			</dict>
 		</dict>
 		<dict>
@@ -170,7 +169,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#d7d777</string>
+				<string>#92bfbf</string>
 			</dict>
 		</dict>
 		<dict>
@@ -181,7 +180,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#c3c391</string>
+				<string>#9bbd6b</string>
 			</dict>
 		</dict>
 		<dict>
@@ -208,9 +207,9 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Generic Support</string>
+			<string>Generic Support / Function / Type / Class</string>
 			<key>scope</key>
-			<string>support</string>
+			<string>support, support.function, keyword.type, keyword.special-type, support.type, meta.type, meta.class, support.class, entity.name.type.class</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -219,9 +218,9 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Generic Entity / Class / Symbol</string>
+			<string>Generic Entity / Inherited Class / Symbol</string>
 			<key>scope</key>
-			<string>entity, entity.other.inherited-class, entity.name.filename, support.type, support.class, meta.class, constant.other.symbol</string>
+			<string>entity, entity.other.inherited-class, constant.other.symbol</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -254,7 +253,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Keyword</string>
 			<key>scope</key>
-			<string>keyword, string.quoted keyword</string>
+			<string>keyword</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -265,7 +264,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Operator</string>
 			<key>scope</key>
-			<string>keyword.operator, string.quoted keyword.operator</string>
+			<string>keyword.operator</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -293,6 +292,41 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#ECEC89</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Storage Accessor</string>
+			<key>scope</key>
+			<string>storage.type.accessor</string>
+			<key>settings</key>
+			<dict>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Storage Import</string>
+			<key>scope</key>
+			<string>storage.type.import</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#f18260</string>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Storage Namespace</string>
+			<key>scope</key>
+			<string>storage.type.namespace</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
 			</dict>
 		</dict>
 		<dict>
@@ -339,7 +373,7 @@ COLOR KEY
 				<string>#151515</string>
 			</dict>
 		</dict>
-		<!-- <dict>
+		<dict>
 			<key>name</key>
 			<string>Entity inherited-class</string>
 			<key>scope</key>
@@ -349,7 +383,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict> -->
+		</dict>
 		<dict>
 			<key>name</key>
 			<string>String embedded-source</string>
@@ -361,7 +395,7 @@ COLOR KEY
 				<string>#f5b285</string>
 			</dict>
 		</dict>
-		<!-- <dict>
+		<dict>
 			<key>name</key>
 			<string>String constant</string>
 			<key>scope</key>
@@ -371,7 +405,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict> -->
+		</dict>
 		<dict>
 			<key>name</key>
 			<string>String.regexp</string>
@@ -405,7 +439,7 @@ COLOR KEY
 				<string>#f49d62</string>
 			</dict>
 		</dict>
-		<!-- <dict>
+		<dict>
 			<key>name</key>
 			<string>Support.constant</string>
 			<key>scope</key>
@@ -415,7 +449,7 @@ COLOR KEY
 				<key>foreground</key>
 				<string>#B4D388</string>
 			</dict>
-		</dict> -->
+		</dict>
 		<dict>
 			<key>name</key>
 			<string>Meta.tag.A</string>

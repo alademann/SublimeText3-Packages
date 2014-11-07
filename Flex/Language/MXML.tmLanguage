@@ -134,7 +134,7 @@
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>source.css.embedded.mxml</string>
+			<string>source.scss.embedded.xml.mxml</string>
 			<key>end</key>
 			<string>(&lt;/)((mx|fx)(:))?(Style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -174,7 +174,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>source.css</string>
+					<string>source.scss</string>
 				</dict>
 			</array>
 		</dict>
@@ -389,7 +389,7 @@
 		<key>scriptBinding</key>
 		<dict>
 			<key>begin</key>
-			<string>\{</string>
+			<string>\{|\@Embed\('</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>0</key>
@@ -401,7 +401,7 @@
 			<key>contentName</key>
 			<string>source.actionscript.3.embedded.binding.xml.mxml</string>
 			<key>end</key>
-			<string>\}</string>
+			<string>\}|'\)</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>0</key>
