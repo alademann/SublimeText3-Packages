@@ -1,5 +1,5 @@
 # TodoReview
-A SublimeText 3 plugin for reviewing todo (and other) comments within your code.
+A SublimeText plugin for reviewing todo (and other) comments within your code.
 
 ![ScreenShot](http://i.imgur.com/0kTJ3cU.png)
 
@@ -18,7 +18,7 @@ If you are forking this project, or for whatever reason do not want to use Packa
 
 
 # Usage
-Simply open your Sublime Text 3 Command Pallet and find the `TodoReview: Project Files` command. This will generate your TODO List using all files that are currently in your project, except the ones which are excluded in your settings. If you would like to also include your open files within the search, you can use the `TodoReview: Project and Open Files` command; it's that easy! You can then use these results to jump to the corresponding result. Additionally, you can right click a file or folder in your sidebar and select TodoReview to limit your search.
+Simply open your Sublime Text Command Pallet and find the `TodoReview: Project Files` command. This will generate your TODO List using all files that are currently in your project, except the ones which are excluded in your settings. If you would like to also include your open files within the search, you can use the `TodoReview: Project and Open Files` command; it's that easy! You can then use these results to jump to the corresponding result. Additionally, you can right click a file or folder in your sidebar and select TodoReview to limit your search.
 
 ## Navigating results
 Once the list is generated, as a swift coder, you must naturally want to navigate it with your keyboard, right? Well you are in luck!
@@ -143,11 +143,21 @@ By default, searching is not case sensitive. If you would like it to force case,
 "case_sensitive": true
 ```
 
+## Encoding
+If you are planning on using any non UTF-8 characters in your comments, you may need to change this setting to your file encodings for a project. Please note, this setting doesn't affect currently opened files, since Sublime Text handles the encoding on buffered files. All files that need to be opened are done so though python, this setting directly affects the encoding as files are opened. The default is `utf-8`.
+
+```javascript
+"encoding": "western-258"
+```
+
 ## Include folders in results
 If you have a large project with repeating file names, it is sometimes useful to also have the file's folder displayed in the results. This would turn the result `index.js:1` to `lib/index.js:1`. Results are sorted alphabetically to group folders and files together. Please note that results are sorted by priority first. This defaults to `false`.
 
+Additionally, if you choose to include folders in your report, you may also specify the folder depth for your report paths.
+
 ```javascript
-"render_include_folder": true
+"render_include_folder": true,
+"render_folder_depth": 5
 ```
 
 ## Align results

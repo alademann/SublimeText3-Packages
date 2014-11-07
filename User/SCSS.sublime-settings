@@ -1,8 +1,9 @@
 {
-    "word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?",
 	"extensions":
 	[
 		"scss.liquid",
-		"scss"
-	]
+		"scss",
+		"css"
+	],
+	"word_separators": "./\\()\"':,.;<>~!@#%^&*|+=[]{}`~?"
 }

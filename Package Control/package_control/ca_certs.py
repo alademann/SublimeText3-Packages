@@ -15,8 +15,6 @@ try:
     ca_bundle_dir = None
 except (ImportError):
     ca_bundle_dir = os.path.join(os.path.expanduser('~'), '.package_control')
-    if not os.path.exists(ca_bundle_dir):
-        os.mkdir(ca_bundle_dir)
 
 
 def find_root_ca_cert(settings, domain):
@@ -91,6 +89,8 @@ def get_system_ca_bundle_path(settings):
     if platform == 'darwin':
         if not ca_bundle_dir:
             ca_bundle_dir = os.path.join(sublime.packages_path(), 'User')
+        if not os.path.exists(ca_bundle_dir):
+            os.mkdir(ca_bundle_dir)
         ca_path = os.path.join(ca_bundle_dir, 'Package Control.system-ca-bundle')
 
         exists = os.path.exists(ca_path)
@@ -113,7 +113,9 @@ def get_system_ca_bundle_path(settings):
             '/usr/lib/ssl/certs/ca-certificates.crt',
             '/etc/ssl/certs/ca-certificates.crt',
             '/etc/pki/tls/certs/ca-bundle.crt',
-            '/etc/ssl/ca-bundle.pem'
+            '/etc/ssl/ca-bundle.pem',
+            '/usr/local/share/certs/ca-root-nss.crt',
+            '/etc/ssl/cert.pem'
         ]
         for path in paths:
             if os.path.exists(path) and os.path.getsize(path) > 0:

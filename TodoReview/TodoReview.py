@@ -7,12 +7,14 @@ A SublimeText 3 plugin for reviewing todo (and other) comments within your code.
 
 import datetime
 import fnmatch
+import io
 import itertools
 import os
 import re
 import sublime
 import sublime
 import sublime_plugin
+import sys
 import threading
 import timeit
 
@@ -100,7 +102,7 @@ class Engine():
 								f.append(view.substr(line))
 							break
 				else:
-					f = open(p, 'r')
+					f = io.open(p, 'r', encoding=settings.get('encoding', 'utf-8'))
 
 				for num, line in enumerate(f, 1):
 					for result in self.patterns.finditer(line):
@@ -152,7 +154,16 @@ class Thread(threading.Thread):
 
 
 	def run(self):
+
 		self.start = timeit.default_timer()
+
+		if sys.version_info < (3,0,0):
+			sublime.set_timeout(self.thread, 1);
+		else:
+			self.thread();
+
+
+	def thread(self):
 		results = list(self.engine.process())
 		self.callback(results, self.finish(), self.i)
 
@@ -255,7 +266,11 @@ class TodoReviewRender(sublime_plugin.TextCommand):
 		view.set_scratch(True)
 		view.settings().set('todo_results', True)
 
-		view.assign_syntax('Packages/TodoReview/TodoReview.hidden-tmLanguage')
+		if sys.version_info < (3,0,0):
+			view.set_syntax_file('Packages/TodoReview/TodoReview.hidden-tmLanguage')
+		else:
+			view.assign_syntax('Packages/TodoReview/TodoReview.hidden-tmLanguage')
+
 		view.settings().set('line_padding_bottom', 2)
 		view.settings().set('line_padding_top', 2)
 		view.settings().set('word_wrap', False)
@@ -321,8 +336,9 @@ class TodoReviewRender(sublime_plugin.TextCommand):
 
 	def draw_file(self, item):
 		if settings.get('render_include_folder', False):
+			depth = settings.get('render_folder_depth', 1)
 			f = os.path.dirname(item['file']).replace('\\', '/').split('/')
-			f = f[len(f) - 1]  + '/' + os.path.basename(item['file'])
+			f = '/'.join(f[-depth:] + [os.path.basename(item['file'])])
 		else:
 			f = os.path.basename(item['file'])
 
@@ -398,6 +414,5 @@ class TodoReviewResults(sublime_plugin.TextCommand):
 
 			region = target.cover(target)
 			self.view.add_regions('selection', [region], 'selected', 'dot')
-			region.b = region.a + 5
-			self.view.show(region)
+			self.view.show(sublime.Region(region.a, region.a + 5))
 			return

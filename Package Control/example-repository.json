@@ -101,9 +101,13 @@
 		},
 
 		// The URL to donate to support the development of a package.
-		// GitHub and BitBucket repositories will default to:
+		// GitHub repositories will default to:
 		//
-		// https://www.gittip.com/{username}/
+		// https://gratipay.com/on/github/{username}/
+		//
+		// BitBucket repositories will default to:
+		//
+		// https://gratipay.com/on/bitbucket/{username}/
 		//
 		// Other URLs with special integration include:
 		//
@@ -115,7 +119,7 @@
 		// package.
 		{
 			"details": "https://github.com/wbond/sublime_alignment",
-			"donate": "https://www.gittip.com/wbond/"
+			"donate": "https://gratipay.com/wbond/"
 		},
 
 		// The URL to purchase a license to the package
@@ -284,14 +288,14 @@
 
 		// Here is an example of how relative paths work for URLs. If this
 		// file was loaded from:
-		//   "https://sublime.wbond.net/example-repository.json"
+		//   "https://packagecontrol.io/example-repository.json"
 		// then the following files would be loaded from:
-		//   "https://sublime.wbond.net/repository/0-9.json"
-		//   "https://sublime.wbond.net/repository/a.json"
+		//   "https://packagecontrol.io/repository/0-9.json"
+		//   "https://packagecontrol.io/repository/a.json"
 		"./repository/0-9.json",
 		"./repository/a.json",
 
 		// An example of an absolute URL
-		"https://sublime.wbond.net/repository/b.json"
+		"https://packagecontrol.io/repository/b.json"
 	]
 }

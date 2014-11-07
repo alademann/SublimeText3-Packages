@@ -1,6 +1,6 @@
 {
 	"patterns": {
-		"TODO": "TODO[\\s]*?:+(?P<todo>.*)$"
+		"TODO": "TODO[\\s]*?:[\\s]*(?P<todo>.*)$"
 	},
 	"patterns_weight": {
 	},
@@ -13,6 +13,7 @@
 	],
 	"case_sensitive": false,
 	"render_include_folder": true,
+	"render_folder_depth": 1,
 	"render_maxspaces": 50,
 	"render_header_format": "%d - %c files in %t secs",
 	"render_header_date": "%A %m/%d/%y at %I:%M%p",

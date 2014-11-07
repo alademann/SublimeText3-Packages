@@ -9,10 +9,12 @@ try:
     # Python 3
     from http.client import HTTPS_PORT
     from urllib.request import parse_keqv_list, parse_http_list
+    x509 = None
 except (ImportError):
     # Python 2
     from httplib import HTTPS_PORT
     from urllib2 import parse_keqv_list, parse_http_list
+    from . import x509
 
 from ..console_write import console_write
 from .debuggable_https_response import DebuggableHTTPSResponse
@@ -291,15 +293,25 @@ try:
 
             self.sock = ssl.wrap_socket(self.sock, keyfile=self.key_file,
                 certfile=self.cert_file, cert_reqs=self.cert_reqs,
-                ca_certs=self.ca_certs)
+                ca_certs=self.ca_certs, ssl_version=ssl.PROTOCOL_TLSv1)
 
             if self.debuglevel == -1:
+                cipher_info = self.sock.cipher()
                 console_write(u"  Successfully upgraded connection to %s:%s with SSL" % (
                     self.host, self.port))
+                console_write(u"  Using %s with cipher %s" % (
+                    cipher_info[1], cipher_info[0]))
 
             # This debugs and validates the SSL certificate
             if self.cert_reqs & ssl.CERT_REQUIRED:
                 cert = self.sock.getpeercert()
+                # Python 2.6 doesn't seem to parse the subject alt name, so
+                # we parse the raw DER certificate and grab the info ourself
+                if x509:
+                    der_cert = self.sock.getpeercert(True)
+                    subject_alt_name = x509.parse_subject_alt_name(der_cert)
+                    if subject_alt_name:
+                        cert['subjectAltName'] = subject_alt_name
 
                 if self.debuglevel == -1:
                     subjectMap = {
@@ -310,7 +322,9 @@ try:
                         'serialNumber': 'serialNumber',
                         'commonName': 'CN',
                         'localityName': 'L',
-                        'stateOrProvinceName': 'S'
+                        'stateOrProvinceName': 'S',
+                        '1.3.6.1.4.1.311.60.2.1.2': 'incorporationState',
+                        '1.3.6.1.4.1.311.60.2.1.3': 'incorporationCountry'
                     }
                     subject_list = list(cert['subject'])
                     subject_list.reverse()
@@ -325,7 +339,9 @@ try:
                     console_write(u"  Server SSL certificate:")
                     console_write(u"    subject: " + ','.join(subject_parts))
                     if 'subjectAltName' in cert:
-                        console_write(u"    common name: " + cert['subjectAltName'][0][1])
+                        alt_names = [c[1] for c in cert['subjectAltName']]
+                        alt_names = ', '.join(alt_names)
+                        console_write(u"    subject alt name: %s" % alt_names)
                     if 'notAfter' in cert:
                         console_write(u"    expire date: " + cert['notAfter'])
 

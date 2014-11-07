@@ -834,8 +834,11 @@ class PackageManager():
         except (OSError, IOError) as e:
             show_error(u'An error occurred while trying to backup the package directory for %s.\n\n%s' % (
                 package_name, unicode_from_os(e)))
-            if os.path.exists(package_backup_dir):
-                rmtree(package_backup_dir)
+            try:
+                if os.path.exists(package_backup_dir):
+                    rmtree(package_backup_dir)
+            except (UnboundLocalError):
+                pass # Exeption occurred before package_backup_dir defined
             return False
 
     def print_messages(self, package, package_dir, is_upgrade, old_version):
@@ -1005,9 +1008,12 @@ class PackageManager():
             installed_packages = settings.get('installed_packages', [])
             if not installed_packages:
                 installed_packages = []
-            installed_packages.remove(package_name)
-            settings.set('installed_packages', installed_packages)
-            sublime.save_settings('Package Control.sublime-settings')
+            try:
+                installed_packages.remove(package_name)
+                settings.set('installed_packages', installed_packages)
+                sublime.save_settings('Package Control.sublime-settings')
+            except (ValueError):
+                pass # Package was not in installed_packages
         sublime.set_timeout(clear_package, 1)
 
         if can_delete_dir and os.path.exists(package_dir):
@@ -1020,7 +1026,7 @@ class PackageManager():
         Submits install, upgrade and delete actions to a usage server
 
         The usage information is currently displayed on the Package Control
-        community package list at http://wbond.net/sublime_packages/community
+        website at https://packagecontrol.io
 
         :param params:
             A dict of the information to submit
