@@ -685,6 +685,17 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>FLEX CSS Namespace</string>
+			<key>scope</key>
+			<string>entity.other.attribute-name.id.namespace.css</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>CSS.class</string>
 			<key>scope</key>
 			<string>entity.other.attribute-name.class.css</string>

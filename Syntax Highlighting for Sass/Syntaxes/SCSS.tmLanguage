@@ -396,6 +396,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#flex-namespaced-elem-selector</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#function</string>
 		</dict>
 		<dict>
@@ -446,7 +450,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>[a-z-]+((?=:|#{))</string>
+			<string>[a-zA-Z-]+((?=\s*:|#{))</string>
 			<key>name</key>
 			<string>support.type.property-name.css.sass</string>
 		</dict>
@@ -464,7 +468,7 @@
 		<key>comma</key>
 		<dict>
 			<key>match</key>
-			<string>\band\b|\bor\b|,</string>
+			<string>\band\b|\bor\b|,|\|</string>
 			<key>name</key>
 			<string>comment.punctuation.comma.sass</string>
 		</dict>
@@ -709,6 +713,30 @@
 				<dict>
 					<key>include</key>
 					<string>#pseudo-class</string>
+				</dict>
+			</array>
+		</dict>
+		<key>flex-namespaced-elem-selector</key>
+		<dict>
+			<key>begin</key>
+			<string>.*(?=\|)</string>
+			<key>end</key>
+			<string>$\n?|(?=\.|{|:)</string>
+			<key>name</key>
+			<string>entity.name.tag.namespaced.css.flex.sass</string>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>entity.other.attribute-name.id.namespace.css.flex.sass</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#comma</string>
 				</dict>
 			</array>
 		</dict>
