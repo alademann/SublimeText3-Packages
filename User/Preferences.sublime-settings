@@ -32,7 +32,7 @@
 	"caret_extra_width": 1,
 	"caret_style": "phase",
 	"close_windows_when_empty": false,
-	"color_scheme": "Packages/User/Predawn/predawn.tmTheme",
+	"color_scheme": "Packages/User/Color Highlighter/themes/predawn.tmTheme",
 	"copy_with_empty_selection": false,
 	"detect_slow_plugins": true,
 	"draw_minimap_border": true,
