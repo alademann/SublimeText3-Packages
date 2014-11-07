@@ -1,14 +1,14 @@
 <snippet>
   <content><![CDATA[
-/**
- * ${1:$SELECTION}
- * ---
- ${2:* @type ${3:Bool|String|Number|Color|List|Arglist|Map}}
- ${4:* @since ${5:0.0.4}}
- ${6:* @group ${7:core.foo.bar}}
- ${10:* ---
- * @requires {${11:function|mixin|variable|external}\} ${12:requirement-name}}
- */
+///
+/// ${1:$SELECTION}
+/// ---
+${2:/// @type ${3:Bool|String|Number|Color|List|Arglist|Map}}
+${4:/// @since ${5:0.5.0}}
+${6:/// @group ${7:core.foo.bar}}
+${10:/// ---
+/// @requires {${11:function|mixin|variable|external|js}\} ${12:requirement-name}}
+///
 ]]>
   </content>
   <tabTrigger>sassdoc-var</tabTrigger>
