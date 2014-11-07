@@ -141,9 +141,9 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Punctuation params / tags / groups</string>
+			<string>Punctuation params / tags / groups / namespacing</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css</string>
+			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

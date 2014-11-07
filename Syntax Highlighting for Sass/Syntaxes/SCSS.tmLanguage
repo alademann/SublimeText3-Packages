@@ -507,9 +507,15 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>:|,|\|</string>
+					<string>:|,</string>
 					<key>name</key>
 					<string>punctuation.definition.arbitrary-repetition.css.sass  punctuation.comma.css.sass  punctuation.separator.css.sass</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\|</string>
+					<key>name</key>
+					<string>punctuation.separator.namespace.css.flex.sass</string>
 				</dict>
 				<dict>
 					<key>match</key>
