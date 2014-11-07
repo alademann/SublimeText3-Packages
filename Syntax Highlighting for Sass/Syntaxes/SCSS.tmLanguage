@@ -326,6 +326,10 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#reserved-words</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#comment-block</string>
 				</dict>
 				<dict>
@@ -347,6 +351,10 @@
 				<dict>
 					<key>include</key>
 					<string>#variable</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#hex-value</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -500,7 +508,7 @@
 		<key>double-slash</key>
 		<dict>
 			<key>begin</key>
-			<string>//(\s|\w|\$|\\|\"|\'|\:|\,|\.|\;|\&lt;|\&gt;|\~|\!|\@|\#|\%|\^|\*|\||\+|\=|\[|\]|\{|\}|\`|\~|\?)</string>
+			<string>//(\s|\w|\-|\$|\\|\"|\'|\:|\,|\.|\;|\&lt;|\&gt;|\~|\!|\@|\#|\%|\^|\*|\||\+|\=|\[|\]|\{|\}|\`|\~|\?)</string>
 			<key>end</key>
 			<string>$\n?</string>
 			<key>name</key>
