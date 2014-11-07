@@ -1,13 +1,14 @@
 {
     "enabled": true,
     "style": "default",
-    "icons": true,
+    "icons": false,
     "ha_style": "underlined_solid",
     "icons_all": false,
     "default_keybindings": true,
     "convert_util_path" : "convert",
     "color_formats": [
         "white",
+        "0xFFFFFF",
         "#FFF", "#FFFF", "#FFFFFF", "#FFFFFFFF",
         "rgb(255, 255, 255)",
         "rgba(255, 255, 255, 1.0)",

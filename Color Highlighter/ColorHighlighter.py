@@ -218,6 +218,16 @@ def conv_from_hex8(col):
 def conv_to_hex8(base, col):
     return col.upper()
 
+def conv_from_06(col):
+    col = col.upper()
+    return "#" + col[2] + col[3] + col[4] + col[5] + col[6] + col[7]
+
+def conv_to_06(base, col):
+    col = col.upper()
+    if col[-2:] == "FF":
+        return col[:-2]
+    return col
+
 def conv_from_named(col):
     res = colors.names_to_hex.get(col)
     if res is not None:
@@ -260,6 +270,11 @@ color_fmts_data = {
         "r_str": "[#][0-9a-fA-F]{8}",
         "to_hex": conv_from_hex8,
         "from_hex": conv_to_hex8
+    },
+    "06": {
+        "r_str": "[0x][0-9a-fA-F]{6}",
+        "to_hex": conv_from_06,
+        "from_hex": conv_to_06
     },
     "rgb": {
         "r_str": "[r][g][b][(][ ]*(?:%s)[ ]*[,][ ]*(?:%s)[ ]*[,][ ]*(?:%s)[ ]*[)]" % (rgx_value_int, rgx_value_int, rgx_value_int),
