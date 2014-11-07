@@ -130,9 +130,20 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Punctuation tags / braces / delimiters</string>
+			<string>Punctuation separators / terminators / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.separator, punctuation.terminator, punctuation.definition.tag, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, meta.brace.js, meta.delimiter.js</string>
+			<string>punctuation.separator, punctuation.delimiter, punctuation.terminator, punctuation.definition.arbitrary-repetition.css, meta.delimiter.js, punctuation.brace, meta.brace.js</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#d9d9d9</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Punctuation params / tags / groups</string>
+			<key>scope</key>
+			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -141,7 +152,7 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Namespaced Tag Name</string>
+			<string>Flex MXML Namespaced Tag Name</string>
 			<key>scope</key>
 			<string>entity.name.tag.localname.xml.mxml</string>
 			<key>settings</key>
@@ -344,7 +355,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Variable</string>
 			<key>scope</key>
-			<string>variable, variable.other, variable.other.name, support.other.variable, string.other.link</string>
+			<string>variable, variable.other, variable.other.name, support.other.variable, support.type.variable-name, string.other.link</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -443,7 +454,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Support.constant</string>
 			<key>scope</key>
-			<string>support.constant</string>
+			<string>support.constant, support.constant.reserved</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -669,14 +680,14 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#ECEC89</string>
+				<string>#8ddede</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>name</key>
 			<string>CSS#id</string>
 			<key>scope</key>
-			<string>entity.other.attribute-name.id.css, entity.name.tag.reference.css</string>
+			<string>entity.other.attribute-name.id.css, entity.name.tag.reference.css, punctuation.definition.entity.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -707,13 +718,37 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>CSS property-name: psuedos and attribute values</string>
+			<string>CSS property-names</string>
 			<key>scope</key>
-			<string>entity.other.attribute-name.pseudo-element.css, entity.other.attribute-name.pseudo-class.css, entity.other.attribute-name.attribute.css, entity.other.attribute-selector.css, support.type.property-name.css, meta.attribute-selector.css, meta.property-name.css</string>
+			<string>entity.other.attribute-name.attribute.css, entity.other.attribute-selector.css, support.type.property-name.css, meta.attribute-selector.css, meta.property-name.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>CSS property-name: psuedos, vendor prefixing and attribute values</string>
+			<key>scope</key>
+			<string>entity.other.attribute-name.pseudo-element.css, entity.other.attribute-name.pseudo-class.css</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>CSS hacks</string>
+			<key>scope</key>
+			<string>entity.other.hack.css</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#ed710b</string>
+				<key>fontStyle</key>
+				<string>bold</string>
 			</dict>
 		</dict>
 		<dict>
@@ -782,17 +817,6 @@ COLOR KEY
 				<string>#F18260</string>
 			</dict>
 		</dict>
-		<dict>
-			<key>name</key>
-			<string>CSS key-value separator</string>
-			<key>scope</key>
-			<string>punctuation.separator.key-value.css</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#ebebeb</string>
-			</dict>
-		</dict>
 
 
 		<!--
@@ -840,7 +864,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass @at-rule</string>
 			<key>scope</key>
-			<string>keyword.control.at-rule.css, meta.preprocessor.at-rule keyword.control.at-rule</string>
+			<string>keyword.control.at-rule, meta.preprocessor.at-rule keyword.control.at-rule, punctuation.definition.keyword.css</string>
 			<key>settings</key>
 			<dict>
 				<!--
@@ -851,6 +875,17 @@ COLOR KEY
 				-->
 				<key>foreground</key>
 				<string>#bddcdc</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sass ampersand parent selector</string>
+			<key>scope</key>
+			<string>keyword.operator.ampersand.sass</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#eeb0df</string>
 			</dict>
 		</dict>
 		<dict>
@@ -905,7 +940,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass variable declaration</string>
 			<key>scope</key>
-			<string>variable.other.indexed.declaration</string>
+			<string>variable.other.indexed.declaration, support.function.var</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
