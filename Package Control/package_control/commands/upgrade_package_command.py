@@ -70,12 +70,13 @@ class UpgradePackageThread(threading.Thread, PackageInstaller):
             return
         name = self.package_list[picked][0]
 
-        if name in self.disable_packages(name):
+        if name in self.disable_packages(name, 'upgrade'):
             on_complete = lambda: self.reenable_package(name)
         else:
             on_complete = None
 
-        thread = PackageInstallerThread(self.manager, name, on_complete)
+        thread = PackageInstallerThread(self.manager, name, on_complete,
+            pause=True)
         thread.start()
         ThreadProgress(thread, 'Upgrading package %s' % name,
             'Package %s successfully %s' % (name, self.completion_type))

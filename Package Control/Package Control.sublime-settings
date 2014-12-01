@@ -11,43 +11,11 @@
 	// setting
 	"repositories": [],
 
-	// A list of CA certs needed for domains. The default channel provides a
-	// list of domains and an identifier (the md5 hash) for the CA cert(s)
-	// necessary for each. Not used on Windows since the system CA cert list
-	// is automatically used via WinINet.
-	//
-	// If a custom cert is required for a proxy or for an alternate channel
-	// or repository domain name, it should be added in one of the two forms:
-	//
-	// "*": ["my_identifier", "https://example.com/url/of/cert_file"]
-	// "*": ["my_identifier_2", "/absolute/filesystem/path/to/cert_file"]
-	//
-	// In both cases the literal "*" means the cert will be checked to ensure
-	// it is present for accessing any URL. This is necessary for proxy
-	// connections, but also useful if you want to provide you own
-	// Pckage Control.ca-bundle file.
-	//
-	// The "my_identifier" and "my_identifier_2" can be any unique string
-	// that Package Control can use as a filename, and ensures that it has
-	// merged the cert file with the ca-bundle.crt file in the certs/ directory
-	// since that is what is passed to the downloaders.
-	"certs": {
-		"api.bitbucket.org": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"api.github.com": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"bitbucket.org": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"codeload.github.com": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"downloads.sourceforge.net": ["221e907bdfff70d71cea42361ae209d5", "https://packagecontrol.io/certs/221e907bdfff70d71cea42361ae209d5"],
-		"github.com": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"nodeload.github.com": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"packagecontrol.io": ["d616352d4213985e717c93c8c387575d", "https://packagecontrol.io/certs/d616352d4213985e717c93c8c387575d"],
-		"raw.github.com": ["7d0986b90061d60c8c02aa3b1cf23850", "https://packagecontrol.io/certs/7d0986b90061d60c8c02aa3b1cf23850"],
-		"sublime.wbond.net": ["221e907bdfff70d71cea42361ae209d5", "https://packagecontrol.io/certs/221e907bdfff70d71cea42361ae209d5"]
-	},
-
-	// Install pre-release versions of packages. If this is false, versions
-	// under 1.0.0 will still be installed. Only packages using the SemVer
-	// -prerelease suffixes will be ignored.
-	"install_prereleases": false,
+	// A list of packages to install pre-release versions for. Versions
+	// under 1.0.0 are no considered pre-release, only those using the SemVer
+	// -prerelease suffixes will be ignored if the package is not in this
+	// list.
+	"install_prereleases": [],
 
 	// If debugging information for HTTP/HTTPS connections should be printed
 	// to the Sublime Text console
@@ -66,11 +34,17 @@
 	// The URL to post install, upgrade and removal notices to
 	"submit_url": "https://packagecontrol.io/submit",
 
-	// If packages should be automatically upgraded when ST2 starts
+	// If packages should be automatically upgraded when ST starts
 	"auto_upgrade": true,
 
-	// If missing packages should be automatically installed when ST2 starts
+	// If missing packages should be automatically installed when ST starts
 	"install_missing": true,
+
+	// If a package was installed by Package Control (has a
+	// package-metadata.json file) but is not in installed_packages, remove it
+	// based upon the assumption that it was removed on another machine and
+	// the Package Control.sublime-settings file was synced to this machine.
+	"remove_orphaned": true,
 
 	// The minimum frequency in hours in which to check for automatic upgrades,
 	// setting this to 0 will always check for automatic upgrades
@@ -115,23 +89,25 @@
 	// hangs
 	"ignore_vcs_packages": false,
 
-	// Custom paths to VCS binaries for when they can't be automatically
-	// found on the system and a package includes a VCS metadata directory
-	"git_binary": "",
+	// Custom path(s) to "git" binary for when it can't be automatically
+	// found on the system and a package includes a .git metadata directory.
+	// Supports more than one path to allow users to sync settings across
+	// operating systems.
+	"git_binary": [],
 
 	// This should NOT contain the name of the remote or branch - that will
 	// be automatically determined.
 	"git_update_command": ["pull", "--ff", "--commit"],
 
-	"hg_binary": "",
+	// Custom path(s) to "hg" binary for when it can't be automatically
+	// found on the system and a package includes a .hg metadata directory.
+	// Supports more than one path to allow users to sync settings across
+	// operating systems.
+	"hg_binary": [],
 
 	// For HG repositories, be sure to use "default" as the remote URL.
 	// This is the default behavior when cloning an HG repo.
 	"hg_update_command": ["pull", "--update"],
-
-	// Full path to the openssl binary, if not found on your machine. This is
-	// only used when running the Grab CA Certs command.
-	"openssl_binary": "",
 
 	// Directories to ignore when creating a package
 	"dirs_to_ignore": [

@@ -10,6 +10,7 @@ from .console_write import console_write
 from .package_installer import PackageInstaller
 from .package_renamer import PackageRenamer
 from .open_compat import open_compat, read_compat
+from .settings import pc_settings_filename
 
 
 class AutomaticUpgrader(threading.Thread):
@@ -94,12 +95,10 @@ class AutomaticUpgrader(threading.Thread):
 
     def load_settings(self):
         """
-        Loads the list of installed packages from the
-        Package Control.sublime-settings file
+        Loads the list of installed packages
         """
 
-        self.settings_file = 'Package Control.sublime-settings'
-        self.settings = sublime.load_settings(self.settings_file)
+        self.settings = sublime.load_settings(pc_settings_filename())
         self.installed_packages = self.settings.get('installed_packages', [])
         self.should_install_missing = self.settings.get('install_missing')
         if not isinstance(self.installed_packages, list):
@@ -125,7 +124,26 @@ class AutomaticUpgrader(threading.Thread):
             return
 
         console_write(u'Installing %s missing packages' % len(self.missing_packages), True)
+
+        # Fetching the list of packages also grabs the renamed packages
+        self.manager.list_available_packages()
+        renamed_packages = self.manager.settings.get('renamed_packages', {})
+
         for package in self.missing_packages:
+
+            # If the package has been renamed, detect the rename and update
+            # the settings file with the new name as we install it
+            if package in renamed_packages:
+                old_name = package
+                new_name = renamed_packages[old_name]
+                def update_installed_packages():
+                    self.installed_packages.remove(old_name)
+                    self.installed_packages.append(new_name)
+                    self.settings.set('installed_packages', self.installed_packages)
+                    sublime.save_settings(pc_settings_filename())
+                package = new_name
+            sublime.set_timeout(update_installed_packages, 10)
+
             if self.installer.manager.install_package(package):
                 console_write(u'Installed missing package %s' % package, True)
 
@@ -181,7 +199,7 @@ class AutomaticUpgrader(threading.Thread):
 
         def do_upgrades():
             # Wait so that the ignored packages can be "unloaded"
-            time.sleep(0.5)
+            time.sleep(0.7)
 
             # We use a function to generate the on-complete lambda because if
             # we don't, the lambda will bind to info at the current scope, and
@@ -204,12 +222,13 @@ class AutomaticUpgrader(threading.Thread):
                 message_string = u'Upgraded %s to %s' % (info[0], version)
                 console_write(message_string, True)
                 if on_complete:
-                    sublime.set_timeout(on_complete, 1)
+                    sublime.set_timeout(on_complete, 700)
 
         # Disabling a package means changing settings, which can only be done
         # in the main thread. We then create a new background thread so that
         # the upgrade process does not block the UI.
         def disable_packages():
-            disabled_packages.extend(self.installer.disable_packages([info[0] for info in package_list]))
+            packages = [info[0] for info in package_list]
+            disabled_packages.extend(self.installer.disable_packages(packages, 'upgrade'))
             threading.Thread(target=do_upgrades).start()
         sublime.set_timeout(disable_packages, 1)

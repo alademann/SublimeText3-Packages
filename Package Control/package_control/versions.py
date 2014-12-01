@@ -5,6 +5,17 @@ from .console_write import console_write
 
 
 def semver_compat(v):
+    """
+    Converts a string version number into SemVer. If the version is based on
+    a date, converts to 0.0.1+yyyy.mm.dd.hh.mm.ss.
+
+    :param v:
+        A string, dict with 'version' key, or a SemVer object
+
+    :return:
+        A string that is a valid semantic version number
+    """
+
     if isinstance(v, SemVer):
         return str(v)
 
@@ -49,6 +60,16 @@ def version_comparable(string):
 
 
 def version_exclude_prerelease(versions):
+    """
+    Remove prerelease versions for a list of SemVer versions
+
+    :param versions:
+        The list of versions to filter
+
+    :return:
+        The list of versions with pre-releases removed
+    """
+
     output = []
     for version in versions:
         if SemVer(semver_compat(version)).prerelease != None:
@@ -57,23 +78,72 @@ def version_exclude_prerelease(versions):
     return output
 
 
-def version_filter(versions, allow_prerelease=False):
+def version_process(versions, filter_prefix):
+    """
+    Filter a list of versions to ones that are valid SemVers, if a prefix
+    is provided, only match versions starting with the prefix and split
+
+    :param versions:
+        The list of versions to filter
+
+    :param filter_prefix:
+        Remove this prefix from the version before checking if it is a valid
+        SemVer. If this prefix is not present, skip the version.
+
+    :return:
+        A list of dicts, each of which has the keys "version" and "prefix"
+    """
+
     output = []
     for version in versions:
-        no_v_version = re.sub('^v', '', version)
-        if not SemVer.valid(no_v_version):
+        prefix = ''
+
+        if filter_prefix:
+            if version[0:len(filter_prefix)] != filter_prefix:
+                continue
+            check_version = version[len(filter_prefix):]
+            prefix = filter_prefix
+
+        else:
+            check_version = re.sub('^v', '', version)
+            if check_version != version:
+                prefix = 'v'
+
+        if not SemVer.valid(check_version):
             continue
-        if not allow_prerelease and SemVer(no_v_version).prerelease != None:
-            continue
-        output.append(version)
+
+        output.append({'version': check_version, 'prefix': prefix})
     return output
 
 
-def _version_sort_key(item):
-    return SemVer(semver_compat(item))
+def version_sort(sortable, *fields, **kwargs):
+    """
+    Sorts a list that is a list of versions, or dicts with a 'version' key.
+    Can also secondly sort by another field.
 
+    :param sortable:
+        The list to sort
 
-def version_sort(sortable, **kwargs):
+    :param *fields:
+        If sortable is a list of dicts, perform secondary sort via these fields,
+        in order
+
+    :param **kwargs:
+        Keyword args to pass on to sorted()
+
+    :return:
+        A copy of sortable that is sorted according to SemVer rules
+    """
+
+    def _version_sort_key(item):
+        result = SemVer(semver_compat(item))
+        if fields:
+            values = [result]
+            for field in fields:
+                values.append(item[field])
+            result = tuple(values)
+        return result
+
     try:
         return sorted(sortable, key=_version_sort_key, **kwargs)
     except (ValueError) as e:

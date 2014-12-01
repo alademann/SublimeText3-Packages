@@ -1,11 +1,14 @@
 import os
+import time
 
 import sublime
 
 from .console_write import console_write
+from .package_disabler import PackageDisabler
+from .settings import pc_settings_filename, load_list_setting, save_list_setting
 
 
-class PackageRenamer():
+class PackageRenamer(PackageDisabler):
     """
     Class to handle renaming packages via the renamed_packages setting
     gathered from channels and repositories.
@@ -13,15 +16,11 @@ class PackageRenamer():
 
     def load_settings(self):
         """
-        Loads the list of installed packages from the
-        Package Control.sublime-settings file.
+        Loads the list of installed packages
         """
 
-        self.settings_file = 'Package Control.sublime-settings'
-        self.settings = sublime.load_settings(self.settings_file)
-        self.installed_packages = self.settings.get('installed_packages', [])
-        if not isinstance(self.installed_packages, list):
-            self.installed_packages = []
+        settings = sublime.load_settings(pc_settings_filename())
+        self.original_installed_packages = load_list_setting(settings, 'installed_packages')
 
     def rename_packages(self, installer):
         """
@@ -39,7 +38,7 @@ class PackageRenamer():
             renamed_packages = {}
 
         # These are packages that have been tracked as installed
-        installed_pkgs = self.installed_packages
+        installed_packages = list(self.original_installed_packages)
         # There are the packages actually present on the filesystem
         present_packages = installer.manager.list_packages()
 
@@ -81,7 +80,12 @@ class PackageRenamer():
             else:
                 continue
 
+            sublime.set_timeout(lambda: self.disable_packages(package_name, 'remove'), 10)
+
             if not os.path.exists(new_package_path) or (case_insensitive_fs and changing_case):
+                sublime.set_timeout(lambda: self.disable_packages(new_package_name, 'install'), 10)
+                time.sleep(0.7)
+
                 # Windows will not allow you to rename to the same name with
                 # a different case, so we work around that with a temporary name
                 if os.name == 'nt' and changing_case:
@@ -92,21 +96,26 @@ class PackageRenamer():
                     package_path = temp_package_path
 
                 os.rename(package_path, new_package_path)
-                installed_pkgs.append(new_package_name)
+                installed_packages.append(new_package_name)
 
                 console_write(u'Renamed %s to %s' % (package_name, new_package_name), True)
+                sublime.set_timeout(lambda: self.reenable_package(new_package_name, 'install'), 700)
+
             else:
+                time.sleep(0.7)
                 installer.manager.remove_package(package_name)
                 message_string = u'Removed %s since package with new name (%s) already exists' % (
                     package_name, new_package_name)
                 console_write(message_string, True)
 
+            sublime.set_timeout(lambda: self.reenable_package(package_name, 'remove'), 700)
+
             try:
-                installed_pkgs.remove(package_name)
+                installed_packages.remove(package_name)
             except (ValueError):
                 pass
 
-        sublime.set_timeout(lambda: self.save_packages(installed_pkgs), 10)
+        sublime.set_timeout(lambda: self.save_packages(installed_packages), 10)
 
     def save_packages(self, installed_packages):
         """
@@ -117,10 +126,7 @@ class PackageRenamer():
             The new list of installed packages
         """
 
-        installed_packages = list(set(installed_packages))
-        installed_packages = sorted(installed_packages,
-            key=lambda s: s.lower())
-
-        if installed_packages != self.installed_packages:
-            self.settings.set('installed_packages', installed_packages)
-            sublime.save_settings(self.settings_file)
+        filename = pc_settings_filename()
+        settings = sublime.load_settings(filename)
+        save_list_setting(settings, filename, 'installed_packages',
+            installed_packages, self.original_installed_packages)

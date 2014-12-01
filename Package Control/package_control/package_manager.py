@@ -27,9 +27,9 @@ import sublime
 from .show_error import show_error
 from .console_write import console_write
 from .open_compat import open_compat, read_compat
+from .file_not_found_error import FileNotFoundError
 from .unicode import unicode_from_os
-from .rmtree import rmtree
-from .clear_directory import clear_directory
+from .clear_directory import clear_directory, delete_directory
 from .cache import (clear_cache, set_cache, get_cache, merge_cache_under_settings,
     merge_cache_over_settings, set_cache_under_settings, set_cache_over_settings)
 from .versions import version_comparable, version_sort
@@ -39,10 +39,12 @@ from .providers.provider_exception import ProviderException
 from .clients.client_exception import ClientException
 from .download_manager import downloader
 from .providers.channel_provider import ChannelProvider
+from .providers.release_selector import filter_releases
 from .upgraders.git_upgrader import GitUpgrader
 from .upgraders.hg_upgrader import HgUpgrader
 from .package_io import read_package_file
 from .providers import CHANNEL_PROVIDERS, REPOSITORY_PROVIDERS
+from .settings import pc_settings_filename
 from . import __version__
 
 
@@ -62,13 +64,12 @@ class PackageManager():
         # Here we manually copy the settings since sublime doesn't like
         # code accessing settings from threads
         self.settings = {}
-        settings = sublime.load_settings('Package Control.sublime-settings')
+        settings = sublime.load_settings(pc_settings_filename())
         setting_names = [
             'auto_upgrade',
             'auto_upgrade_frequency',
             'auto_upgrade_ignore',
             'cache_length',
-            'certs',
             'channels',
             'debug',
             'dirs_to_ignore',
@@ -84,7 +85,6 @@ class PackageManager():
             'https_proxy',
             'ignore_vcs_packages',
             'install_prereleases',
-            'openssl_binary',
             'package_destination',
             'package_name_map',
             'package_profiles',
@@ -193,10 +193,20 @@ class PackageManager():
                     channel_repositories = provider.get_repositories()
                     set_cache(cache_key, channel_repositories, cache_ttl)
 
+                    unavailable_packages = []
+
                     for repo in channel_repositories:
-                        repo_packages = provider.get_packages(repo)
+                        original_packages = provider.get_packages(repo)
+                        filtered_packages = {}
+                        for package in original_packages:
+                            info = original_packages[package]
+                            info['releases'] = filter_releases(package, self.settings, info['releases'])
+                            if info['releases']:
+                                filtered_packages[package] = info
+                            else:
+                                unavailable_packages.append(package)
                         packages_cache_key = repo + '.packages'
-                        set_cache(packages_cache_key, repo_packages, cache_ttl)
+                        set_cache(packages_cache_key, filtered_packages, cache_ttl)
 
                     # Have the local name map override the one from the channel
                     name_map = provider.get_name_map()
@@ -205,14 +215,7 @@ class PackageManager():
                     renamed_packages = provider.get_renamed_packages()
                     set_cache_under_settings(self, 'renamed_packages', channel, renamed_packages, cache_ttl)
 
-                    unavailable_packages = provider.get_unavailable_packages()
                     set_cache_under_settings(self, 'unavailable_packages', channel, unavailable_packages, cache_ttl, list_=True)
-
-                    provider_certs = provider.get_certs()
-                    certs = self.settings.get('certs', {}).copy()
-                    certs.update(provider_certs)
-                    # Save the master list of certs, used by downloaders/cert_provider.py
-                    set_cache('*.certs', certs, cache_ttl)
 
                 except (DownloaderException, ClientException, ProviderException) as e:
                     console_write(e, True)
@@ -283,12 +286,18 @@ class PackageManager():
             if not provider:
                 continue
 
+            unavailable_packages = []
+
             # Allow name mapping of packages for schema version < 2.0
             repository_packages = {}
             for name, info in provider.get_packages():
                 name = name_map.get(name, name)
                 info['name'] = name
-                repository_packages[name] = info
+                info['releases'] = filter_releases(name, self.settings, info['releases'])
+                if info['releases']:
+                    repository_packages[name] = info
+                else:
+                    unavailable_packages.append(name)
 
             # Display errors we encountered while fetching package info
             for url, exception in provider.get_failed_sources():
@@ -303,7 +312,6 @@ class PackageManager():
             renamed_packages = provider.get_renamed_packages()
             set_cache_under_settings(self, 'renamed_packages', repo, renamed_packages, cache_ttl)
 
-            unavailable_packages = provider.get_unavailable_packages()
             set_cache_under_settings(self, 'unavailable_packages', repo, unavailable_packages, cache_ttl, list_=True)
 
         return packages
@@ -486,14 +494,14 @@ class PackageManager():
         is_unavailable = package_name in self.settings.get('unavailable_packages', [])
 
         if is_unavailable and not is_available:
-            console_write(u'The package "%s" is not available on this platform.' % package_name, True)
+            console_write(u'The package "%s" is either not available on this platform or for this version of Sublime Text' % package_name, True)
             return False
 
         if not is_available:
             show_error(u'The package specified, %s, is not available' % package_name)
             return False
 
-        url = packages[package_name]['download']['url']
+        url = packages[package_name]['releases'][0]['url']
         package_filename = package_name + '.sublime-package'
 
         tmp_dir = tempfile.mkdtemp(u'')
@@ -597,12 +605,23 @@ class PackageManager():
                 pass
 
             # If we already have a package-metadata.json file in
-            # Packages/{package_name}/, the only way to successfully upgrade
-            # will be to unpack
+            # Packages/{package_name}/, but the package no longer contains
+            # a .no-sublime-package file, then we want to clear the unpacked
+            # dir and install as a .sublime-package file. Since we are only
+            # clearing if a package-metadata.json file exists, we should never
+            # accidentally delete a user's customizations. However, we still
+            # create a backup just in case.
             unpacked_metadata_file = os.path.join(unpacked_package_dir,
                 'package-metadata.json')
-            if os.path.exists(unpacked_metadata_file):
-                unpack = True
+            if os.path.exists(unpacked_metadata_file) and not unpack:
+                self.backup_package_dir(package_name)
+                if not clear_directory(unpacked_package_dir):
+                    # If there is an error deleting now, we will mark it for
+                    # cleanup the next time Sublime Text starts
+                    open_compat(os.path.join(unpacked_package_dir,
+                        'package-control.cleanup'), 'w').close()
+                else:
+                    os.rmdir(unpacked_package_dir)
 
             # If we determined it should be unpacked, we extract directly
             # into the Packages/{package_name}/ folder
@@ -706,11 +725,16 @@ class PackageManager():
             # upgrade, it should be cleaned out successfully then.
             clear_directory(package_dir, extracted_paths)
 
-            self.print_messages(package_name, package_dir, is_upgrade, old_version)
+            release = packages[package_name]['releases'][0]
+            new_version = release['version']
+
+            self.print_messages(package_name, package_dir, is_upgrade, old_version, new_version)
 
             with open_compat(package_metadata_file, 'w') as f:
                 metadata = {
-                    "version": packages[package_name]['download']['version'],
+                    "version": new_version,
+                    "sublime_text": release['sublime_text'],
+                    "platforms": release['platforms'],
                     "url": packages[package_name]['homepage'],
                     "description": packages[package_name]['description']
                 }
@@ -721,21 +745,21 @@ class PackageManager():
                 params = {
                     'package': package_name,
                     'operation': 'upgrade',
-                    'version': packages[package_name]['download']['version'],
+                    'version': new_version,
                     'old_version': old_version
                 }
             else:
                 params = {
                     'package': package_name,
                     'operation': 'install',
-                    'version': packages[package_name]['download']['version']
+                    'version': new_version
                 }
             self.record_usage(params)
 
             # Record the install in the settings file so that you can move
             # settings across computers and have the same packages installed
             def save_package():
-                settings = sublime.load_settings('Package Control.sublime-settings')
+                settings = sublime.load_settings(pc_settings_filename())
                 installed_packages = settings.get('installed_packages', [])
                 if not installed_packages:
                     installed_packages = []
@@ -744,7 +768,7 @@ class PackageManager():
                 installed_packages = sorted(installed_packages,
                     key=lambda s: s.lower())
                 settings.set('installed_packages', installed_packages)
-                sublime.save_settings('Package Control.sublime-settings')
+                sublime.save_settings(pc_settings_filename())
             sublime.set_timeout(save_package, 1)
 
             # If we didn't extract directly into the Packages/{package_name}/
@@ -795,14 +819,7 @@ class PackageManager():
             # Try to remove the tmp dir after a second to make sure
             # a virus scanner is holding a reference to the zipfile
             # after we close it.
-            def remove_tmp_dir():
-                try:
-                    rmtree(tmp_dir)
-                except (PermissionError):
-                    # If we can't remove the tmp dir, don't let an uncaught exception
-                    # fall through and break the install process
-                    pass
-            sublime.set_timeout(remove_tmp_dir, 1000)
+            sublime.set_timeout(lambda: delete_directory(tmp_dir), 1000)
 
     def backup_package_dir(self, package_name):
         """
@@ -836,12 +853,12 @@ class PackageManager():
                 package_name, unicode_from_os(e)))
             try:
                 if os.path.exists(package_backup_dir):
-                    rmtree(package_backup_dir)
+                    delete_directory(package_backup_dir)
             except (UnboundLocalError):
                 pass # Exeption occurred before package_backup_dir defined
             return False
 
-    def print_messages(self, package, package_dir, is_upgrade, old_version):
+    def print_messages(self, package, package_dir, is_upgrade, old_version, new_version):
         """
         Prints out package install and upgrade messages
 
@@ -860,6 +877,9 @@ class PackageManager():
 
         :param old_version:
             The string version of the package before the upgrade occurred
+
+        :param new_version:
+            The new (string) version of the package
         """
 
         messages_file = os.path.join(package_dir, 'messages.json')
@@ -876,33 +896,46 @@ class PackageManager():
 
         output = ''
         if not is_upgrade and message_info.get('install'):
-            install_messages = os.path.join(package_dir,
-                message_info.get('install'))
-            message = '\n\n%s:\n%s\n\n  ' % (package,
-                        ('-' * len(package)))
-            with open_compat(install_messages, 'r') as f:
-                message += read_compat(f).replace('\n', '\n  ')
-            output += message + '\n'
+            try:
+                install_file = message_info.get('install')
+                install_path = os.path.join(package_dir, install_file)
+                message = '\n\n%s:\n%s\n\n  ' % (package, ('-' * len(package)))
+                with open_compat(install_path, 'r') as f:
+                    message += read_compat(f).replace('\n', '\n  ')
+                output += message + '\n'
+            except (FileNotFoundError):
+                console_write(u'Error opening install messages for %s from %s' % (package, install_file), True)
 
         elif is_upgrade and old_version:
             upgrade_messages = list(set(message_info.keys()) -
                 set(['install']))
             upgrade_messages = version_sort(upgrade_messages, reverse=True)
             old_version_cmp = version_comparable(old_version)
+            new_version_cmp = version_comparable(new_version)
 
             for version in upgrade_messages:
-                if version_comparable(version) <= old_version_cmp:
+                version_cmp = version_comparable(version)
+                if version_cmp <= old_version_cmp:
                     break
-                if not output:
-                    message = '\n\n%s:\n%s\n' % (package,
-                        ('-' * len(package)))
-                    output += message
-                upgrade_message_path = os.path.join(package_dir,
-                    message_info.get(version))
-                message = '\n  '
-                with open_compat(upgrade_message_path, 'r') as f:
-                    message += read_compat(f).replace('\n', '\n  ')
-                output += message + '\n'
+                # If the package developer sets up release notes for future
+                # versions, we don't want to show them for every release
+                if version_cmp > new_version_cmp:
+                    continue
+
+                try:
+                    upgrade_file = message_info.get(version)
+                    upgrade_path = os.path.join(package_dir, upgrade_file)
+                    if not output:
+                        message = '\n\n%s:\n%s\n' % (package,
+                            ('-' * len(package)))
+                    else:
+                        message = ''
+                    message += '\n  '
+                    with open_compat(upgrade_path, 'r') as f:
+                        message += read_compat(f).replace('\n', '\n  ')
+                    output += message + '\n'
+                except (FileNotFoundError):
+                    console_write(u'Error opening %s messages for %s from %s' % (version, package, upgrade_file), True)
 
         if not output:
             return
@@ -931,6 +964,9 @@ class PackageManager():
                     '========================')
 
             write(output)
+            if window.active_view() != view:
+                window.focus_view(view)
+
         sublime.set_timeout(print_to_panel, 1)
 
     def remove_package(self, package_name):
@@ -956,9 +992,6 @@ class PackageManager():
             return False
 
         os.chdir(sublime.packages_path())
-
-        # Give Sublime Text some time to ignore the package
-        time.sleep(1)
 
         package_filename = package_name + '.sublime-package'
         installed_package_path = os.path.join(sublime.installed_packages_path(),
@@ -1004,14 +1037,14 @@ class PackageManager():
 
         # Remove the package from the installed packages list
         def clear_package():
-            settings = sublime.load_settings('Package Control.sublime-settings')
+            settings = sublime.load_settings(pc_settings_filename())
             installed_packages = settings.get('installed_packages', [])
             if not installed_packages:
                 installed_packages = []
             try:
                 installed_packages.remove(package_name)
                 settings.set('installed_packages', installed_packages)
-                sublime.save_settings('Package Control.sublime-settings')
+                sublime.save_settings(pc_settings_filename())
             except (ValueError):
                 pass # Package was not in installed_packages
         sublime.set_timeout(clear_package, 1)

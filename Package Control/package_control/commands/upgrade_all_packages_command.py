@@ -44,7 +44,7 @@ class UpgradeAllPackagesThread(threading.Thread, PackageInstaller):
 
         def do_upgrades():
             # Pause so packages can be disabled
-            time.sleep(0.5)
+            time.sleep(0.7)
 
             # We use a function to generate the on-complete lambda because if
             # we don't, the lambda will bind to info at the current scope, and
@@ -63,6 +63,7 @@ class UpgradeAllPackagesThread(threading.Thread, PackageInstaller):
                 ThreadProgress(thread, 'Upgrading package %s' % info[0],
                     'Package %s successfully %s' % (info[0],
                     self.completion_type))
+                thread.join()
 
         # Disabling a package means changing settings, which can only be done
         # in the main thread. We then create a new background thread so that
@@ -71,7 +72,7 @@ class UpgradeAllPackagesThread(threading.Thread, PackageInstaller):
             package_names = []
             for info in package_list:
                 package_names.append(info[0])
-            disabled_packages.extend(self.disable_packages(package_names))
+            disabled_packages.extend(self.disable_packages(package_names, 'upgrade'))
             threading.Thread(target=do_upgrades).start()
 
         sublime.set_timeout(disable_packages, 1)

@@ -1,17 +1,17 @@
 import threading
+import time
 
 import sublime
 import sublime_plugin
 
 from ..show_error import show_error
 from .existing_packages_command import ExistingPackagesCommand
-from ..preferences_filename import preferences_filename
 from ..thread_progress import ThreadProgress
-from ..package_io import package_file_exists
+from ..package_disabler import PackageDisabler
 
 
 class RemovePackageCommand(sublime_plugin.WindowCommand,
-        ExistingPackagesCommand):
+        ExistingPackagesCommand, PackageDisabler):
     """
     A command that presents a list of installed packages, allowing the user to
     select one to remove
@@ -47,54 +47,30 @@ class RemovePackageCommand(sublime_plugin.WindowCommand,
             return
         package = self.package_list[picked][0]
 
-        settings = sublime.load_settings(preferences_filename())
+        self.disable_packages(package, 'remove')
 
-        # Change the color scheme before removing the package containing it
-        if settings.get('color_scheme').find('Packages/' + package + '/') != -1:
-            settings.set('color_scheme', 'Packages/Color Scheme - Default/Monokai.tmTheme')
-            sublime.save_settings(preferences_filename())
-
-        # Change the theme before removing the package containing it
-        if package_file_exists(package, settings.get('theme')):
-            settings.set('theme', 'Default.sublime-theme')
-            sublime.save_settings(preferences_filename())
-
-        ignored = settings.get('ignored_packages')
-        if not ignored:
-            ignored = []
-
-        # Don't disable Package Control so it does not get stuck disabled
-        if package != 'Package Control':
-            if not package in ignored:
-                ignored.append(package)
-                settings.set('ignored_packages', ignored)
-                sublime.save_settings(preferences_filename())
-            ignored.remove(package)
-
-        thread = RemovePackageThread(self.manager, package,
-            ignored)
+        thread = RemovePackageThread(self.manager, package)
         thread.start()
         ThreadProgress(thread, 'Removing package %s' % package,
             'Package %s successfully removed' % package)
 
 
-class RemovePackageThread(threading.Thread):
+class RemovePackageThread(threading.Thread, PackageDisabler):
     """
     A thread to run the remove package operation in so that the Sublime Text
     UI does not become frozen
     """
 
-    def __init__(self, manager, package, ignored):
+    def __init__(self, manager, package):
         self.manager = manager
         self.package = package
-        self.ignored = ignored
         threading.Thread.__init__(self)
 
     def run(self):
+        # Let the package disabling take place
+        time.sleep(0.7)
         self.result = self.manager.remove_package(self.package)
 
         def unignore_package():
-            settings = sublime.load_settings(preferences_filename())
-            settings.set('ignored_packages', self.ignored)
-            sublime.save_settings(preferences_filename())
-        sublime.set_timeout(unignore_package, 10)
+            self.reenable_package(self.package, 'remove')
+        sublime.set_timeout(unignore_package, 200)
