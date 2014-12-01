@@ -132,7 +132,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation separators / terminators / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.separator, punctuation.delimiter, punctuation.terminator, punctuation.definition.arbitrary-repetition.css, meta.delimiter.js, punctuation.brace, meta.brace.js</string>
+			<string>punctuation.separator, punctuation.delimiter, punctuation.terminator, punctuation.definition.arbitrary-repetition.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -143,7 +143,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation params / tags / groups / namespacing</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex</string>
+			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex, meta.delimiter.js, punctuation.brace, meta.brace.js</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

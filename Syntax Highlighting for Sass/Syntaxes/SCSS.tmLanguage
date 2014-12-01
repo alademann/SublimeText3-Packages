@@ -466,6 +466,10 @@
 			</array>
 		</dict>
 		<dict>
+			<key>include</key>
+			<string>#operator</string>
+		</dict>
+		<dict>
 			<key>name</key>
 			<string>meta.declaration-block.css.sass</string>
 			<key>patterns</key>
@@ -483,10 +487,6 @@
 					<string>entity.other.hack.css.sass</string>
 				</dict>
 			</array>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#operator</string>
 		</dict>
 		<dict>
 			<key>include</key>
