@@ -505,6 +505,7 @@
     {
         "class": "sidebar_label",
         "parents": [{"class": "tree_row", "attributes": ["expandable"]}],
+        "font.bold": true,
         "color": [210, 210, 210]
     },
     {

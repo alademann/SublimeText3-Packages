@@ -441,14 +441,14 @@
         "layer0.opacity": 1.0,
         "layer0.draw_center": false,
         "layer0.inner_margin": 0,
-        "content_margin": [0, 10, 0, 0]
+        "content_margin": [0, 15, 0, 0]
     },
         // Sidebar tree
     {
         "class": "sidebar_tree",
-        "row_padding": [15, 5],
-        "indent": 15,
-        "indent_offset": 20,
+        "row_padding": [20, 5],
+        "indent": 20,
+        "indent_offset": 18,
         "indent_top_level": false,
         "layer0.tint": [51, 51, 51],
         "layer0.opacity": 1.0
@@ -456,17 +456,17 @@
     {
         "class": "sidebar_tree",
         "settings": ["sidebar_xsmall"],
-        "row_padding": [10, 2]
+        "row_padding": [20, 2]
     },
     {
         "class": "sidebar_tree",
         "settings": ["sidebar_small"],
-        "row_padding": [10, 3]
+        "row_padding": [20, 3]
     },
     {
         "class": "sidebar_tree",
         "settings": ["sidebar_medium"],
-        "row_padding": [10, 4]
+        "row_padding": [20, 4]
     },
 
     {
@@ -500,24 +500,24 @@
         // Sidebar entry
     {
         "class": "sidebar_label",
-        "color": [160, 160, 160]
+        "color": [140, 140, 140]
     },
         // Sidebar folder entry
     {
         "class": "sidebar_label",
         "parents": [{"class": "tree_row", "attributes": ["expandable"]}],
-        "color": [190, 190, 190]
+        "color": [210, 210, 210]
     },
     {
         "class": "sidebar_label",
-        "parents": [{"class": "tree_row", "attributes": ["hover"]}],
+        "parents": [{"class": "tree_row", "attributes": [ "hover"]}],
         "color": [240, 240, 240]
     },
         // Sidebar entry selected
     {
         "class": "sidebar_label",
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
-        "color": [255, 255, 255]
+        "color": [240, 240, 240]
     },
         // Sidebar entry transient
     {
@@ -701,7 +701,7 @@
     },
     {
         "class": "quick_panel_path_label",
-        "fg": [145, 145, 145],
+        "fg": [75, 75, 75],
         "match_fg": [241, 130, 96],
         "selected_fg": [255, 255, 255, 255],
         "selected_match_fg": [255, 255, 255]
