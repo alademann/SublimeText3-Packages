@@ -68,6 +68,7 @@
 		"Twitter Recess",
 		"Vintage"
 	],
+	"remove_orphaned": false,
 	"repositories":
 	[
 		"https://github.com/i-akhmadullin/Sublime-CSS3"
