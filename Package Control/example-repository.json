@@ -369,6 +369,64 @@
 		}
 	],
 
+	// Packages that can be listed under "dependencies" in under "releases" of
+	// a normal package. These will typically be compiled Python extensions
+	// that are supplementary, or missing from Sublime Text.
+	"dependencies": [
+		{
+			// Each dependency should have a name, load_order, description,
+			// author, issues URL and a list of releases. Each release needs a
+			// version and url or base and tags plus sublime_text and platforms
+			// keys. If the URL is not over SSL, there needs to be a sha256 key
+			// containing the sha256 hash of the package file.
+			"name": "bz2",
+			"load_order": "02",
+			"description": "Python bz2 module",
+			"author": "wbond",
+			"issues": "https://github.com/codexns/sublime-bz2/issues",
+			"releases": [
+				{
+					"base": "https://github.com/codexns/sublime-bz2",
+					"tags": true,
+					"sublime_text": "*",
+					"platforms": ["*"]
+				}
+			]
+		},
+		{
+			"name": "ssl-linux",
+			"load_order": "01",
+			"description": "Python _ssl module for Linux",
+			"author": "wbond",
+			"issues": "https://github.com/codexns/sublime-ssl-linux/issues",
+			"releases": [
+				{
+					"version": "1.0.0",
+					"url": "http://packagecontrol.io/ssl-linux.sublime-package",
+					"sublime_text": "*",
+					"platforms": ["linux"],
+					"sha256": "d12a2ca2843b3c06a834652e9827a29f88872bb31bd64230775f3dbe12e0ebd4"
+				}
+			]
+		},
+		{
+			"name": "ssl-windows",
+			"load_order": "02",
+			"description": "Python _ssl module for Sublime Text 2 on Windows",
+			"author": "wbond",
+			"issues": "https://github.com/codexns/sublime-ssl-windows/issues",
+			"releases": [
+				{
+					"version": "1.0.0",
+					"url": "http://packagecontrol.io/ssl-windows.sublime-package",
+					"sublime_text": "<3000",
+					"platforms": ["windows"],
+					"sha256": "efe25e3bdf2e8f791d86327978aabe093c9597a6ceb8c2fb5438c1d810e02bea"
+				}
+			]
+		}
+	],
+
 	// If you need/want to split your repository up into multiple smaller
 	// files for the sake of organization, the "includes" key allows you to
 	// enter URL paths that will be combined together and dynamically inserted

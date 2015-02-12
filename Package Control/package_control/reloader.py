@@ -105,6 +105,9 @@ mods_load_order = [
     '.package_installer',
     '.package_renamer',
 
+    '.loader',
+    '.bootstrap',
+
     '.tests',
     '.tests.clients',
     '.tests.providers',
@@ -129,8 +132,8 @@ mods_load_order = [
     '.commands.package_control_insert_command',
     '.commands.package_control_tests_command',
 
-    '.package_cleanup',
-    '.automatic_upgrader'
+    '.automatic_upgrader',
+    '.package_cleanup'
 ]
 
 for suffix in mods_load_order:
