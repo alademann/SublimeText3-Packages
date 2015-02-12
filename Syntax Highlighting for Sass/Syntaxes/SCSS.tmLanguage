@@ -791,7 +791,7 @@
 		<key>flex-namespaced-elem-selector</key>
 		<dict>
 			<key>begin</key>
-			<string>.*(?=\|)</string>
+			<string>(?&lt;!\/)(?=\|)</string>
 			<key>end</key>
 			<string>$\n?|(?=\.|{|:)</string>
 			<key>name</key>
