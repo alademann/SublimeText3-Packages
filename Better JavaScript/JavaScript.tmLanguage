@@ -42,7 +42,7 @@
 			<key>comment</key>
 			<string>match any capitalized word as a Class</string>
 			<key>match</key>
-			<string>(?&lt;!["'])\b([A-Z]+[a-z]+)\b(?!["'])</string>
+			<string>(?&lt;!["'])\b([A-Z]+[a-z]+)+\b(?!["'])</string>
 			<key>name</key>
 			<string>meta.class.js</string>
 		</dict>

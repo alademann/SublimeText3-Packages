@@ -1,0 +1,15 @@
+<snippet>
+    <content><![CDATA[
+React = require('react')
+
+${1} = React.createClass
+
+	render: ->
+		${0:<div />}
+
+module.exports = ${1}
+]]></content>
+    <tabTrigger>rcc</tabTrigger>
+    <scope>source.coffee</scope>
+    <description>React: component skeleton</description>
+</snippet>

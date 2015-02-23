@@ -1,0 +1,40 @@
+// This file is not meant for editing. It will be overwritten.
+// Save your customizations to Packages/User/Dart - Plugin Settings.sublime-settings instead.
+
+{
+	// Path to the sdk directory.
+	"dart_sdk_path": null,
+	// Path to the directory containing Dartium.
+	// On OSX, it's the full path to Chromium.app.
+	"dart_dartium_path": null,
+
+	// User-defined browsers.
+	// Maps arbitrary keys to full paths to executables.
+	// The reserved 'default' name points to the default user browser. It must
+	// be a key in the dictionary.
+	"dart_user_browsers": { },
+
+	// If 'true', sends anonymous usage data about this plugin.
+	"dart_enable_telemetry": true,
+
+	// If 'true', the analysis server will run in the background.
+	"dart_enable_analysis_server": true,
+
+	// Dartlint plugin settings - DEPRECATED
+	"dart_linter_active": false,
+	"dart_linter_on_load": true,
+	"dart_linter_on_save": true,
+	"dart_linter_show_popup_level": "WARNING",
+	// Dartlint gutter icons
+	// "dart_linter_gutter_icon_error": "Packages/Dart/gutter/dartlint-simple-error.png",
+	// "dart_linter_gutter_icon_warning": "Packages/Dart/gutter/dartlint-simple-warning.png",
+	// "dart_linter_gutter_icon_info": "Packages/Dart/gutter/dartlint-simple-info.png",
+	// Underline colors
+	// "dart_linter_underline_color_error": "C7321C",
+	// "dart_linter_underline_color_warning": "FAFA37",
+	// "dart_linter_underline_color_info": "0000FC",
+
+	// Log level (for debugging).
+	//Can be one of: debug < info < warning < error < critical
+	"dart_log_level": "error"
+}

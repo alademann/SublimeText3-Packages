@@ -1,0 +1,105 @@
+{
+	"javatar_gp": 0,
+	"jdk_version":
+	{
+		"use": ""
+	},
+	"message_id": 20,
+	"project_data":
+	{
+		"14":
+		{
+			"folders":
+			[
+				{
+					"file_exclude_patterns":
+					[
+						"tags",
+						".ctags",
+						"*.min.js",
+						"*.dev.js",
+						"-min.js",
+						"*.map"
+					],
+					"folder_exclude_patterns":
+					[
+						"amd",
+						"cjs",
+						"vendor"
+					],
+					"follow_symlinks": true,
+					"path": "web-skin-react"
+				}
+			]
+		},
+		"15":
+		{
+			"folders":
+			[
+				{
+					"file_exclude_patterns":
+					[
+						"tags",
+						".ctags",
+						"docs.js",
+						"web-skin.js",
+						"*.min.js",
+						"*.dev.js",
+						"-min.js",
+						"*.map",
+						"Wdesk_Icons.json",
+						"validation-report.json",
+						"validation-status.json",
+						"web-skin/docs/_includes/sass-api/sassdoc-content.html",
+						"web-skin/docs/_includes/sass-api/sassdoc-sidenav.html"
+					],
+					"folder_exclude_patterns":
+					[
+						"web-skin/src/sass/core/foundation/config/license",
+						"web-skin/docs/assets/dist",
+						"web-skin/docs/_includes/sass-api",
+						".sass-cache",
+						".build-meta",
+						"web-skin/build",
+						"web-skin/style-guide",
+						"web-skin/dist",
+						"web-skin/docs/assets/dist/js/locales",
+						"web-skin/docs/archives",
+						"web-skin/docs/sass",
+						"web-skin/lib/js/grunts/build-tests/_generated",
+						"web-skin/product-config",
+						"web-skin/docs/assets/docs-content/sphinx-assets",
+						"web-skin/docs/assets/dist/js/core/jquery-placeholder",
+						"web-skin/docs/assets/dist/js/core/modernizr",
+						"web-skin/docs/assets/dist/js/core/number-polyfill",
+						"web-skin/docs/assets/dist/js/core/respond",
+						"web-skin/docs/assets/dist/js/core/wf-js-vendor",
+						"web-skin/docs/design-resources",
+						"web-skin/design-resources",
+						"_gh-api-data",
+						"bower_components",
+						"node_modules"
+					],
+					"follow_symlinks": true,
+					"name": "Web Skin",
+					"path": "web-skin"
+				},
+				{
+					"follow_symlinks": true,
+					"name": "Web Skin Wiki",
+					"path": "web-skin-wiki"
+				},
+				{
+					"follow_symlinks": true,
+					"name": "Code Standards",
+					"path": "w-coding-conventions"
+				},
+				{
+					"follow_symlinks": true,
+					"name": "UI Platform",
+					"path": "w-ui-platform"
+				}
+			]
+		}
+	}
+}

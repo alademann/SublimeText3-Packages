@@ -132,7 +132,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation separators / terminators / delimiters</string>
 			<key>scope</key>
-			<string>punctuation.separator, punctuation.delimiter, punctuation.terminator, punctuation.definition.arbitrary-repetition.css</string>
+			<string>punctuation.separator, punctuation.delimiter, punctuation.terminator, punctuation.definition.arbitrary-repetition.css, meta.delimiter.method</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -143,11 +143,33 @@ COLOR KEY
 			<key>name</key>
 			<string>Punctuation params / tags / groups / namespacing</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.parameters, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex, meta.delimiter.js, punctuation.brace, meta.brace.js</string>
+			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Closures / Braces</string>
+			<key>scope</key>
+			<string>meta.brace</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Function Parameter Closures</string>
+			<key>scope</key>
+			<string>punctuation.definition.parameters.begin, punctuation.definition.parameters.end</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#c3c391</string>
 			</dict>
 		</dict>
 		<dict>
@@ -207,9 +229,20 @@ COLOR KEY
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Constant</string>
+			<string>Numeric Constant</string>
 			<key>scope</key>
-			<string>constant</string>
+			<string>constant.numeric.js</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#8ddede</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Language (Built-In) Constant</string>
+			<key>scope</key>
+			<string>constant.language</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -220,7 +253,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Generic Support / Function / Type / Class</string>
 			<key>scope</key>
-			<string>support, support.function, keyword.type, keyword.special-type, support.type, meta.type, meta.class, support.class, entity.name.type.class</string>
+			<string>support, support.function, keyword.type, keyword.special-type, support.type, support.class, entity.name.type.class</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -410,7 +443,7 @@ COLOR KEY
 			<key>name</key>
 			<string>String constant</string>
 			<key>scope</key>
-			<string>string constant</string>
+			<string>string.constant</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -432,7 +465,7 @@ COLOR KEY
 			<key>name</key>
 			<string>String variable</string>
 			<key>scope</key>
-			<string>string variable</string>
+			<string>string.variable</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -766,7 +799,7 @@ COLOR KEY
 			<key>name</key>
 			<string>CSS additional-constants</string>
 			<key>scope</key>
-			<string>support.constant.css, constant.css, meta.property-value support.constant.named-color.css, meta.property-value constant</string>
+			<string>support.constant.css, constant.css, meta.property-value support.constant.named-color.css, meta.property-value constant.css</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -848,7 +881,7 @@ COLOR KEY
 			<key>name</key>
 			<string>JSON punctuation</string>
 			<key>scope</key>
-			<string>punctuation.definition.dictionary</string>
+			<string>punctuation.definition.dictionary.json</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -940,7 +973,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Sass variable declaration</string>
 			<key>scope</key>
-			<string>variable.other.indexed.declaration, support.function.var</string>
+			<string>variable.other.indexed.declaration</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>

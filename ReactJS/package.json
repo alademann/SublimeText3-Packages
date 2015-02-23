@@ -1,0 +1,17 @@
+{
+  "name": "sublime-react",
+  "version": "0.1.0",
+  "author": "Jonas Gebhardt <jonas.gebhardt@gmail.com>",
+  "description": "Sublime Text helpers for React/JSX",
+  "scripts": {
+    "build-docs": "node ./generateReadme.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reactjs/sublime-react.git"
+  },
+  "dependencies" : {
+    "async": "~0.7.0"
+  },
+  "license": "Apache 2.0"
+}

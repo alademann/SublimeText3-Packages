@@ -1,0 +1,12 @@
+*.cache
+*.pyc
+
+# Editor files
+*.sublime-workspace
+dist/
+
+# other
+.idea
+
+# dev/temp files
+*.YAML-tmLanguage
