@@ -1,9 +1,0 @@
-<snippet>
-	<content><![CDATA[<hgroup>
-	${1:<h1>$2</h1>}
-	${3:<h2>$4</h2>}
-</hgroup>$0]]></content>
-	<tabTrigger>&lt;hgroup</tabTrigger>
-	<scope>source.php,text.html</scope>
-	<description>&lt;hgroup&gt;</description>
-</snippet>

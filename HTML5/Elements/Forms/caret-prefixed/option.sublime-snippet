@@ -1,7 +1,0 @@
-<snippet>
-	<content><![CDATA[<option${1: value="$2"}>$3</option>}
-option$0]]></content>
-	<tabTrigger>&lt;option</tabTrigger>
-	<scope>source.php,text.html</scope>
-	<description>&lt;option&gt;</description>
-</snippet>

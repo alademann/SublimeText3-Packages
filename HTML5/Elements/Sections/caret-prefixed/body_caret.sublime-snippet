@@ -1,8 +1,0 @@
-<snippet>
-	<content><![CDATA[<body>
-	$0
-</body>]]></content>
-	<tabTrigger>&lt;body</tabTrigger>
-	<scope>source.php,text.html</scope>
-	<description>&lt;body&gt;</description>
-</snippet>

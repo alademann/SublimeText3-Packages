@@ -1,8 +1,0 @@
-<snippet>
-	<content><![CDATA[<canvas>
-	$1
-</canvas>$0]]></content>
-	<tabTrigger>&lt;canvas</tabTrigger>
-	<scope>source.php,text.html</scope>
-	<description>&lt;canvas&gt;</description>
-</snippet>
