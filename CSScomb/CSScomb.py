@@ -38,8 +38,9 @@ class CssCombCommand(sublime_plugin.TextCommand):
 
     def comb(self, css, syntax, config):
         config = json.dumps(config)
+        folder = os.path.dirname(self.view.file_name())
         try:
-            p = Popen(['node', COMB_PATH] + [syntax, config],
+            p = Popen(['node', COMB_PATH] + [syntax, config, folder],
                 stdout=PIPE, stdin=PIPE, stderr=PIPE,
                 env=self.get_env(), shell=self.is_windows())
         except OSError:
@@ -55,8 +56,11 @@ class CssCombCommand(sublime_plugin.TextCommand):
         env = None
         if self.is_osx():
             env = os.environ.copy()
-            env['PATH'] += ':/usr/local/bin'
+            env['PATH'] += self.get_node_path()
         return env
+
+    def get_node_path(self):
+        return self.get_settings().get('node-path')
 
     def get_settings(self):
         settings = self.view.settings().get('CSScomb')
@@ -74,6 +78,8 @@ class CssCombCommand(sublime_plugin.TextCommand):
             return 'css'
         if self.is_scss():
             return 'scss'
+        if self.is_sass():
+            return 'sass'
         if self.is_less():
             return 'less'
         if self.is_unsaved_buffer_without_syntax():
@@ -103,7 +109,10 @@ class CssCombCommand(sublime_plugin.TextCommand):
         return self.view.scope_name(0).startswith('source.css')
 
     def is_scss(self):
-        return self.view.scope_name(0).startswith('source.scss')
+        return self.view.scope_name(0).startswith('source.scss') or self.view.file_name().endswith('.scss')
+
+    def is_sass(self):
+        return self.view.scope_name(0).startswith('source.sass')
 
     def is_less(self):
         return self.view.scope_name(0).startswith('source.less')
