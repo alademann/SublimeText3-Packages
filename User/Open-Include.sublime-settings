@@ -25,6 +25,10 @@
             "prefix"   : "static/_includes/"
         },
         {
+            "extension": "",
+            "prefix"   : "docs/_includes/"
+        },
+        {
             "extension": ".mxml",
             "prefix"   : "./libraries/wf_global/src/"
         }
