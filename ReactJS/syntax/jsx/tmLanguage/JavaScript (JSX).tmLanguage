@@ -1377,22 +1377,6 @@
           <string>support.class.js</string>
         </dict>
         <dict>
-          <key>captures</key>
-          <dict>
-            <key>2</key>
-            <dict>
-              <key>name</key>
-              <string>support.class.js</string>
-            </dict>
-          </dict>
-          <key>comment</key>
-          <string>match any capitalized word as a Class</string>
-          <key>match</key>
-          <string>(?&lt;!["'])\b([A-Z]+[a-z]+)+\b(?!["'])</string>
-          <key>name</key>
-          <string>meta.class.js</string>
-        </dict>
-        <dict>
           <key>match</key>
           <string>\b(require|module\.exports|module\.id|exports)\b</string>
           <key>name</key>
@@ -1469,6 +1453,22 @@
           <string>\[|\]</string>
           <key>name</key>
           <string>meta.brace.square.js</string>
+        </dict>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>support.class.js</string>
+            </dict>
+          </dict>
+          <key>comment</key>
+          <string>match any capitalized word as a Class</string>
+          <key>match</key>
+          <string>(?&lt;!["'])\b([A-Z]+[a-z]+)+\b(?!["'])</string>
+          <key>name</key>
+          <string>meta.class.js</string>
         </dict>
       </array>
     </dict>
@@ -1618,7 +1618,7 @@
     </dict>
   </dict>
   <key>scopeName</key>
-  <string>source.js</string>
+  <string>source.js.jsx</string>
   <key>uuid</key>
   <string>4b3f11ef-3e1f-4311-a911-b7fd497b3ff5</string>
 </dict>
