@@ -1,6 +1,6 @@
 <snippet>
   <content><![CDATA[
-// *************************************${2:
+// ********************************************************${2:
 //
 //   ${3:Description}}${4:
 //
@@ -20,10 +20,10 @@
     \$module-deps: dependencies-met(for \$module,
                                ${12:var|function|mixin} ${13:name});}}}
 //
-// *************************************
+// ********************************************************
 
 
 ]]>
   </content>
-  <tabTrigger>sass-module-header</tabTrigger>
+  <tabTrigger>sass-comment-module-header</tabTrigger>
 </snippet>
