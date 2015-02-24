@@ -134,10 +134,6 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#rgb-value</string>
-				</dict>
-				<dict>
-					<key>include</key>
 					<string>#numeric</string>
 				</dict>
 				<dict>
@@ -174,7 +170,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#hex-value</string>
+					<string>#rgb-value</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -364,10 +360,6 @@
 				<dict>
 					<key>include</key>
 					<string>#variable</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#hex-value</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -762,9 +754,17 @@
 		<key>placeholder-selector</key>
 		<dict>
 			<key>begin</key>
-			<string>(?&lt;!\d)%(?!\d)</string>
+			<string>(?&lt;!\d)(%)(?!\d)</string>
 			<key>end</key>
 			<string>$\n?|\s|(?=;|{)</string>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.control.placeholder.sass</string>
+				</dict>
+			</dict>
 			<key>name</key>
 			<string>entity.other.attribute-name.placeholder-selector.sass</string>
 		</dict>

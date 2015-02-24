@@ -14,11 +14,14 @@ COLOR KEY
 #ecec89 - Yellow
 #d7d777 - Dark Yellow
 #c3c391 - Muted Yellow
+#5c5a50 - Dark Sandy Brown
+#9e997f - Sandy Brown
 #eeb0df - Purple
 #8ddede - Blue
 #92bfbf - Dark Blue
 #62c0ff - Neon Blue (use sparingly)
 #bddcdc - Light Blue
+#d3eaea - Lightest Blue
 #b4d388 - Green
 #9bbd6b - Dark Green
 
@@ -88,11 +91,11 @@ COLOR KEY
 			<key>name</key>
 			<string>Comment</string>
 			<key>scope</key>
-			<string>comment, comment.block, punctuation.definition.comment, punctuation.separator.escape.ruby</string>
+			<string>comment, comment.line, comment.block, punctuation.definition.comment, punctuation.separator.escape.ruby</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 		<dict>
@@ -103,18 +106,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#999999</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>Double Slash Comment</string>
-			<key>scope</key>
-			<string>comment.line</string>
-			<key>settings</key>
-			<dict>
-				<key>foreground</key>
-				<string>#585858</string>
+				<string>#9e997f</string>
 			</dict>
 		</dict>
 		<dict>
@@ -136,14 +128,14 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#d9d9d9</string>
+				<string>#d3eaea</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>name</key>
 			<string>Punctuation params / tags / groups / namespacing</string>
 			<key>scope</key>
-			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.entry, punctuation.section.function.css, punctuation.separator.namespace.css.flex</string>
+			<string>punctuation.definition.tag, punctuation.parentheses.css, punctuation.section.property-list, punctuation.definition.entry, punctuation.definition.parameters, punctuation.section.function.css, punctuation.separator.namespace.css.flex</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -154,7 +146,7 @@ COLOR KEY
 			<key>name</key>
 			<string>Closures / Braces</string>
 			<key>scope</key>
-			<string>meta.brace</string>
+			<string>punctuation.definition.brace, punctuation.definition.array, punctuation.definition.dictionary, punctuation.brace, meta.brace</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -235,29 +227,55 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#8ddede</string>
+				<string>#9bbd6b</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Language (Built-In) Constant</string>
+			<string>Language (Built-In) Constants</string>
 			<key>scope</key>
 			<string>constant.language</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#ecec89</string>
+				<string>#9bbd6b</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Generic Support / Function / Type / Class</string>
+			<string>Language (Built-In) Vars</string>
 			<key>scope</key>
-			<string>support, support.function, keyword.type, keyword.special-type, support.type, support.class, entity.name.type.class</string>
+			<string>variable.language, support.class</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#62c0ff</string>
+				<key>fontStyle</key>
+                <string>italic</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Generic Support / Function / Type</string>
+			<key>scope</key>
+			<string>support.function, keyword.type, keyword.special-type, support.type</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Class</string>
+			<key>scope</key>
+			<string>entity.name.class, entity.name.type.class, variable.other.class</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#92BFBF</string>
+				<key>fontStyle</key>
+                <string>bold</string>
 			</dict>
 		</dict>
 		<dict>
@@ -606,7 +624,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 		<dict>
@@ -617,7 +635,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 
@@ -687,7 +705,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>background</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 		<dict>
@@ -705,6 +723,17 @@ COLOR KEY
 		<!--
 			CSS
 		-->
+		<dict>
+			<key>name</key>
+			<string>CSS Numeric</string>
+			<key>scope</key>
+			<string>constant.numeric.css, constant.other.color</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#ecec89</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>name</key>
 			<string>CSS tag-name</string>
@@ -758,6 +787,8 @@ COLOR KEY
 			<dict>
 				<key>foreground</key>
 				<string>#92BFBF</string>
+				<key>fontStyle</key>
+				<string>italic</string>
 			</dict>
 		</dict>
 		<dict>
@@ -850,6 +881,19 @@ COLOR KEY
 				<string>#F18260</string>
 			</dict>
 		</dict>
+		<dict>
+			<key>name</key>
+			<string>CSS curly brackets</string>
+			<key>scope</key>
+			<string>punctuation.brace.css.sass</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#d3eaea</string>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
 
 
 		<!--
@@ -893,6 +937,28 @@ COLOR KEY
 		<!--
 			SASS
 		-->
+		<dict>
+			<key>name</key>
+			<string>Sass %placeholder name</string>
+			<key>scope</key>
+			<string>entity.other.attribute-name.placeholder-selector.sass</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#9bbd6b</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sass %placeholder % symbol</string>
+			<key>scope</key>
+			<string>keyword.control.placeholder.sass</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#B4D388</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>name</key>
 			<string>Sass @at-rule</string>
@@ -1282,7 +1348,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 
@@ -1323,7 +1389,7 @@ COLOR KEY
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#777777</string>
+				<string>#5c5a50</string>
 			</dict>
 		</dict>
 	</array>
