@@ -1,0 +1,34 @@
+{
+  "scope": "source.php comment.block.documentation",
+  "completions":
+  [
+    { "trigger" : "@api",           "contents": ""},
+    { "trigger" : "@author",        "contents": "@author ${1:[author]} ${3:<${2:[email]}>}" },
+    { "trigger" : "@category",      "contents": "@category ${1:[category]}"},
+    { "trigger" : "@copyright",     "contents": "@copyright ${1:[description]}"},
+    { "trigger" : "@deprecated",    "contents": "@deprecated ${1:[description]}"},
+    { "trigger" : "@example",       "contents": "@example\n* "},
+    { "trigger" : "@global",        "contents": "@global ${1:[type]} ${2:name}"},
+    { "trigger" : "@internal",      "contents": ""},
+    { "trigger" : "@license",       "contents": "@license ${1:[url]} ${2:[description]}"},
+    { "trigger" : "@link",          "contents": "@link ${1:[url]} ${2:[description]}"},
+    { "trigger" : "@method",        "contents": "@method {${1:[return type]}} ${2:[name]}() ${2:[name]}(${3:[args]}) ${4:[description]}"},
+    { "trigger" : "@package",       "contents": "@package ${1:[name]}"},
+    { "trigger" : "@param",         "contents": "@param ${1:[type]} ${2:[varname]} ${3:[description]}" },
+    { "trigger" : "@property",      "contents": "@property ${1:[type]} ${2:[varname]} ${3:[description]}"},
+    { "trigger" : "@return",        "contents": "@return ${1:[type]} ${2:[description]}" },
+    { "trigger" : "@see",           "contents": "@see ${1:[description]}"},
+    { "trigger" : "@since",         "contents": "@since ${1:[version]}"},
+    { "trigger" : "@subpackage",    "contents": "@subpackage ${1:[name]}"},
+    { "trigger" : "@throws",        "contents": "@throws ${1:[exceptionType]} If ${2:[this condition is met]}"},
+    { "trigger" : "@todo",          "contents": "@todo ${1:[description]}"},
+    { "trigger" : "@type",          "contents": "@type ${1:[type]} ${2:[description]}"},
+    { "trigger" : "@uses",          "contents": "@uses ${1:[object]} ${2:[description]}"},
+    { "trigger" : "@var",           "contents": "@var ${1:[type]} ${2:[description]}"},
+    { "trigger" : "@version",       "contents": "@version ${1:[version]}"},
+    { "trigger" : "{@example}",     "contents": "{@example ${1:[path]}}"},
+    { "trigger" : "{@inheritdoc}",  "contents": ""},
+    { "trigger" : "{@internal}",    "contents": "{@internal ${1:[description]}}"},
+    { "trigger" : "{@link}",        "contents": "{@link ${1:[url]}}"}
+  ]
+}
