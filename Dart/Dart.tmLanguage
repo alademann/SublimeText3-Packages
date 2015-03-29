@@ -868,6 +868,88 @@
 				</dict>
 			</array>
 		</dict>
+		<key>regexp</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\\.</string>
+					<key>name</key>
+					<string>constant.character.escaped.regex.dart</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>\(</string>
+					<key>contentName</key>
+					<string>meta.capture.regex.dart</string>
+					<key>end</key>
+					<string>\)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>\?(:|=|!)</string>
+							<key>name</key>
+							<string>ignore.capture.regex.dart</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#regex.dart</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\*|\+|\?|\.|\|</string>
+					<key>name</key>
+					<string>keyword.other.regex.dart</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\^|\$</string>
+					<key>name</key>
+					<string>keyword.other.regex.dart</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\.</string>
+					<key>name</key>
+					<string>constant.other.regex.dart</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>\[(\^)?</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.other.negation.regex.dart</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\]</string>
+					<key>name</key>
+					<string>constant.character.range.regex.dart</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>\\.</string>
+							<key>name</key>
+							<string>constant.character.escaped.regex.dart</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\{(?:\d+)?,(?:\d+)?\}</string>
+					<key>name</key>
+					<string>keyword.other.regex.dart</string>
+				</dict>
+			</array>
+		</dict>
 		<key>string-interp</key>
 		<dict>
 			<key>patterns</key>
@@ -888,6 +970,8 @@
 							<string>keyword.other.dart</string>
 						</dict>
 					</dict>
+					<key>contentName</key>
+					<string>source.dart</string>
 					<key>end</key>
 					<string>(\})</string>
 					<key>endCaptures</key>
@@ -1014,10 +1098,8 @@
 					<key>patterns</key>
 					<array>
 						<dict>
-							<key>match</key>
-							<string>\n</string>
-							<key>name</key>
-							<string>invalid.string.newline</string>
+							<key>include</key>
+							<string>#regexp</string>
 						</dict>
 					</array>
 				</dict>
@@ -1030,12 +1112,6 @@
 					<string>string.interpolated.single.dart</string>
 					<key>patterns</key>
 					<array>
-						<dict>
-							<key>match</key>
-							<string>\n</string>
-							<key>name</key>
-							<string>invalid.string.newline</string>
-						</dict>
 						<dict>
 							<key>include</key>
 							<string>#string-interp</string>
@@ -1052,10 +1128,8 @@
 					<key>patterns</key>
 					<array>
 						<dict>
-							<key>match</key>
-							<string>\n</string>
-							<key>name</key>
-							<string>invalid.string.newline</string>
+							<key>include</key>
+							<string>#regexp</string>
 						</dict>
 					</array>
 				</dict>
