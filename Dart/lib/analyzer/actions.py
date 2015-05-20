@@ -10,10 +10,12 @@ import sublime
 
 import os
 
-from Dart.lib.analyzer.api.api_types import AnalysisErrorSeverity
-from Dart.lib.analyzer.api.api_types import Location
 from Dart.sublime_plugin_lib import PluginLogger
 from Dart.sublime_plugin_lib.panels import OutputPanel
+
+from Dart.lib.analyzer.api.protocol import AnalysisErrorSeverity
+from Dart.lib.analyzer.api.protocol import AnalysisErrorType
+from Dart import editor_context
 
 
 _logger = PluginLogger(__name__)
@@ -33,6 +35,10 @@ _flags = (sublime.DRAW_SQUIGGLY_UNDERLINE |
           sublime.DRAW_NO_OUTLINE)
 
 
+def handle_navigation_data(navigation_params):
+    editor_context.navigation = navigation_params
+
+
 def show_errors(errors):
     '''Show errors in the ui.
 
@@ -45,19 +51,22 @@ def show_errors(errors):
     if os.path.realpath(errors.file) != os.path.realpath(v.file_name()):
         _logger.debug('different view active - aborting')
         return
-
+    
     analysis_errors = list(errors.errors)
     if analysis_errors == 0:
         clear_ui()
         return
 
-    infos = [ae for ae in analysis_errors if (ae.severity == AnalysisErrorSeverity.INFO)]
+    infos = [ae for ae in analysis_errors if
+                (ae.severity == AnalysisErrorSeverity.INFO)
+                and (ae.type != AnalysisErrorType.TODO)]
     warns = [ae for ae in analysis_errors if (ae.severity == AnalysisErrorSeverity.WARNING)]
     erros = [ae for ae in analysis_errors if (ae.severity == AnalysisErrorSeverity.ERROR)]
 
     def error_to_region(view, error):
         '''Converts location data to region data.
         '''
+        pass
         loc = error.location
         pt = view.text_point(loc.startLine - 1,
                              loc.startColumn - 1)
@@ -89,24 +98,30 @@ def show_errors(errors):
                 "{loc.startLine}|{loc.startColumn}|{error.message}").format(
                                                 error=error, loc=error.location)
 
+
     info_patts = [to_compact_text(item) for item in infos]
     warn_patts = [to_compact_text(item) for item in warns]
     errs_patts = [to_compact_text(item) for item in erros]
 
     all_errs = set(errs_patts + warn_patts + info_patts)
 
+    panel = OutputPanel('dart.analyzer')
+
     if not all_errs:
-        panel = OutputPanel('dart.analyzer')
+        editor_context.errors = []
         panel.hide()
         return
 
-    panel = OutputPanel('dart.analyzer')
     errors_pattern = r'^\w+\|\w+\|(.+)\|(\d+)\|(\d+)\|(.+)$'
     panel.set('result_file_regex', errors_pattern)
     # This will overwrite any previous text.
     panel.write('\n' + '\n'.join(all_errs))
+    panel.view.set_syntax_file('Packages/Dart/Support/Analyzer Output.sublime-syntax')
+    panel.view.settings().set('rulers', [])
     panel.show()
     sublime.status_message("Dart: Errors found")
+
+    editor_context.errors = all_errs
 
 
 def clear_ui():

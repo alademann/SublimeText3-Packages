@@ -23,14 +23,19 @@ from Dart.sublime_plugin_lib.sublime import after
 
 from Dart.lib.analyzer import actions
 from Dart.lib.analyzer import requests
-from Dart.lib.analyzer.api.api_types import AddContentOverlay
-from Dart.lib.analyzer.api.api_types import RemoveContentOverlay
-from Dart.lib.analyzer.api.notifications import AnalysisErrorsNotification
-from Dart.lib.analyzer.api.requests import AnalysisSetAnalysisRootsRequest
-from Dart.lib.analyzer.api.requests import AnalysisSetPriorityFilesRequest
-from Dart.lib.analyzer.api.requests import AnalysisUpdateContentRequest
-from Dart.lib.analyzer.api.requests import ServerGetVersionRequest
-from Dart.lib.analyzer.api.responses import ServerGetVersionResponse
+from Dart.lib.analyzer.api.base import Notification
+from Dart.lib.analyzer.api.base import Response
+from Dart.lib.analyzer.api.protocol import AddContentOverlay
+from Dart.lib.analyzer.api.protocol import AnalysisErrorsParams
+from Dart.lib.analyzer.api.protocol import AnalysisService
+from Dart.lib.analyzer.api.protocol import AnalysisSetAnalysisRootsParams
+from Dart.lib.analyzer.api.protocol import AnalysisNavigationParams
+from Dart.lib.analyzer.api.protocol import AnalysisSetPriorityFilesParams
+from Dart.lib.analyzer.api.protocol import AnalysisUpdateContentParams
+from Dart.lib.analyzer.api.protocol import RemoveContentOverlay
+from Dart.lib.analyzer.api.protocol import ServerGetVersionParams
+from Dart.lib.analyzer.api.protocol import ServerGetVersionResult
+from Dart.lib.analyzer.api.protocol import AnalysisSetSubscriptionsParams
 from Dart.lib.analyzer.pipe_server import PipeServer
 from Dart.lib.analyzer.queue import AnalyzerQueue
 from Dart.lib.analyzer.queue import RequestsQueue
@@ -41,17 +46,17 @@ from Dart.lib.error import ConfigError
 from Dart.lib.path import find_pubspec_path
 from Dart.lib.path import is_view_dart_script
 from Dart.lib.sdk import SDK
+from Dart import editor_context
 
 
 _logger = PluginLogger(__name__)
 
 
-START_DELAY = 2500
+START_DELAY = 50
 _SIGNAL_STOP = '__SIGNAL_STOP'
 
 
 g_server = None
-g_editor_context = EditorContext()
 
 # maps:
 #   req_type => view_id
@@ -64,12 +69,11 @@ g_req_to_resp = {
 
 def init():
     global g_server
-    global g_editor_context
     _logger.debug('starting dart analyzer')
 
     try:
         g_server = AnalysisServer()
-        g_server.start()
+        threading.Thread(target=g_server.start).run()
     except Exception as e:
         print('Dart: Exception occurred during init. Aborting')
         print('==============================================')
@@ -191,11 +195,10 @@ class ActivityTracker(sublime_plugin.EventListener):
 
     def on_deactivated(self, view):
         # Any ongoing searches must be invalidated.
-        del g_editor_context.search_id
+        del editor_context.search_id
 
         if not is_view_dart_script(view):
             return
-
 
     def on_activated(self, view):
         if not is_view_dart_script(view):
@@ -203,7 +206,7 @@ class ActivityTracker(sublime_plugin.EventListener):
             #               view.file_name())
             return
 
-        if AnalysisServer.ping():
+        if AnalysisServer.ping() and not view.is_loading():
             g_server.add_root(view.file_name())
 
             if is_active(view):
@@ -318,15 +321,6 @@ class AnalysisServer(object):
     def proc(self):
         return AnalysisServer.server
 
-    def new_token(self):
-        w = sublime.active_window()
-        v = w.active_view()
-        now = datetime.now()
-        # 'c' indicates that this id was created at the client-side.
-        token = w.id(), v.id(), '{}:{}:c{}'.format(w.id(), v.id(),
-                                  AnalysisServer.get_request_id())
-        return token
-
     def add_root(self, path):
         """Adds `path` to the monitored roots if it is unknown.
 
@@ -404,69 +398,46 @@ class AnalysisServer(object):
             self.stdin.flush()
 
     def send_set_roots(self, included=[], excluded=[]):
-        req = AnalysisSetAnalysisRootsRequest(self.get_request_id(),
-                included, excluded)
+        req = AnalysisSetAnalysisRootsParams(included, excluded)
         _logger.info('sending set_roots request')
-        self.requests.put(req, block=False)
+        self.requests.put(req.to_request(self.get_request_id()), block=False)
 
     def send_get_version(self):
-        req = ServerGetVersionRequest(self.get_request_id())
+        req = ServerGetVersionParams().to_request(self.get_request_id())
         _logger.info('sending get version request')
         self.requests.put(req, block=False)
 
-    # def send_find_top_level_decls(self, view, pattern):
-    #     w_id, v_id, token = self.new_token()
-    #     req = requests.find_top_level_decls(token, pattern)
-    #     _logger.info('sending top level decls request')
-    #     # TODO(guillermooo): Abstract this out.
-    #     # track this type of req as it may expire
-    #     g_req_to_resp['search']["{}:{}".format(w_id, v_id)] = token
-    #     g_editor_context.search_id = token
-    #     self.requests.put(req,
-    #                       view=view,
-    #                       priority=TaskPriority.HIGHEST,
-    #                       block=False)
-
-    # def send_find_element_refs(self, view, potential=False):
-    #     if not view:
-    #         return
-
-    #     _, _, token = self.new_token()
-    #     fname = view.file_name()
-    #     offset = view.sel()[0].b
-    #     req = requests.find_element_refs(token, fname, offset, potential)
-    #     _logger.info('sending find_element_refs request')
-    #     g_editor_context.search_id = token
-    #     self.requests.put(req, view=view, priority=TaskPriority.HIGHEST,
-    #                       block=False)
-
     def send_add_content(self, view):
         content = view.substr(sublime.Region(0, view.size()))
-        req = AnalysisUpdateContentRequest(self.get_request_id(),
-                {view.file_name(): AddContentOverlay(content)})
+        req = AnalysisUpdateContentParams({view.file_name(): AddContentOverlay(content)})
         _logger.info('sending update content request - add')
         # track this type of req as it may expire
         # TODO: when this file is saved, we must remove the overlays.
-        self.requests.put(req,
+        self.requests.put(req.to_request(self.get_request_id()),
                           view=view,
                           priority=TaskPriority.HIGH,
                           block=False)
 
     def send_remove_content(self, view):
-        req = AnalysisUpdateContentRequest(self.get_request_id(),
-                {view.file_name(): RemoveContentOverlay()})
+        req = AnalysisUpdateContentParams({view.file_name(): RemoveContentOverlay()})
         _logger.info('sending update content request - delete')
-        self.requests.put(req,
-                          view=view,
-                          priority=TaskPriority.HIGH,
-                          block=False)
+        self.requests.put(req.to_request(self.get_request_id()),
+                view=view,
+                priority=TaskPriority.HIGH,
+                block=False)
 
     def send_set_priority_files(self, files):
         if files == self.priority_files:
             return
 
-        req = AnalysisSetPriorityFilesRequest(self.get_request_id(), files)
-        self.requests.put(req, priority=TaskPriority.HIGH, block=False)
+
+        req = AnalysisSetPriorityFilesParams(files)
+        self.requests.put(req.to_request(self.get_request_id()),
+                priority=TaskPriority.HIGH, block=False)
+
+        req2 = AnalysisSetSubscriptionsParams({AnalysisService.NAVIGATION: files})
+        self.requests.put(req2.to_request(self.get_request_id()),
+                priority=TaskPriority.HIGH, block=False)
 
 
 class ResponseHandler(threading.Thread):
@@ -500,25 +471,26 @@ class ResponseHandler(threading.Thread):
                         _logger.info('ResponseHandler exiting by internal request.')
                         return
                 
-                # XXX change stuff here XXX
-                if isinstance(resp, AnalysisErrorsNotification):
-                    _logger.info('error data received from server')
-                    # Make sure the right type is passed to the async
-                    # code. `resp` may point to a different object when
-                    # the async code finally has a chance to run.
-                    after(0, actions.show_errors,
-                          AnalysisErrorsNotification(resp.data.copy())
-                          )
-                    continue
+                if isinstance(resp, Notification):
+                    if isinstance(resp.params, AnalysisErrorsParams):
+                        # Make sure the right type is passed to the async
+                        # code. `resp` may point to a different object when
+                        # the async code finally has a chance to run.
+                        after(0, actions.show_errors,
+                              AnalysisErrorsParams.from_json(resp.params.to_json().copy())
+                              )
+                        continue
 
-                if isinstance(resp, ServerGetVersionResponse):
-                    print('Dart: Analysis Server version:', resp.version)
-                    continue
+                    if isinstance(resp.params, AnalysisNavigationParams):
+                        after(0, actions.handle_navigation_data,
+                              AnalysisNavigationParams.from_json(resp.params.to_json().copy())
+                              )
+                        continue
 
-                # elif resp.type == 'server.status':
-                #     after(0, sublime.status_message,
-                #           'Dart: {}'.format(resp.status.message))
-                #     continue
+                if isinstance(resp, Response):
+                    if isinstance(resp.result, ServerGetVersionResult):
+                        print('Dart: Analysis Server version:', resp.result.version)
+                        continue
 
         except Exception as e:
             msg = 'error in thread' + self.name + '\n'

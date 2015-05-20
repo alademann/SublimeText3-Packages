@@ -11,8 +11,9 @@ import sublime
 
 from Dart.sublime_plugin_lib import PluginLogger
 
-from Dart.lib.analyzer.api.notifications import AnalysisErrorsNotification
-from Dart.lib.analyzer.api.responses import ServerGetVersionResponse
+from Dart.lib.analyzer.api.protocol import AnalysisErrorsParams
+from Dart.lib.analyzer.api.protocol import ServerGetVersionResult
+from Dart.lib.analyzer.api.protocol import AnalysisNavigationParams
 
 
 _logger = PluginLogger(__name__)
@@ -67,12 +68,22 @@ def is_internal_response(data):
     return '_internal' in data
 
 
+def is_navigation_notification(data):
+    return 'analysis.navigation' == data.get('event')
+
+
 def response_classifier(data):
     # XXX: replace here XXX
     if is_errors_response(data):
-        return AnalysisErrorsNotification(data)
+        params = AnalysisErrorsParams.from_json(data['params'])
+        return params.to_notification()
 
     if is_server_version_response(data):
-        return ServerGetVersionResponse(data)
+        result = ServerGetVersionResult.from_json(data['result'])
+        return result.to_response(data['id'])
+
+    if is_navigation_notification(data):
+        result = AnalysisNavigationParams.from_json(data['params'])
+        return result.to_notification()
 
     return None

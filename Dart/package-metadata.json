@@ -1,1 +1,1 @@
-{"version": "1.3.7", "url": "https://github.com/guillermooo/dart-sublime-bundle", "dependencies": [], "sublime_text": ">=3000", "platforms": ["*"], "description": "Dart Package for Sublime Text 3 (releases only)"}
+{"platforms": ["*"], "url": "https://github.com/guillermooo/dart-sublime-bundle", "sublime_text": ">=3000", "version": "1.4.0", "dependencies": [], "description": "Dart Package for Sublime Text 3 (releases only)"}

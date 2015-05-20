@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-@refs.${1}
-]]></content>
-    <tabTrigger>refs</tabTrigger>
-    <scope>source.coffee</scope>
-    <description>React: @refs.</description>
-</snippet>
