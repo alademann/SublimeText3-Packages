@@ -2,5 +2,7 @@
 	"extensions":
 	[
         "json"
-	]
+	],
+	"use_tab_stops": true,
+	"translate_tabs_to_spaces": false
 }

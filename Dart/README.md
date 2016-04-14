@@ -1,25 +1,25 @@
-# A Dart Plugin for Sublime Text 3
+[![Build Status](https://travis-ci.org/guillermooo/dart-sublime-bundle.svg?branch=master)](https://travis-ci.org/guillermooo/dart-sublime-bundle) [![Build status](https://ci.appveyor.com/api/projects/status/a54udvh1c2c2xah1/branch/master?svg=true)](https://ci.appveyor.com/project/guillermooo/dart-sublime-bundle/branch/master) [![Gratipay](http://img.shields.io/gratipay/guillermooo.svg)](https://gratipay.com/guillermooo/)
 
-Operating System   | Compatibility | Status (master) 
------------------- | ------------- | --------------- 
-Linux | Sublime Text 3 | [![Build Status](https://travis-ci.org/guillermooo/dart-sublime-bundle.svg?branch=master)](https://travis-ci.org/guillermooo/dart-sublime-bundle)
-OS X | Sublime Text 3 | -/-
-Windows | Sublime Text 3 | [![Build status](https://ci.appveyor.com/api/projects/status/a54udvh1c2c2xah1/branch/master?svg=true)](https://ci.appveyor.com/project/guillermooo/dart-sublime-bundle/branch/master)
+# Dart plugin for Sublime Text 3
 
-**Support this project:** [![Gratipay](http://img.shields.io/gratipay/guillermooo.svg)](https://gratipay.com/guillermooo/)
+![](repository/images/main-readme.png)
 
 
 ## Features
 
 * Syntax highlighting
-* Syntax error checking using `dartanalyzer`
-* Package management with `pub`
-* Snippets
-* Comment/uncomment lines and text blocks
-* Build systems: translation to JavaScript through `dart2js`, etc.
-* Basic symbol navigation
+* Live **code analysis** powered by the Dart Analysis Server
+* Integrated **package management** via `pub`
+* Multiple editing features: snippets, comment/uncomment, etc.
+* Integrated source code **formatter**
+* Run server apps in the console
+* Run web apps in Dartium
+* Run web apps in any browser
+* Run apps through Observatory
+* **Generate new projects** from templates using Stagehand
+* Much more!
 
-Most features are only active in files with a `.dart` extension.
+Most features are only enabled in files with a `.dart` extension.
 
 
 ## Documentation

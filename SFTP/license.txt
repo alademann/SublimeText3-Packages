@@ -6,16 +6,16 @@ following copyright.
 --------
 
 Sublime SFTP
-Copyright (c) 2011-2012 William Bond <will@wbond.net>
+Copyright (c) 2011-2015 William Bond <will@wbond.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software to use it for an evaluation period for the purpose of
 testing prior to purchase.
 
 Extended use of Sublime SFTP requires a license, which can be purchased from
-http://sublime.wbond.net. Any person who has purchased a license from William
-Bond and enters the provided product key is granted use of Sublime SFTP on
-any number of computers, of any supported operating system. Licences are
+https://wbond.net/sublime_packages/buy. Any person who has purchased a license
+from William Bond and enters the provided product key is granted use of Sublime
+SFTP on any number of computers, of any supported operating system. Licenses are
 valid for only a single person, and are valid for all upgrades to the
 major version purchased. For example, purchasing a license for version 1.1 will
 allow for free upgrades until version 2.0.

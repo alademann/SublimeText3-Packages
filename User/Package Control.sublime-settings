@@ -1,11 +1,11 @@
 {
 	"auto_upgrade_last_run": null,
+	"bootstrapped": true,
 	"in_process_packages":
 	[
 	],
 	"installed_packages":
 	[
-		"AAAPackageDev",
 		"Abacus",
 		"Alignment",
 		"AngularJS",
@@ -48,6 +48,7 @@
 		"OCaml Autocompletion",
 		"Open-Include",
 		"Package Control",
+		"PackageDev",
 		"PackageResourceViewer",
 		"Polymer & Web Component Snippets",
 		"Predawn",
@@ -72,7 +73,8 @@
 		"Todo",
 		"TodoReview",
 		"Twitter Recess",
-		"Vintage"
+		"Vintage",
+		"WebdriverIO"
 	],
 	"remove_orphaned": false,
 	"repositories":

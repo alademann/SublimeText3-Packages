@@ -5,7 +5,7 @@
         [
             {
                 "caption": "SFTP/FTP",
-                "mnemonic": "b",
+                "mnemonic": "F",
                 "children":
                 [
                     { "command": "sftp_create_server", "caption": "Setup Server…" },

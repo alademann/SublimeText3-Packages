@@ -2,7 +2,11 @@
 # All rights reserved. Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.)
 
+from functools import wraps
 import os
+
+from sublime import View
+
 from Dart.sublime_plugin_lib.path import extension_equals
 
 
@@ -56,3 +60,22 @@ def find_pubspec_path(path, original=None):
         return
 
     return find_pubspec_path(p, original)
+
+
+def is_path_under(top_level, path):
+    prefix = os.path.realpath(top_level)
+    target = os.path.realpath(path)
+    return target.startswith(prefix)
+
+
+# decorator
+def only_for_dart_files(func):
+    @wraps(func)
+    def inner(self, view):
+        try:
+            fname = view.file_name()
+            if fname and is_dart_script(fname):
+                return func(self, view)
+        except AttributeError:
+            assert view is None, "wrong usage"
+    return inner

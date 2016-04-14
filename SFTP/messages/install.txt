@@ -1,5 +1,5 @@
 Thanks for installing Sublime SFTP! Below are some quick notes to get you
-started with the plugin. Please see http://wbond.net/sublime_packages/sftp for
+started with the plugin. Please see https://wbond.net/sublime_packages/sftp for
 the full documentation.
 
 
@@ -30,7 +30,7 @@ the name you want to give the connection.
 Once the server config is saved, you will be automatically connected to the
 server and you can browse and perform actions via the quick panel.
 
-Unfortunely due to limitations of the Sublime Text 2 API, it is not possible
+Unfortunely due to limitations of the Sublime Text API, it is not possible
 to present the remote filesystem in the side bar. There are, however, key
 bindings for connecting to servers to help reduce the amount of time remote
 file operations take.
@@ -40,9 +40,9 @@ Support
 ----
 
 To learn more about the features and settings, please visit
-http://wbond.net/sublime_packages/sftp.
+https://wbond.net/sublime_packages/sftp.
 
-If you are having trouble, please contact me at support@wbond.net. The Support
-page, http://wbond.net/sublime_packages/sftp/support, includes instructions
-for capturing a debug log that will be useful if you believe you are
-experiencing a bug.
+If you are having trouble, please visit
+https://wbond.net/sublime_packages/sftp/support. The support page includes
+instructions for capturing a debug log that will be useful if you believe
+you are experiencing a bug.

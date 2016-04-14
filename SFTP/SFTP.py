@@ -3,40 +3,12 @@ import traceback
 import os
 import sys
 import time
-import imp
 import re
 
 
 st_version = 2
 if int(sublime.version()) > 3000:
     st_version = 3
-
-
-arch_lib_path = None
-if sublime.platform() == 'linux':
-    arch_lib_path = os.path.join(os.path.dirname(__file__), 'lib',
-        'st%d_linux_%s' % (st_version, sublime.arch()))
-    print('SFTP: enabling custom linux ssl module')
-    for ssl_ver in ['1.0.0', '10', '0.9.8']:
-        lib_path = os.path.join(arch_lib_path, 'libssl-' + ssl_ver)
-        sys.path.append(lib_path)
-        try:
-            import _ssl
-            print('SFTP: successfully loaded _ssl module for libssl.so.%s' % ssl_ver)
-            break
-        except (ImportError) as e:
-            print('SFTP: _ssl module import error - ' + str(e))
-    if '_ssl' in sys.modules:
-        try:
-            if sys.version_info < (3,):
-                plat_lib_path = os.path.join(sublime.packages_path(), 'SFTP',
-                    'lib', 'st2_linux')
-                m_info = imp.find_module('ssl', [plat_lib_path])
-                m = imp.load_module('ssl', *m_info)
-            else:
-                import ssl
-        except (ImportError) as e:
-            print('SFTP: ssl module import error - ' + str(e))
 
 
 reloading = {
@@ -46,7 +18,7 @@ reloading = {
 
 reload_mods = []
 for mod in sys.modules:
-    if (mod[0:9] == 'SFTP.sftp' or mod[0:5] == 'sftp.' or mod == 'sftp') and sys.modules[mod] != None:
+    if (mod[0:9] == 'SFTP.sftp' or mod[0:5] == 'sftp.' or mod == 'sftp') and sys.modules[mod] is not None:
         reload_mods.append(mod)
         reloading['happening'] = True
 
@@ -55,8 +27,7 @@ if reload_mods:
     old_callbacks = {}
     hook_match = re.search("<class '(\w+).ExcepthookChain'>", str(sys.excepthook))
     if hook_match:
-        _temp = __import__(hook_match.group(1), globals(), locals(),
-            ['ExcepthookChain'], -1)
+        _temp = __import__(hook_match.group(1), globals(), locals(), ['ExcepthookChain'], -1)
         ExcepthookChain = _temp.ExcepthookChain
         old_callbacks = ExcepthookChain.names
     sys.excepthook = sys.__excepthook__
@@ -95,41 +66,91 @@ for mod in mods_load_order:
 
 need_package_control_upgrade = False
 try:
-    from sftp.commands import (SftpShowPanelCommand, SftpCreateServerCommand,
-        SftpBrowseServerCommand, SftpLastServerCommand, SftpEditServerCommand,
-        SftpDeleteServerCommand, SftpBrowseCommand, SftpUploadFileCommand,
-        SftpMonitorFileCommand, SftpUploadOpenFilesCommand,
-        SftpDiffRemoteFileCommand, SftpRenameLocalAndRemotePathsCommand,
-        SftpDeleteRemotePathCommand, SftpDownloadFileCommand,
-        SftpUploadFolderCommand, SftpSyncUpCommand, SftpSyncDownCommand,
-        SftpSyncBothCommand, SftpDownloadFolderCommand, SftpVcsChangedFilesCommand,
-        SftpCancelUploadCommand, SftpEditConfigCommand, SftpCreateConfigCommand,
-        SftpCreateSubConfigCommand, SftpThread,
-        SftpDeleteLocalAndRemotePathsCommand, SftpSwitchConfigCommand,
-        SftpCreateAltConfigCommand, SftpWritePanelCommand,
-        SftpInsertViewCommand, SftpReplaceViewCommand)
-    from sftp.listeners import (SftpCloseListener, SftpLoadListener,
-        SftpFocusListener, SftpAutoUploadListener, SftpAutoConnectListener)
+    from sftp.commands import (
+        SftpBrowseCommand,
+        SftpBrowseServerCommand,
+        SftpCancelUploadCommand,
+        SftpCreateAltConfigCommand,
+        SftpCreateConfigCommand,
+        SftpCreateServerCommand,
+        SftpCreateSubConfigCommand,
+        SftpDeleteLocalAndRemotePathsCommand,
+        SftpDeleteRemotePathCommand,
+        SftpDeleteServerCommand,
+        SftpDiffRemoteFileCommand,
+        SftpDownloadFileCommand,
+        SftpDownloadFolderCommand,
+        SftpEditConfigCommand,
+        SftpEditServerCommand,
+        SftpInsertViewCommand,
+        SftpLastServerCommand,
+        SftpMonitorFileCommand,
+        SftpRenameLocalAndRemotePathsCommand,
+        SftpReplaceViewCommand,
+        SftpShowPanelCommand,
+        SftpSwitchConfigCommand,
+        SftpSyncBothCommand,
+        SftpSyncDownCommand,
+        SftpSyncUpCommand,
+        SftpThread,
+        SftpUploadFileCommand,
+        SftpUploadFolderCommand,
+        SftpUploadOpenFilesCommand,
+        SftpVcsChangedFilesCommand,
+        SftpWritePanelCommand,
+    )
+    from sftp.listeners import (
+        SftpAutoConnectListener,
+        SftpAutoUploadListener,
+        SftpCloseListener,
+        SftpFocusListener,
+        SftpLoadListener,
+    )
     from sftp import debug as sftp_debug
     from sftp import paths as sftp_paths
     from sftp import times as sftp_times
 except (ImportError):
     try:
-        from .sftp.commands import (SftpShowPanelCommand, SftpCreateServerCommand,
-            SftpBrowseServerCommand, SftpLastServerCommand, SftpEditServerCommand,
-            SftpDeleteServerCommand, SftpBrowseCommand, SftpUploadFileCommand,
-            SftpMonitorFileCommand, SftpUploadOpenFilesCommand,
-            SftpDiffRemoteFileCommand, SftpRenameLocalAndRemotePathsCommand,
-            SftpDeleteRemotePathCommand, SftpDownloadFileCommand,
-            SftpUploadFolderCommand, SftpSyncUpCommand, SftpSyncDownCommand,
-            SftpSyncBothCommand, SftpDownloadFolderCommand, SftpVcsChangedFilesCommand,
-            SftpCancelUploadCommand, SftpEditConfigCommand, SftpCreateConfigCommand,
-            SftpCreateSubConfigCommand, SftpThread,
-            SftpDeleteLocalAndRemotePathsCommand, SftpSwitchConfigCommand,
-            SftpCreateAltConfigCommand, SftpWritePanelCommand,
-            SftpInsertViewCommand, SftpReplaceViewCommand)
-        from .sftp.listeners import (SftpCloseListener, SftpLoadListener,
-            SftpFocusListener, SftpAutoUploadListener, SftpAutoConnectListener)
+        from .sftp.commands import (  # noqa
+            SftpBrowseCommand,
+            SftpBrowseServerCommand,
+            SftpCancelUploadCommand,
+            SftpCreateAltConfigCommand,
+            SftpCreateConfigCommand,
+            SftpCreateServerCommand,
+            SftpCreateSubConfigCommand,
+            SftpDeleteLocalAndRemotePathsCommand,
+            SftpDeleteRemotePathCommand,
+            SftpDeleteServerCommand,
+            SftpDiffRemoteFileCommand,
+            SftpDownloadFileCommand,
+            SftpDownloadFolderCommand,
+            SftpEditConfigCommand,
+            SftpEditServerCommand,
+            SftpInsertViewCommand,
+            SftpLastServerCommand,
+            SftpMonitorFileCommand,
+            SftpRenameLocalAndRemotePathsCommand,
+            SftpReplaceViewCommand,
+            SftpShowPanelCommand,
+            SftpSwitchConfigCommand,
+            SftpSyncBothCommand,
+            SftpSyncDownCommand,
+            SftpSyncUpCommand,
+            SftpThread,
+            SftpUploadFileCommand,
+            SftpUploadFolderCommand,
+            SftpUploadOpenFilesCommand,
+            SftpVcsChangedFilesCommand,
+            SftpWritePanelCommand,
+        )
+        from .sftp.listeners import (  # noqa
+            SftpAutoConnectListener,
+            SftpAutoUploadListener,
+            SftpCloseListener,
+            SftpFocusListener,
+            SftpLoadListener,
+        )
         from .sftp import debug as sftp_debug
         from .sftp import paths as sftp_paths
         from .sftp import times as sftp_times
@@ -142,13 +163,15 @@ except (ImportError):
 
 def plugin_loaded():
     if need_package_control_upgrade:
-        sublime.error_message(u'SFTP\n\nThe SFTP package seems to have been ' + \
-            u'installed using an older version of Package Control. Please ' + \
-            u'remove the SFTP package, upgrade Package Control to 2.0.0 ' + \
-            u'and then reinstall SFTP.\n\nIt may be necessary to delete ' + \
-            u'the "Packages/Package Control/" folder and then follow the ' + \
-            u'instructions at https://sublime.wbond.net/installation to ' + \
-            u'properly upgrade Package Control.')
+        sublime.error_message(
+            u'SFTP\n\nThe SFTP package seems to have been '
+            u'installed using an older version of Package Control. Please '
+            u'remove the SFTP package, upgrade Package Control to 2.0.0 '
+            u'and then reinstall SFTP.\n\nIt may be necessary to delete '
+            u'the "Packages/Package Control/" folder and then follow the '
+            u'instructions at https://sublime.wbond.net/installation to '
+            u'properly upgrade Package Control.'
+        )
         return
 
     settings = sublime.load_settings('SFTP.sublime-settings')
@@ -164,14 +187,16 @@ def plugin_loaded():
     psftp_exe = os.path.join(bin_folder, 'psftp.exe')
     has_psftp = os.path.exists(psftp_exe)
     if os.name == 'nt' and (not has_bin or not has_psftp):
-        sublime.error_message(u'SFTP\n\nThe SFTP package seems to have been ' + \
-            u'synced or copied from an OS X or Linux machine. The Windows ' + \
-            u'version of the package is different due to the inclusion of ' + \
-            u'a number of necessary exe files.\n\nTo fix the SFTP package ' + \
-            u'so that it may run properly, please run "Remove Package" and ' + \
-            u'then reinstall it using the "Install Package" command.\n\nTo ' + \
-            u'learn how to properly sync packages across different machines, ' + \
-            u'please visit https://sublime.wbond.net/docs/syncing')
+        sublime.error_message(
+            u'SFTP\n\nThe SFTP package seems to have been '
+            u'synced or copied from an OS X or Linux machine. The Windows '
+            u'version of the package is different due to the inclusion of '
+            u'a number of necessary exe files.\n\nTo fix the SFTP package '
+            u'so that it may run properly, please run "Remove Package" and '
+            u'then reinstall it using the "Install Package" command.\n\nTo '
+            u'learn how to properly sync packages across different machines, '
+            u'please visit https://sublime.wbond.net/docs/syncing'
+        )
 
 
 if sys.version_info < (3,):
@@ -210,8 +235,7 @@ if not hook_match:
             del cls.names[name]
             cls.callbacks.remove(callback)
 else:
-    _temp = __import__(hook_match.group(1), globals(), locals(),
-        ['ExcepthookChain'], -1)
+    _temp = __import__(hook_match.group(1), globals(), locals(), ['ExcepthookChain'], -1)
     ExcepthookChain = _temp.ExcepthookChain
 
 
@@ -221,27 +245,33 @@ def sftp_uncaught_except(type, value, tb):
 
     if message.find('/sftp/') != -1 or message.find('\\sftp\\') != -1:
         def append_log():
-            log_file_path = os.path.join(sublime.packages_path(), 'User',
-                'SFTP.errors.log')
+            log_file_path = os.path.join(
+                sublime.packages_path(),
+                'User',
+                'SFTP.errors.log'
+            )
             send_log_path = log_file_path
-            timestamp = sftp_times.timestamp_to_string(time.time(),
-                    '%Y-%m-%d %H:%M:%S\n')
+            timestamp = sftp_times.timestamp_to_string(time.time(), '%Y-%m-%d %H:%M:%S\n')
             with open(log_file_path, 'a') as f:
                 f.write(timestamp)
                 f.write(message)
             if sftp_debug.get_debug() and sftp_debug.get_debug_log_file():
                 send_log_path = sftp_debug.get_debug_log_file()
                 sftp_debug.debug_print(message)
-            sublime.error_message(('Sublime SFTP\n\nAn unexpected error ' +
-                'occurred, please send the file %s to support@wbond.net') % (
-                send_log_path))
-            sublime.active_window().run_command('open_file',
-                {'file': sftp_paths.fix_windows_path(send_log_path)})
+            sublime.error_message(
+                'Sublime SFTP\n\nAn unexpected error occurred, please send '
+                'the file %s to support@wbond.net' % send_log_path
+            )
+            sublime.active_window().run_command(
+                'open_file',
+                {'file': sftp_paths.fix_windows_path(send_log_path)}
+            )
         if reloading['happening']:
             if not reloading['shown']:
-                sublime.error_message('Sublime SFTP\n\nThe package was ' +
-                    'just upgraded, please restart Sublime Text to finish ' +
-                    'the upgrade')
+                sublime.error_message(
+                    'Sublime SFTP\n\nThe package was just upgraded, please '
+                    'restart Sublime Text to finish the upgrade'
+                )
                 reloading['shown'] = True
         else:
             sublime.set_timeout(append_log, 10)
