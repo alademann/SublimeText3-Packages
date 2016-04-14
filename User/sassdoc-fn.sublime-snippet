@@ -10,7 +10,7 @@
 /// ---${10:
 /// @requires {${11:function|mixin|variable|external|js}\} ${12:requirement-name}
 /// ---}${13:
-/// @param {${14:Type | Othertype}\} ${15:\$var} ${16:(${17:default value (optional))} }${18:- ${19:description (optional)}}
+/// @param {${14:Type | Othertype}\} ${15:\$var} ${16:[${17:default value (optional)]} }${18:- ${19:description (optional)}}
 /// ---}${20:
 /// @throws if ${21:condition}
 /// ---}${22:
