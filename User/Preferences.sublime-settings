@@ -90,6 +90,7 @@
 		".sass-cache",
 		".externalToolBuilders",
 		".settings",
+		".idea",
 		"bin",
 		"bin-debug"
 	],
